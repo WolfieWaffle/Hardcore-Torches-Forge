@@ -10,7 +10,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -184,63 +188,85 @@ public class TorchItem extends StandingAndWallBlockItem {
         return stack;
     }
 
+    public boolean overrideOtherStackedOnMe(ItemStack slotStack, ItemStack otherStack, Slot slot, ClickAction clickAction, Player player, SlotAccess slotAccess) {
 
+        // If you are clicking on it with a non HCTorch item or with empty, use vanilla behavior
+        if (!slot.allowModification(player) || !(otherStack.getItem() instanceof TorchItem) || otherStack.isEmpty()) {
+            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+        }
+
+        // Ensure torches are in same group
+        if (!sameTorchGroup((TorchItem) slotStack.getItem(), (TorchItem) otherStack.getItem())) {
+            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+        }
+
+        if (slotStack.getCount() < slotStack.getMaxStackSize()) {
+            return addToLitStack(slotStack, otherStack, slot, clickAction, player, slotAccess);
+        }
+
+        return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+    }
+
+    public boolean lightCursorStack(ItemStack slotStack, ItemStack otherStack, Slot slot, ClickAction clickAction, Player player, SlotAccess slotAccess) {
+        if (!(otherStack.getItem() instanceof TorchItem)) {
+            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+        }
+
+        Item newItem = ((TorchItem) otherStack.getItem()).torchGroup.getStandingTorch(ETorchState.LIT).asItem();
+        ItemStack newStack = TorchItem.changedCopy(otherStack, newItem);
+        slotAccess.set(new ItemStack(Items.STONE));
+
+        return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+    }
+
+    public boolean addToLitStack(ItemStack slotStack, ItemStack otherStack, Slot slot, ClickAction clickAction, Player player, SlotAccess slotAccess) {
+        TorchItem slotTorch = (TorchItem) slotStack.getItem();
+        TorchItem cursorTorch = (TorchItem) otherStack.getItem();
+
+        if (slotTorch.burnState == ETorchState.BURNT || cursorTorch.burnState == ETorchState.BURNT) {
+            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+        } else if (slotTorch.burnState == ETorchState.UNLIT) {
+            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+        }
+
+        int max = slotStack.getMaxStackSize();
+        int usedCount = clickAction == ClickAction.PRIMARY ? otherStack.getCount() : 1;
+
+        int remainder = Math.max(0, usedCount - (max - slotStack.getCount()));
+        int addedNew = usedCount - remainder;
+
+        System.out.println("TEST " + remainder + " " + addedNew);
+
+        // Average both stacks
+        int stack1Fuel = getFuel(slotStack) * slotStack.getCount();
+        int stack2Fuel = getFuel(otherStack) * addedNew;
+        int totalFuel = stack1Fuel + stack2Fuel;
+
+        // NBT
+        CompoundTag nbt = new CompoundTag();
+        nbt.putInt("Fuel", totalFuel / (slotStack.getCount() + addedNew));
+
+        if (addedNew > 0) {
+            slotStack.grow(addedNew);
+            slotStack.setTag(nbt);
+            otherStack.setCount(otherStack.getCount() - addedNew);
+            return true;
+        }
+
+        return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+    }
+
+//    public boolean overrideStackedOnOther(ItemStack cursorStack, Slot slot, ClickAction click, Player player) {
+//        cursorStack.grow(1);
+//        return false;
+//    }
 
 //    @Override
 //    public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction clickAction, Player player) {
 //        ItemStack otherStack = slot.getItem();
 //
-//        // If you are clicking on it with a non HCTorch item or with empty, use vanilla behavior
-//        if (!slot.allowModification(player) || !(otherStack.getItem() instanceof TorchItem) || otherStack.isEmpty()) {
-//            return super.overrideStackedOnOther(stack, slot, clickAction, player);
-//        }
 //
-//        // Return left click if either is full
-//        if (stack.getCount() >= stack.getMaxStackSize() || otherStack.getCount() >= otherStack.getMaxStackSize()) {
-//            return false;
-//        }
 //
-//        // Ensure torches are in same group
-//        if (!sameTorchGroup((TorchItem) stack.getItem(), (TorchItem) otherStack.getItem())) {
-//            return false;
-//        }
-//
-//        if (((TorchItem) stack.getItem()).burnState == ETorchState.LIT) {
-//            // If clicked is lit, return if clicked with burnt
-//            if (((TorchItem) otherStack.getItem()).burnState == ETorchState.BURNT) {
-//                return false;
-//            }
-//        } else if (((TorchItem) stack.getItem()).burnState == ETorchState.UNLIT) {
-//            // If clicked is unlit, return if clicked is not unlit
-//            if (((TorchItem) otherStack.getItem()).burnState != ETorchState.UNLIT) {
-//                return false;
-//            }
-//        }
-//
-//        if (!otherStack.isEmpty()) {
-//            int max = stack.getMaxStackSize();
-//            int usedCount = stack.getCount(); //clickType != ClickType.RIGHT ? otherStack.getCount() : 1;
-//            int otherMax = otherStack.getMaxStackSize();
-//
-//            int remainder = Math.max(0, usedCount - (max - stack.getCount()));
-//            int addedNew = usedCount - remainder;
-//
-//            // Average both stacks
-//            int stack1Fuel = getFuel(stack) * stack.getCount();
-//            int stack2Fuel = getFuel(otherStack) * addedNew;
-//            int totalFuel = stack1Fuel + stack2Fuel;
-//
-//            // NBT
-//            CompoundTag nbt = new CompoundTag();
-//            nbt.putInt("Fuel", totalFuel / (stack.getCount() + addedNew));
-//
-//            if (addedNew > 0) {
-//                stack.grow(-addedNew);
-//                stack.setTag(nbt);
-//                otherStack.setCount(otherStack.getCount() - addedNew);
-//                return true;
-//            }
-//        }
 //        return super.overrideStackedOnOther(stack, slot, clickAction, player);
 //    }
 }
