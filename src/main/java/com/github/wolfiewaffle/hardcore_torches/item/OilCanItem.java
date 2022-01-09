@@ -96,7 +96,7 @@ public class OilCanItem extends Item {
 
         if (stack.getItem() instanceof OilCanItem) {
             CompoundTag nbt = stack.getTag();
-            int fuel = Config.maxCanFuel.get();
+            int fuel = 0;
 
             if (nbt != null) {
                 fuel = nbt.getInt("Fuel");

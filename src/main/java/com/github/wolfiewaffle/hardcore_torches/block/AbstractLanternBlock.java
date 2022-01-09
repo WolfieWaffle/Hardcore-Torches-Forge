@@ -174,7 +174,7 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
             player.displayClientMessage(new TextComponent("Fuel: " + ((FuelBlockEntity) be).getFuel()), true);
         }
 
-        if (Config.lanternsNeedCan.get() && !stack.isEmpty() && !world.isClientSide) {
+        if (Config.lanternsNeedCan.get() && hand == InteractionHand.MAIN_HAND && !stack.isEmpty() && stack.getItem() != ItemInit.OIL_CAN.get() && !world.isClientSide) {
             player.displayClientMessage(new TextComponent("Requires an Oil Can to fuel!"), true);
         }
 
