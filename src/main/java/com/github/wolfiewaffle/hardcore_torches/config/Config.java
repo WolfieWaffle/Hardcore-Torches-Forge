@@ -19,11 +19,16 @@ public class Config {
     //public static ForgeConfigSpec.BooleanValue unlightInChest;
     public static ForgeConfigSpec.BooleanValue tickInInventory;
     public static ForgeConfigSpec.BooleanValue fuelMessage;
+    public static ForgeConfigSpec.BooleanValue lanternsNeedCan;
+    public static ForgeConfigSpec.BooleanValue torchesUseCan;
+
+    public static ForgeConfigSpec.DoubleValue oilRecipeMultiplier;
 
     public static ForgeConfigSpec.IntValue defaultTorchFuel;
     public static ForgeConfigSpec.IntValue defaultLanternFuel;
     public static ForgeConfigSpec.IntValue defLanternFuelItem;
     public static ForgeConfigSpec.IntValue minLanternIgnitionFuel;
+    public static ForgeConfigSpec.IntValue maxCanFuel;
 
     public static void init() {
         //initServer();
@@ -45,6 +50,13 @@ public class Config {
         tickInInventory = builder.comment("If true, torches and lanterns will continue to lose fuel even while in the players inventory.").define("tickInInventory", false);
         builder.pop();
 
+        builder.comment("Oil Can Settings").push("oil_can");
+        maxCanFuel = builder.comment("The maximum fuel an oil can holds, in ticks.").defineInRange("maxCanFuel", 576000, 1, Integer.MAX_VALUE);
+        lanternsNeedCan = builder.comment("Do lanterns require an oil can to be fueled?").define("lanternsNeedCan", true);
+        torchesUseCan = builder.comment("Can torches be fueled with an oil can?").define("torchesUseCan", false);
+        oilRecipeMultiplier = builder.comment("Globally modify all oil can recipes. 0.5 means all items give half as much oil.").defineInRange("oilRecipeMultiplier", 1, 0, Double.MAX_VALUE);
+        builder.pop();
+
         builder.comment("Torch Settings").push("torch");
         defaultTorchFuel = builder.comment("How long a torch lasts when crafted. There are 20 ticks per second so 48000 ticks = 20 minutes.").defineInRange("defaultTorchFuel", 48000, 1, Integer.MAX_VALUE);
         torchesExtinguishWhenBroken = builder.comment("Torches will become unlit when broken.").define("torchesExtinguishWhenBroken", true);
@@ -57,8 +69,8 @@ public class Config {
 
         builder.comment("Lantern Settings").push("lantern");
         defaultLanternFuel = builder.comment("The max amount of fuel a lantern can hold. There are 20 ticks per second so 144000 ticks = 60 minutes.").defineInRange("defaultLanternFuel", 144000, 1, Integer.MAX_VALUE);
-        defLanternFuelItem = builder.comment("The amount a fuel item adds to the lantern by default").defineInRange("defLanternFuelItem", 72000, 1, Integer.MAX_VALUE);
         minLanternIgnitionFuel = builder.comment("A lantern must have at least this much fuel to be ignited from unlit. Once lit it will continue to burn to 0").defineInRange("minLanternIgnitionFuel", 1, 1, Integer.MAX_VALUE);
+        defLanternFuelItem = builder.comment("The amount a fuel item adds to the lantern by default").defineInRange("defLanternFuelItem", 72000, 1, Integer.MAX_VALUE);
         builder.pop();
 
         COMMON_CONFIG = builder.build();

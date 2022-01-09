@@ -22,13 +22,7 @@ public class LanternItem extends BlockItem {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        int fuel = getFuel(stack);
-
-        if (fuel > 0 && fuel < Config.defaultLanternFuel.get()) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     @Override

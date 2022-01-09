@@ -7,7 +7,9 @@ import com.github.wolfiewaffle.hardcore_torches.blockentity.LanternBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
+import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
+import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -135,7 +137,7 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
         }
 
         // Adding fuel
-        if (stack.is(ItemTags.COALS)) {
+        if (stack.is(ItemTags.COALS) && !Config.lanternsNeedCan.get()) {
             if (be instanceof FuelBlockEntity && !world.isClientSide) {
                 int oldFuel = ((FuelBlockEntity) be).getFuel();
 
@@ -154,9 +156,26 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
             return InteractionResult.SUCCESS;
         }
 
+        // Adding fuel with can
+        if (stack.getItem() instanceof OilCanItem && Config.lanternsNeedCan.get()) {
+            if (be instanceof FuelBlockEntity && !world.isClientSide) {
+                if (OilCanItem.fuelBlock((FuelBlockEntity) be, world, stack)) {
+                    world.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1f, 1f);
+                }
+            }
+            player.swing(hand);
+            return InteractionResult.SUCCESS;
+        }
+
+        boolean showFuel = (stack.isEmpty() || stack.getItem() == ItemInit.OIL_CAN.get()) && Config.fuelMessage.get();
+
         // Fuel message
-        if (be.getType() == BlockEntityInit.LANTERN_BLOCK_ENTITY.get() && !world.isClientSide && Config.fuelMessage.get() && stack.isEmpty()) {
+        if (be.getType() == BlockEntityInit.LANTERN_BLOCK_ENTITY.get() && hand == InteractionHand.MAIN_HAND && !world.isClientSide && showFuel) {
             player.displayClientMessage(new TextComponent("Fuel: " + ((FuelBlockEntity) be).getFuel()), true);
+        }
+
+        if (Config.lanternsNeedCan.get() && !stack.isEmpty() && !world.isClientSide) {
+            player.displayClientMessage(new TextComponent("Requires an Oil Can to fuel!"), true);
         }
 
         return InteractionResult.PASS;

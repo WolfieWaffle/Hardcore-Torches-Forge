@@ -1,13 +1,14 @@
 package com.github.wolfiewaffle.hardcore_torches;
 
-import com.github.wolfiewaffle.hardcore_torches.config.ConfigRecipeCondition;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
+import com.github.wolfiewaffle.hardcore_torches.config.ConfigRecipeCondition;
 import com.github.wolfiewaffle.hardcore_torches.event.PlayerEventHandler;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.github.wolfiewaffle.hardcore_torches.loot.SetFuelLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.loot.TorchLootFunction;
+import com.github.wolfiewaffle.hardcore_torches.recipe.OilCanRecipe;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +17,8 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.common.MinecraftForge;
@@ -60,6 +63,8 @@ public class MainMod
     public static final LootItemFunctionType HARDCORE_TORCH_LOOT_FUNCTION = new LootItemFunctionType(new TorchLootFunction.Serializer());
     public static final LootItemFunctionType SET_FUEL_LOOT_FUNCTION = new LootItemFunctionType(new SetFuelLootFunction.Serializer());
 
+    // Recipe Types
+    public static final RecipeType<OilCanRecipe> OIL_CAN_RECIPE = RecipeType.register("hardcore_torches:oil_can");
 
     /**
      * The modid of this mod, this has to match the modid in the mods.toml and has to be in the format defined in {@link net.minecraftforge.fml.loading.moddiscovery.ModInfo}
@@ -108,5 +113,6 @@ public class MainMod
     @SubscribeEvent //ModBus, can't use addListener due to nested genetics.
     public static void registerRecipeSerialziers(RegistryEvent.Register<RecipeSerializer<?>> event) {
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> {return Config.craftUnlit.get();}, new ResourceLocation("hardcore_torches", "config_craft_unlit")));
+        event.getRegistry().register(new OilCanRecipe.Serializer().setRegistryName("hardcore_torches:oil_can"));
     }
 }
