@@ -3,14 +3,20 @@ package com.github.wolfiewaffle.hardcore_torches.item;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.List;
 
 public class LanternItem extends BlockItem {
     public boolean isLit;
@@ -18,6 +24,13 @@ public class LanternItem extends BlockItem {
     public LanternItem(Block block, Properties properties) {
         super(block, properties);
         this.isLit = ((AbstractLanternBlock) block).isLit;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
+        if (Config.lanternsNeedCan.get()) list.add(new TextComponent("Requires an Oil Can").withStyle(ChatFormatting.GRAY));
+        list.add(new TextComponent("Light with Flint and Steel").withStyle(ChatFormatting.GRAY));
+        super.appendHoverText(stack, world, list, flag);
     }
 
     @Override
