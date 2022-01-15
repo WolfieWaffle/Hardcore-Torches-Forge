@@ -2,7 +2,7 @@
     "type": "hardcore_torches:oil_can",
     "ingredients":[
       {
-        "tag": "minecraft:coals"
+        "item": "hardcore_torches:animal_fat"
       },
       {
         "item": "hardcore_torches:oil_can"
@@ -15,7 +15,7 @@
 	"conditions": 
 	[
 		{
-			"type": "hardcore_torches:config_can_coal"
+			"type": "hardcore_torches:config_can_fat"
 		}
 	],
 	"_comment": "If you are making a custom fuel recipe: Copy this file, remove the conditions block which interfaces with the config file, change fuel number, and change the item which is not the oil can. Remember to pay attention to tag vs item."

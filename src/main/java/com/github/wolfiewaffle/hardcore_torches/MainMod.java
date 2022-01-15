@@ -6,6 +6,7 @@ import com.github.wolfiewaffle.hardcore_torches.event.PlayerEventHandler;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
+import com.github.wolfiewaffle.hardcore_torches.loot.FatModifier;
 import com.github.wolfiewaffle.hardcore_torches.loot.SetFuelLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.loot.TorchLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.recipe.OilCanRecipe;
@@ -20,15 +21,21 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +44,11 @@ import org.apache.logging.log4j.Logger;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MainMod
 {
+    /**
+     * The modid of this mod, this has to match the modid in the mods.toml and has to be in the format defined in {@link net.minecraftforge.fml.loading.moddiscovery.ModInfo}
+     */
+    public static final String MOD_ID = "hardcore_torches";
+
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -66,10 +78,9 @@ public class MainMod
     // Recipe Types
     public static final RecipeType<OilCanRecipe> OIL_CAN_RECIPE = RecipeType.register("hardcore_torches:oil_can");
 
-    /**
-     * The modid of this mod, this has to match the modid in the mods.toml and has to be in the format defined in {@link net.minecraftforge.fml.loading.moddiscovery.ModInfo}
-     */
-    public static final String MOD_ID = "hardcore_torches";
+    // Register Loot Tables
+    private static final DeferredRegister<GlobalLootModifierSerializer<?>> GLM = DeferredRegister.create(ForgeRegistries.LOOT_MODIFIER_SERIALIZERS, MOD_ID);
+    private static final RegistryObject<FatModifier.Serializer> FAT_LOOT_PIG = GLM.register("fat_modifier", FatModifier.Serializer::new);
 
     /**
      * Order of initialization:
@@ -92,6 +103,9 @@ public class MainMod
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
+
+        // For loot tables
+        GLM.register(modEventBus);
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -113,6 +127,8 @@ public class MainMod
     @SubscribeEvent //ModBus, can't use addListener due to nested genetics.
     public static void registerRecipeSerialziers(RegistryEvent.Register<RecipeSerializer<?>> event) {
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> {return Config.craftUnlit.get();}, new ResourceLocation("hardcore_torches", "config_craft_unlit")));
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> {return (Config.oilRecipeType.get() == 0 || Config.oilRecipeType.get() == 2);}, new ResourceLocation("hardcore_torches", "config_can_fat")));
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> {return (Config.oilRecipeType.get() == 1 || Config.oilRecipeType.get() == 2);}, new ResourceLocation("hardcore_torches", "config_can_coal")));
         event.getRegistry().register(new OilCanRecipe.Serializer().setRegistryName("hardcore_torches:oil_can"));
     }
 }

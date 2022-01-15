@@ -21,6 +21,7 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue fuelMessage;
     public static ForgeConfigSpec.BooleanValue lanternsNeedCan;
     public static ForgeConfigSpec.BooleanValue torchesUseCan;
+    public static ForgeConfigSpec.BooleanValue animalsDropFat;
 
     public static ForgeConfigSpec.DoubleValue oilRecipeMultiplier;
 
@@ -29,6 +30,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue defLanternFuelItem;
     public static ForgeConfigSpec.IntValue minLanternIgnitionFuel;
     public static ForgeConfigSpec.IntValue maxCanFuel;
+    public static ForgeConfigSpec.IntValue oilRecipeType;
 
     public static void init() {
         //initServer();
@@ -48,6 +50,7 @@ public class Config {
 
         builder.comment("General Settings").push("general");
         tickInInventory = builder.comment("If true, torches and lanterns will continue to lose fuel even while in the players inventory.").define("tickInInventory", false);
+        animalsDropFat = builder.comment("If true, certain animals will drop fat as an item, which can be used in lanterns.").define("animalsDropFat", true);
         builder.pop();
 
         builder.comment("Oil Can Settings").push("oil_can");
@@ -55,6 +58,7 @@ public class Config {
         lanternsNeedCan = builder.comment("Do lanterns require an oil can to be fueled?").define("lanternsNeedCan", true);
         torchesUseCan = builder.comment("Can torches be fueled with an oil can?").define("torchesUseCan", false);
         oilRecipeMultiplier = builder.comment("Globally modify all oil can recipes. 0.5 means all items give half as much oil.").defineInRange("oilRecipeMultiplier", 1, 0, Double.MAX_VALUE);
+        oilRecipeType = builder.comment("0: Craft oil using can and animal fat\n1: Craft oil using can and coal\n2: Both enabled\n3: Disable recipes (You must provide custom JSON files, open the mod JAR to see format)").defineInRange("oilRecipeType", 0, 0, 3);
         builder.pop();
 
         builder.comment("Torch Settings").push("torch");
