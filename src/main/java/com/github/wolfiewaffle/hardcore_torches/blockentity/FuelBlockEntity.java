@@ -71,10 +71,5 @@ public class FuelBlockEntity extends BlockEntity {
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         this.load(pkt.getTag());
     }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        return save(new CompoundTag());
-    }
     // endregion
 }
