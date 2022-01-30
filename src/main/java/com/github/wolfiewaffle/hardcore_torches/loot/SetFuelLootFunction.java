@@ -31,18 +31,17 @@ public class SetFuelLootFunction extends LootItemConditionalFunction {
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
         BlockEntity blockEntity = context.getParam(LootContextParams.BLOCK_ENTITY);
-        BlockState state = context.getParam(LootContextParams.BLOCK_STATE);
-        int remainingFuel;
-
-        // Set fuel
-        if (blockEntity != null && blockEntity instanceof FuelBlockEntity) {
-            remainingFuel = ((FuelBlockEntity) blockEntity).getFuel();
-            CompoundTag nbt = new CompoundTag();
-            nbt.putInt("Fuel", (remainingFuel));
-            stack.setTag(nbt);
-        }
 
         if (stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof AbstractHardcoreTorchBlock) {
+
+            // Set fuel
+            if (blockEntity != null && blockEntity instanceof FuelBlockEntity) {
+                int remainingFuel = ((FuelBlockEntity) blockEntity).getFuel();
+                CompoundTag nbt = new CompoundTag();
+                nbt.putInt("Fuel", (remainingFuel));
+                stack.setTag(nbt);
+            }
+
             if (((AbstractHardcoreTorchBlock) ((BlockItem) stack.getItem()).getBlock()).burnState == ETorchState.BURNT) {
                 stack.removeTagKey("Fuel");
             }
