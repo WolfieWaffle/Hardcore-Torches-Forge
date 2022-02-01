@@ -2,13 +2,18 @@ package com.github.wolfiewaffle.hardcore_torches.loot;
 
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractHardcoreTorchBlock;
+import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.FuelBlockEntity;
+import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -30,9 +35,12 @@ public class SetFuelLootFunction extends LootItemConditionalFunction {
 
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
-        BlockEntity blockEntity = context.getParam(LootContextParams.BLOCK_ENTITY);
+        if (!(stack.getItem() instanceof BlockItem)) return stack; // No regular items
 
-        if (stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof AbstractHardcoreTorchBlock) {
+        BlockEntity blockEntity = context.getParam(LootContextParams.BLOCK_ENTITY);
+        Block block = ((BlockItem) stack.getItem()).getBlock();
+
+        if (block instanceof AbstractHardcoreTorchBlock || block instanceof AbstractLanternBlock) {
 
             // Set fuel
             if (blockEntity != null && blockEntity instanceof FuelBlockEntity) {
@@ -42,7 +50,7 @@ public class SetFuelLootFunction extends LootItemConditionalFunction {
                 stack.setTag(nbt);
             }
 
-            if (((AbstractHardcoreTorchBlock) ((BlockItem) stack.getItem()).getBlock()).burnState == ETorchState.BURNT) {
+            if (block instanceof AbstractHardcoreTorchBlock && ((AbstractHardcoreTorchBlock) ((BlockItem) stack.getItem()).getBlock()).burnState == ETorchState.BURNT) {
                 stack.removeTagKey("Fuel");
             }
         }

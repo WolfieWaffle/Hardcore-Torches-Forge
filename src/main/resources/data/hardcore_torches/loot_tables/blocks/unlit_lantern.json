@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:air"
+          "name": "hardcore_torches:unlit_lantern"
         }
       ],
       "conditions": [
@@ -15,9 +15,6 @@
         }
       ],
 	  "functions": [
-	    {
-          "function": "hardcore_torches:torch"
-	    },
 		{
 		  "function": "hardcore_torches:set_damage"
 		}
