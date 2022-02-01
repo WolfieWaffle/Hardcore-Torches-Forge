@@ -49,9 +49,11 @@ public class FuelBlockEntity extends BlockEntity {
     // region necessary methods
     @Override
     public void load(CompoundTag nbt) {
-        super.load(nbt);
+        if (nbt != null) {
+            super.load(nbt);
 
-        fuel = nbt.getInt("Fuel");
+            fuel = nbt.getInt("Fuel");
+        }
     }
 
     @Override
