@@ -13,9 +13,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.2.2'
+version = '1.2.3'
 group = 'com.github.wolfiewaffle.hardcore_torches' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'hardcore_torches'
+archivesBaseName = 'hardcore_torches_forge'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
