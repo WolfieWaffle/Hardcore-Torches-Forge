@@ -71,14 +71,14 @@ public class Config {
         torchesRain = builder.comment("Torches will be affected when in the rain. Will smolder or become unlit depending on torchesSmolder.").define("torchesRain", true);
         torchesSmolder = builder.comment("If a torch is in the rain and torchesRain = true, then it will smolder and burn fuel at 1/3rd the normal rate instead of becoming unlit.").define("torchesSmolder", true);
         craftUnlit = builder.comment("If true, torches must be lit after crafting.").define("craftUnlit", false);
-        handUnlightTorch = builder.comment("Right click a torch with an empty mainhand to unlight it.").define("handUnlightTorch", false);
+        handUnlightTorch = builder.comment("Right click a torch without holding fuel or a lighter to unlight it.").define("handUnlightTorch", false);
         builder.pop();
 
         builder.comment("Lantern Settings").push("lantern");
         defaultLanternFuel = builder.comment("The max amount of fuel a lantern can hold. There are 20 ticks per second so 144000 ticks = 60 minutes.").defineInRange("defaultLanternFuel", 144000, 1, Integer.MAX_VALUE);
         minLanternIgnitionFuel = builder.comment("A lantern must have at least this much fuel to be ignited from unlit. Once lit it will continue to burn to 0").defineInRange("minLanternIgnitionFuel", 1, 1, Integer.MAX_VALUE);
         defLanternFuelItem = builder.comment("The amount a fuel item adds to the lantern by default").defineInRange("defLanternFuelItem", 72000, 1, Integer.MAX_VALUE);
-        handUnlightLantern = builder.comment("Right click a lantern with an empty mainhand to unlight it.").define("handUnlightLantern", false);
+        handUnlightLantern = builder.comment("Right click a lantern without holding fuel or a lighter to unlight it.").define("handUnlightLantern", false);
         builder.pop();
 
         COMMON_CONFIG = builder.build();
