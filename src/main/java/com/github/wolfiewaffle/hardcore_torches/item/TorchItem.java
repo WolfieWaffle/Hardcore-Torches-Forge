@@ -19,6 +19,8 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.awt.*;
 
@@ -69,12 +71,18 @@ public class TorchItem extends StandingAndWallBlockItem {
         // Make sure it's a torch and get its type
         if (cStack.getItem() instanceof TorchItem) {
             ETorchState torchState = ((TorchItem) cStack.getItem()).burnState;
-            Block block = world.getBlockState(pos).getBlock();
+            BlockState blockState = world.getBlockState(pos);
+            Block block = blockState.getBlock();
 
             if (torchState == ETorchState.UNLIT || torchState == ETorchState.SMOLDERING) {
 
                 // Unlit and Smoldering
                 if (MainMod.FREE_TORCH_LIGHT_BLOCKS.contains(block)) {
+                    // No lighting on unlit fires etc.
+                    if (blockState.hasProperty(BlockStateProperties.LIT))
+                        if (blockState.getValue(BlockStateProperties.LIT).booleanValue() == false)
+                            return super.useOn(context);
+
                     Player player = context.getPlayer();
                     if (player != null && !world.isClientSide)
                         player.setItemInHand(context.getHand(), stateStack(cStack, ETorchState.LIT));
@@ -255,18 +263,4 @@ public class TorchItem extends StandingAndWallBlockItem {
 
         return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
     }
-
-//    public boolean overrideStackedOnOther(ItemStack cursorStack, Slot slot, ClickAction click, Player player) {
-//        cursorStack.grow(1);
-//        return false;
-//    }
-
-//    @Override
-//    public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction clickAction, Player player) {
-//        ItemStack otherStack = slot.getItem();
-//
-//
-//
-//        return super.overrideStackedOnOther(stack, slot, clickAction, player);
-//    }
 }
