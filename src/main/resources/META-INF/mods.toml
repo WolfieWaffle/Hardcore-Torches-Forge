@@ -56,3 +56,9 @@ Makes torches burn out and adds Lanterns that run on fuel
     versionRange="[1.18.1,1.19)"
     ordering="NONE"
     side="BOTH"
+[[dependencies.examplemod]]
+    modId="lucent"
+    mandatory=false
+    versionRange="[1.2.0,]"
+    ordering="NONE"
+    side="CLIENT"
