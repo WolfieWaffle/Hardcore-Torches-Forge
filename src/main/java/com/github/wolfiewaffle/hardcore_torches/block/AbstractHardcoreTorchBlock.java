@@ -21,6 +21,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -90,6 +91,12 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
             }
         }
 
+        // Hand extinguish
+        if (Config.handUnlightTorch.get() && (burnState == ETorchState.LIT || burnState == ETorchState.SMOLDERING)) {
+            extinguish(world, pos, state);
+            return InteractionResult.SUCCESS;
+        }
+
         return InteractionResult.PASS;
     }
 
@@ -108,6 +115,13 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
                 ((FuelBlockEntity) be).setFuel(fuel);
             }
         }
+    }
+
+    public static boolean isLightItem(Item item) {
+        if (MainMod.FREE_TORCH_LIGHT_ITEMS.contains(item)) return true;
+        if (MainMod.DAMAGE_TORCH_LIGHT_ITEMS.contains(item)) return true;
+        if (MainMod.CONSUME_TORCH_LIGHT_ITEMS.contains(item)) return true;
+        return false;
     }
 
     // region state methods

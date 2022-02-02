@@ -10,6 +10,7 @@ import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
 import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
+import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,6 +24,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -178,6 +180,12 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
             player.displayClientMessage(new TextComponent("Requires an Oil Can to fuel!"), true);
         }
 
+        // Hand extinguish
+        if (Config.handUnlightLantern.get() && isLit) {
+            extinguish(world, pos, state);
+            return InteractionResult.SUCCESS;
+        }
+
         return InteractionResult.PASS;
     }
 
@@ -192,6 +200,13 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
 
             ((FuelBlockEntity) be).setFuel(fuel);
         }
+    }
+
+    public static boolean isLightItem(Item item) {
+        if (MainMod.FREE_LANTERN_LIGHT_ITEMS.contains(item)) return true;
+        if (MainMod.DAMAGE_LANTERN_LIGHT_ITEMS.contains(item)) return true;
+        if (MainMod.CONSUME_LANTERN_LIGHT_ITEMS.contains(item)) return true;
+        return false;
     }
 
     // region IFuelBlock
