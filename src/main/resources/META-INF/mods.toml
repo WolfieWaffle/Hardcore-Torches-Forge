@@ -62,3 +62,8 @@ Makes torches burn out and adds Lanterns that run on fuel
     versionRange="[1.2.0,]"
     ordering="NONE"
     side="CLIENT"
+[[dependencies.examplemod]]
+    modId="curios"
+    mandatory=false
+    versionRange="[5.0.6.0,]"
+    ordering="NONE"
