@@ -135,6 +135,11 @@ repositories {
         name "ModdingLegacyMaven"
         url "https://maven.moddinglegacy.com/maven"
     }
+	
+	maven {
+        name "CurseMaven"
+        url "https://cursemaven.com"
+    }
 }
 
 dependencies {
@@ -156,6 +161,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 	
     implementation fg.deobf("com.legacy:lucent:1.18.1-1.2.0")
+	implementation fg.deobf("curse.maven:curios-309927:3613028")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
