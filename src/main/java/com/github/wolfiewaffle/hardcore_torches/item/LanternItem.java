@@ -39,7 +39,7 @@ public class LanternItem extends BlockItem {
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
 
         if (ModList.get().isLoaded("curios")) {
-            return new LanternCurioProvider();
+            return new LanternCurioProvider(stack);
         }
 
         return null;
