@@ -50,6 +50,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractLanternBlock extends BaseEntityBlock implements EntityBlock, IFuelBlock, SimpleWaterloggedBlock {
     public static final BooleanProperty HANGING;
     public static final BooleanProperty WATERLOGGED;
+    public static final int LANTERN_LIGHT_LEVEL = 15;
     public boolean isLit;
 
     static {

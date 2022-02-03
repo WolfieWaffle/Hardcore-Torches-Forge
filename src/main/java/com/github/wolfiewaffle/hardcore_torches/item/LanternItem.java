@@ -1,6 +1,7 @@
 package com.github.wolfiewaffle.hardcore_torches.item;
 
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
+import com.github.wolfiewaffle.hardcore_torches.compat.curio.LanternCurioProvider;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import net.minecraft.ChatFormatting;
@@ -13,17 +14,35 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import java.awt.*;
 import java.util.List;
 
 public class LanternItem extends BlockItem {
+    public static Capability<ICurio> CURIO_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
     public boolean isLit;
 
     public LanternItem(Block block, Properties properties) {
         super(block, properties);
         this.isLit = ((AbstractLanternBlock) block).isLit;
+    }
+
+    @Nullable
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+
+        if (ModList.get().isLoaded("curios")) {
+            return new LanternCurioProvider();
+        }
+
+        return null;
     }
 
     @Override
