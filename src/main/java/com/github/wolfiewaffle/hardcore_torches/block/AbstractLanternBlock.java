@@ -183,8 +183,10 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
 
         // Hand extinguish
         if (Config.handUnlightLantern.get() && isLit) {
-            extinguish(world, pos, state);
-            return InteractionResult.SUCCESS;
+            if (!TorchTools.canLight(stack.getItem(), this)) {
+                extinguish(world, pos, state);
+                return InteractionResult.SUCCESS;
+            }
         }
 
         return InteractionResult.PASS;

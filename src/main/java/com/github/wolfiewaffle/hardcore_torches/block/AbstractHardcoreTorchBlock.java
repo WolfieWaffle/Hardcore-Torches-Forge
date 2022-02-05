@@ -93,8 +93,10 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
 
         // Hand extinguish
         if (Config.handUnlightTorch.get() && (burnState == ETorchState.LIT || burnState == ETorchState.SMOLDERING)) {
-            extinguish(world, pos, state);
-            return InteractionResult.SUCCESS;
+            if (!TorchTools.canLight(stack.getItem(), this)) {
+                extinguish(world, pos, state);
+                return InteractionResult.SUCCESS;
+            }
         }
 
         return InteractionResult.PASS;

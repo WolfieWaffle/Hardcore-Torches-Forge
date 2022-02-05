@@ -1,13 +1,33 @@
 package com.github.wolfiewaffle.hardcore_torches.util;
 
+import com.github.wolfiewaffle.hardcore_torches.MainMod;
+import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
+import com.github.wolfiewaffle.hardcore_torches.item.TorchItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class TorchTools {
+
+    public static boolean canLight(Item item, Block block) {
+
+        if (item instanceof TorchItem) {
+            ETorchState state = ((TorchItem) item).burnState;
+
+            if (state == ETorchState.UNLIT || state == ETorchState.SMOLDERING) {
+                if (MainMod.FREE_TORCH_LIGHT_BLOCKS.contains(block)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
     public static void displayParticle(SimpleParticleType particle, BlockState state, Level world, BlockPos pos, float spread) {
         double d = (double)pos.getX() + 0.5;
