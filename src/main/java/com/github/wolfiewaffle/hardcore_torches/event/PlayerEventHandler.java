@@ -11,7 +11,10 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import java.util.Random;
+
 public class PlayerEventHandler {
+    private static Random random = new Random();
 
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event) {
@@ -27,6 +30,8 @@ public class PlayerEventHandler {
                 if (stack.getItem() instanceof TorchItem) {
                     if (Config.tickInInventory.get() && ((TorchItem) stack.getItem()).burnState == ETorchState.LIT)
                         inventory.setItem(i, TorchItem.addFuel(stack, world, -1));
+                    if (Config.tickInInventory.get() && ((TorchItem) stack.getItem()).burnState == ETorchState.SMOLDERING)
+                        if (random.nextInt(3) == 0) inventory.setItem(i, TorchItem.addFuel(stack, world, -1));
                 } else if (stack.getItem() instanceof LanternItem) {
                     if (Config.tickInInventory.get() && ((LanternItem) stack.getItem()).isLit)
                         inventory.setItem(i, LanternItem.addFuel(stack, world, -1));
