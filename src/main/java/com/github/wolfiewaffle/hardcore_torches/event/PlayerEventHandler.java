@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class PlayerEventHandler {
@@ -17,7 +18,8 @@ public class PlayerEventHandler {
         Inventory inventory = event.player.getInventory();
         Level world = event.player.level;
 
-        if (!world.isClientSide) {
+        // There are 2 phases to tick event, apparently. I chose START arbitrarily.
+        if (!world.isClientSide && event.phase == TickEvent.Phase.START) {
 
             for (int i = 0; i < inventory.getContainerSize(); i++) {
                 ItemStack stack = inventory.getItem(i);
