@@ -3,11 +3,11 @@ package com.github.wolfiewaffle.hardcore_torches.init;
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.LanternBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.TorchBlockEntity;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 public class BlockEntityInit {
 
@@ -27,8 +27,8 @@ public class BlockEntityInit {
         };
     }
 
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MainMod.MOD_ID);
+    public static final DeferredRegister<TileEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MainMod.MOD_ID);
 
-    public static final RegistryObject<BlockEntityType<TorchBlockEntity>> TORCH_BLOCK_ENTITY = BLOCK_ENTITIES.register("torch_block_entity", () -> BlockEntityType.Builder.of(TorchBlockEntity::new, torchTe()).build(null));
-    public static final RegistryObject<BlockEntityType<LanternBlockEntity>> LANTERN_BLOCK_ENTITY = BLOCK_ENTITIES.register("lantern_block_entity", () -> BlockEntityType.Builder.of(LanternBlockEntity::new, lanternTe()).build(null));
+    public static final RegistryObject<TileEntityType<TorchBlockEntity>> TORCH_BLOCK_ENTITY = BLOCK_ENTITIES.register("torch_block_entity", () -> TileEntityType.Builder.of(TorchBlockEntity::new, torchTe()).build(null));
+    public static final RegistryObject<TileEntityType<LanternBlockEntity>> LANTERN_BLOCK_ENTITY = BLOCK_ENTITIES.register("lantern_block_entity", () -> TileEntityType.Builder.of(LanternBlockEntity::new, lanternTe()).build(null));
 }

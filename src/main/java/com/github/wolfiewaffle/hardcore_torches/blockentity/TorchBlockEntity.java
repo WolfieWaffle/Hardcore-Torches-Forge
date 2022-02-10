@@ -4,19 +4,19 @@ import com.github.wolfiewaffle.hardcore_torches.block.AbstractHardcoreTorchBlock
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.block.BlockState;
 
 public class TorchBlockEntity extends FuelBlockEntity {
 
-    public TorchBlockEntity(BlockPos pos, BlockState state) {
-        super(BlockEntityInit.TORCH_BLOCK_ENTITY.get(), pos, state);
+    public TorchBlockEntity() {
+        super(BlockEntityInit.TORCH_BLOCK_ENTITY.get());
         fuel = Config.defaultTorchFuel.get();
     }
 
     public void tick() {
-        Level world = getLevel();
+        World world = getLevel();
 
         if (!world.isClientSide) {
             BlockPos pos = getBlockPos();
@@ -32,7 +32,7 @@ public class TorchBlockEntity extends FuelBlockEntity {
         }
     }
 
-    private void tickLit(Level world, BlockPos pos, BlockState state) {
+    private void tickLit(World world, BlockPos pos, BlockState state) {
 
         // Extinguish
         if (Config.torchesRain.get() && world.isRainingAt(pos)) {
@@ -53,7 +53,7 @@ public class TorchBlockEntity extends FuelBlockEntity {
         setChanged();
     }
 
-    private void tickSmoldering(Level world, BlockPos pos, BlockState state) {
+    private void tickSmoldering(World world, BlockPos pos, BlockState state) {
 
         // Burn out
         if (random.nextInt(3) == 0) {

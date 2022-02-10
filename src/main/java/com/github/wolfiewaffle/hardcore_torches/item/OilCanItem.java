@@ -4,12 +4,12 @@ import com.github.wolfiewaffle.hardcore_torches.blockentity.FuelBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.LanternBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.TorchBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
 
 import java.awt.*;
 
@@ -21,31 +21,30 @@ public class OilCanItem extends Item {
 
     // region Fuel Bar
     @Override
-    public boolean isBarVisible(ItemStack stack) {
+    public boolean showDurabilityBar(ItemStack stack) {
         return true;
     }
 
     @Override
-    public int getBarWidth(ItemStack stack) {
-        int maxFuel = Config.maxCanFuel.get();
-        int fuel = getFuel(stack);
-
+    public double getDurabilityForDisplay(ItemStack stack) {
+        double maxFuel = Config.maxCanFuel.get();
+        double fuel = getFuel(stack);
         if (maxFuel != 0) {
-            return Math.round(13.0f - (maxFuel - fuel) * 13.0f / maxFuel);
+            return 1.0 - (fuel / maxFuel);
         }
 
         return 0;
     }
 
     @Override
-    public int getBarColor(ItemStack stack) {
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
         return Color.HSBtoRGB(0.5f, 1.0f, 1.0f);
     }
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        CompoundTag oldNbt = null;
-        CompoundTag newNbt = null;
+        CompoundNBT oldNbt = null;
+        CompoundNBT newNbt = null;
 
         if (oldStack.getTag() != null) {
             oldNbt = oldStack.getTag().copy();
@@ -70,7 +69,7 @@ public class OilCanItem extends Item {
         Item item = stack.getItem();
         if (!(item instanceof OilCanItem)) return 0;
 
-        CompoundTag nbt = stack.getTag();
+        CompoundNBT nbt = stack.getTag();
 
         if (nbt != null && nbt.contains("Fuel")) {
             return nbt.getInt("Fuel");
@@ -81,9 +80,9 @@ public class OilCanItem extends Item {
 
     public static ItemStack setFuel(ItemStack stack, int fuel) {
         if (stack.getItem() instanceof OilCanItem) {
-            CompoundTag nbt = stack.getTag();
+            CompoundNBT nbt = stack.getTag();
 
-            if (nbt == null) nbt = new CompoundTag();
+            if (nbt == null) nbt = new CompoundNBT();
 
             nbt.putInt("Fuel", Math.max(0, Math.min(Config.maxCanFuel.get(), fuel)));
             stack.setTag(nbt);
@@ -95,13 +94,13 @@ public class OilCanItem extends Item {
     public static ItemStack addFuel(ItemStack stack, int amount) {
 
         if (stack.getItem() instanceof OilCanItem) {
-            CompoundTag nbt = stack.getTag();
+            CompoundNBT nbt = stack.getTag();
             int fuel = 0;
 
             if (nbt != null) {
                 fuel = nbt.getInt("Fuel");
             } else {
-                nbt = new CompoundTag();
+                nbt = new CompoundNBT();
             }
 
             fuel = Math.min(Config.maxCanFuel.get(), Math.max(0, fuel + amount));
@@ -113,7 +112,7 @@ public class OilCanItem extends Item {
         return stack;
     }
 
-    public static boolean fuelBlock(FuelBlockEntity be, Level world, ItemStack stack) {
+    public static boolean fuelBlock(FuelBlockEntity be, World world, ItemStack stack) {
         if (!world.isClientSide) {
             int maxTaken = 0;
 
@@ -140,7 +139,7 @@ public class OilCanItem extends Item {
     // endregion
 
     @Override
-    public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> stacks) {
+    public void fillItemCategory(ItemGroup tab, NonNullList<ItemStack> stacks) {
         super.fillItemCategory(tab, stacks);
 
         if (this.allowdedIn(tab)) {

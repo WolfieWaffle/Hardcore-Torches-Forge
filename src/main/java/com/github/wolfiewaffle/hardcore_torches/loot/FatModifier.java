@@ -4,11 +4,11 @@ import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 
@@ -19,7 +19,7 @@ import java.util.Random;
 public class FatModifier extends LootModifier {
     private final int[] choices;
 
-    public FatModifier(LootItemCondition[] conditions, int[] choices) {
+    public FatModifier(ILootCondition[] conditions, int[] choices) {
         super(conditions);
         this.choices = choices;
     }
@@ -39,8 +39,8 @@ public class FatModifier extends LootModifier {
     public static class Serializer extends GlobalLootModifierSerializer<FatModifier> {
 
         @Override
-        public FatModifier read(ResourceLocation name, JsonObject object, LootItemCondition[] conditions) {
-            JsonArray array = GsonHelper.getAsJsonArray(object, "choices");
+        public FatModifier read(ResourceLocation name, JsonObject object, ILootCondition[] conditions) {
+            JsonArray array = JSONUtils.getAsJsonArray(object, "choices");
             int[] choices = new int[array.size()];
 
             for (int i = 0; i < array.size(); i++) {

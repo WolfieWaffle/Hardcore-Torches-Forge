@@ -2,7 +2,7 @@ package com.github.wolfiewaffle.hardcore_torches.config;
 
 import com.google.common.base.Supplier;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 

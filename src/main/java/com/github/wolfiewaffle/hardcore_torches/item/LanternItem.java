@@ -1,32 +1,24 @@
 package com.github.wolfiewaffle.hardcore_torches.item;
 
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
-import com.github.wolfiewaffle.hardcore_torches.compat.curio.LanternCurioProvider;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
-import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.ModList;
-import org.jetbrains.annotations.Nullable;
-import top.theillusivec4.curios.api.type.capability.ICurio;
+import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 
 public class LanternItem extends BlockItem {
-    public static Capability<ICurio> CURIO_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
     public boolean isLit;
 
     public LanternItem(Block block, Properties properties) {
@@ -34,50 +26,39 @@ public class LanternItem extends BlockItem {
         this.isLit = ((AbstractLanternBlock) block).isLit;
     }
 
-    @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-
-        if (ModList.get().isLoaded("curios")) {
-            return new LanternCurioProvider(stack);
-        }
-
-        return null;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-        if (Config.lanternsNeedCan.get()) list.add(new TextComponent("Requires an Oil Can").withStyle(ChatFormatting.GRAY));
-        list.add(new TextComponent("Light with Flint and Steel").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
+        if (Config.lanternsNeedCan.get()) list.add(new StringTextComponent("Requires an Oil Can").withStyle(TextFormatting.GRAY));
+        list.add(new StringTextComponent("Light with Flint and Steel").withStyle(TextFormatting.GRAY));
         super.appendHoverText(stack, world, list, flag);
     }
 
     @Override
-    public boolean isBarVisible(ItemStack stack) {
+    public boolean showDurabilityBar(ItemStack stack) {
         return true;
     }
 
     @Override
-    public int getBarWidth(ItemStack stack) {
-        int maxFuel = Config.defaultLanternFuel.get();
-        int fuel = getFuel(stack);
+    public double getDurabilityForDisplay(ItemStack stack) {
+        double maxFuel = Config.defaultLanternFuel.get();
+        double fuel = getFuel(stack);
 
         if (maxFuel != 0) {
-            return Math.round(13.0f - (maxFuel - fuel) * 13.0f / maxFuel);
+            return 1.0 - (fuel / maxFuel);
         }
 
         return 0;
     }
 
     @Override
-    public int getBarColor(ItemStack stack) {
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
         return Color.HSBtoRGB(0.5f, 1.0f, 1.0f);
     }
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        CompoundTag oldNbt = null;
-        CompoundTag newNbt = null;
+        CompoundNBT oldNbt = null;
+        CompoundNBT newNbt = null;
 
         if (oldStack.getTag() != null) {
             oldNbt = oldStack.getTag().copy();
@@ -100,7 +81,7 @@ public class LanternItem extends BlockItem {
         Item item = stack.getItem();
         if (!(item instanceof LanternItem)) return 0;
 
-        CompoundTag nbt = stack.getTag();
+        CompoundNBT nbt = stack.getTag();
         int fuel;
 
         if (nbt != null && nbt.contains("Fuel")) {
@@ -110,18 +91,18 @@ public class LanternItem extends BlockItem {
         return ((LanternItem) stack.getItem()).isLit ? Config.defaultLanternFuel.get(): 0;
     }
 
-    public static ItemStack addFuel(ItemStack stack, Level world, int amount) {
+    public static ItemStack addFuel(ItemStack stack, World world, int amount) {
 
         if (stack.getItem() instanceof  LanternItem && !world.isClientSide) {
             LanternItem item = (LanternItem) stack.getItem();
 
-            CompoundTag nbt = stack.getTag();
+            CompoundNBT nbt = stack.getTag();
             int fuel = item.isLit ? Config.defaultLanternFuel.get() : 0;
 
             if (nbt != null) {
                 fuel = nbt.getInt("Fuel");
             } else {
-                nbt = new CompoundTag();
+                nbt = new CompoundNBT();
             }
 
             fuel += amount;

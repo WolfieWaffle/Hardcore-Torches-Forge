@@ -5,26 +5,21 @@ import com.github.wolfiewaffle.hardcore_torches.block.AbstractHardcoreTorchBlock
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickAction;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.*;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.awt.*;
 
-public class TorchItem extends StandingAndWallBlockItem {
+public class TorchItem extends WallOrFloorItem {
     public ETorchState burnState;
     TorchGroup torchGroup;
 
@@ -35,7 +30,7 @@ public class TorchItem extends StandingAndWallBlockItem {
     }
 
     @Override
-    public boolean isBarVisible(ItemStack stack) {
+    public boolean showDurabilityBar(ItemStack stack) {
         int fuel = getFuel(stack);
 
         if (fuel > 0 && fuel < Config.defaultTorchFuel.get()) {
@@ -46,26 +41,26 @@ public class TorchItem extends StandingAndWallBlockItem {
     }
 
     @Override
-    public int getBarWidth(ItemStack stack) {
-        int maxFuel = Config.defaultTorchFuel.get();
-        int fuel = getFuel(stack);
+    public double getDurabilityForDisplay(ItemStack stack) {
+        double maxFuel = Config.defaultTorchFuel.get();
+        double fuel = getFuel(stack);
 
         if (maxFuel != 0) {
-            return Math.round(13.0f - (maxFuel - fuel) * 13.0f / maxFuel);
+            return 1.0 - (fuel / maxFuel);
         }
 
         return 0;
     }
 
     @Override
-    public int getBarColor(ItemStack stack) {
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
         return Color.HSBtoRGB(0.5f, 1.0f, 1.0f);
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         ItemStack cStack = context.getItemInHand();
-        Level world = context.getLevel();
+        World world = context.getLevel();
         BlockPos pos = context.getClickedPos();
 
         // Make sure it's a torch and get its type
@@ -83,11 +78,11 @@ public class TorchItem extends StandingAndWallBlockItem {
                         if (blockState.getValue(BlockStateProperties.LIT).booleanValue() == false)
                             return super.useOn(context);
 
-                    Player player = context.getPlayer();
+                    PlayerEntity player = context.getPlayer();
                     if (player != null && !world.isClientSide)
                         player.setItemInHand(context.getHand(), stateStack(cStack, ETorchState.LIT));
-                    if (!world.isClientSide) world.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 0.5f, 1.2f);
-                    return InteractionResult.SUCCESS;
+                    if (!world.isClientSide) world.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundCategory.BLOCKS, 0.5f, 1.2f);
+                    return ActionResultType.SUCCESS;
                 }
             }
         }
@@ -124,8 +119,8 @@ public class TorchItem extends StandingAndWallBlockItem {
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        CompoundTag oldNbt = null;
-        CompoundTag newNbt = null;
+        CompoundNBT oldNbt = null;
+        CompoundNBT newNbt = null;
 
         if (oldStack.getTag() != null) {
             oldNbt = oldStack.getTag().copy();
@@ -145,7 +140,7 @@ public class TorchItem extends StandingAndWallBlockItem {
     }
 
     public static int getFuel(ItemStack stack) {
-        CompoundTag nbt = stack.getTag();
+        CompoundNBT nbt = stack.getTag();
         int fuel;
 
         if (nbt != null && nbt.contains("Fuel")) {
@@ -162,16 +157,16 @@ public class TorchItem extends StandingAndWallBlockItem {
         return false;
     }
 
-    public static ItemStack addFuel(ItemStack stack, Level world, int amount) {
+    public static ItemStack addFuel(ItemStack stack, World world, int amount) {
 
         if (stack.getItem() instanceof  TorchItem && !world.isClientSide) {
-            CompoundTag nbt = stack.getTag();
+            CompoundNBT nbt = stack.getTag();
             int fuel = Config.defaultTorchFuel.get();
 
             if (nbt != null) {
                 fuel = nbt.getInt("Fuel");
             } else {
-                nbt = new CompoundTag();
+                nbt = new CompoundNBT();
             }
 
             fuel += amount;
@@ -196,71 +191,71 @@ public class TorchItem extends StandingAndWallBlockItem {
         return stack;
     }
 
-    public boolean overrideOtherStackedOnMe(ItemStack slotStack, ItemStack otherStack, Slot slot, ClickAction clickAction, Player player, SlotAccess slotAccess) {
-
-        // If you are clicking on it with a non HCTorch item or with empty, use vanilla behavior
-        if (!slot.allowModification(player) || !(otherStack.getItem() instanceof TorchItem) || otherStack.isEmpty()) {
-            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
-        }
-
-        // Ensure torches are in same group
-        if (!sameTorchGroup((TorchItem) slotStack.getItem(), (TorchItem) otherStack.getItem())) {
-            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
-        }
-
-        if (slotStack.getCount() < slotStack.getMaxStackSize()) {
-            return addToLitStack(slotStack, otherStack, slot, clickAction, player, slotAccess);
-        }
-
-        return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
-    }
-
-    public boolean lightCursorStack(ItemStack slotStack, ItemStack otherStack, Slot slot, ClickAction clickAction, Player player, SlotAccess slotAccess) {
-        if (!(otherStack.getItem() instanceof TorchItem)) {
-            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
-        }
-
-        Item newItem = ((TorchItem) otherStack.getItem()).torchGroup.getStandingTorch(ETorchState.LIT).asItem();
-        ItemStack newStack = TorchItem.changedCopy(otherStack, newItem);
-        slotAccess.set(new ItemStack(Items.STONE));
-
-        return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
-    }
-
-    public boolean addToLitStack(ItemStack slotStack, ItemStack otherStack, Slot slot, ClickAction clickAction, Player player, SlotAccess slotAccess) {
-        TorchItem slotTorch = (TorchItem) slotStack.getItem();
-        TorchItem cursorTorch = (TorchItem) otherStack.getItem();
-
-        if (slotTorch.burnState == ETorchState.BURNT || cursorTorch.burnState == ETorchState.BURNT) {
-            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
-        } else if (slotTorch.burnState == ETorchState.UNLIT) {
-            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
-        }
-
-        int max = slotStack.getMaxStackSize();
-        int usedCount = clickAction == ClickAction.PRIMARY ? otherStack.getCount() : 1;
-
-        int remainder = Math.max(0, usedCount - (max - slotStack.getCount()));
-        int addedNew = usedCount - remainder;
-
-        System.out.println("TEST " + remainder + " " + addedNew);
-
-        // Average both stacks
-        int stack1Fuel = getFuel(slotStack) * slotStack.getCount();
-        int stack2Fuel = getFuel(otherStack) * addedNew;
-        int totalFuel = stack1Fuel + stack2Fuel;
-
-        // NBT
-        CompoundTag nbt = new CompoundTag();
-        nbt.putInt("Fuel", totalFuel / (slotStack.getCount() + addedNew));
-
-        if (addedNew > 0) {
-            slotStack.grow(addedNew);
-            slotStack.setTag(nbt);
-            otherStack.setCount(otherStack.getCount() - addedNew);
-            return true;
-        }
-
-        return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
-    }
+//    public boolean overrideOtherStackedOnMe(ItemStack slotStack, ItemStack otherStack, Slot slot, ClickAction clickAction, PlayerEntity player, SlotAccess slotAccess) {
+//
+//        // If you are clicking on it with a non HCTorch item or with empty, use vanilla behavior
+//        if (!slot.allowModification(player) || !(otherStack.getItem() instanceof TorchItem) || otherStack.isEmpty()) {
+//            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+//        }
+//
+//        // Ensure torches are in same group
+//        if (!sameTorchGroup((TorchItem) slotStack.getItem(), (TorchItem) otherStack.getItem())) {
+//            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+//        }
+//
+//        if (slotStack.getCount() < slotStack.getMaxStackSize()) {
+//            return addToLitStack(slotStack, otherStack, slot, clickAction, player, slotAccess);
+//        }
+//
+//        return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+//    }
+//
+//    public boolean lightCursorStack(ItemStack slotStack, ItemStack otherStack, Slot slot, ClickAction clickAction, PlayerEntity player, SlotAccess slotAccess) {
+//        if (!(otherStack.getItem() instanceof TorchItem)) {
+//            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+//        }
+//
+//        Item newItem = ((TorchItem) otherStack.getItem()).torchGroup.getStandingTorch(ETorchState.LIT).asItem();
+//        ItemStack newStack = TorchItem.changedCopy(otherStack, newItem);
+//        slotAccess.set(new ItemStack(Items.STONE));
+//
+//        return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+//    }
+//
+//    public boolean addToLitStack(ItemStack slotStack, ItemStack otherStack, Slot slot, ClickAction clickAction, PlayerEntity player, SlotAccess slotAccess) {
+//        TorchItem slotTorch = (TorchItem) slotStack.getItem();
+//        TorchItem cursorTorch = (TorchItem) otherStack.getItem();
+//
+//        if (slotTorch.burnState == ETorchState.BURNT || cursorTorch.burnState == ETorchState.BURNT) {
+//            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+//        } else if (slotTorch.burnState == ETorchState.UNLIT) {
+//            return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+//        }
+//
+//        int max = slotStack.getMaxStackSize();
+//        int usedCount = clickAction == ClickAction.PRIMARY ? otherStack.getCount() : 1;
+//
+//        int remainder = Math.max(0, usedCount - (max - slotStack.getCount()));
+//        int addedNew = usedCount - remainder;
+//
+//        System.out.println("TEST " + remainder + " " + addedNew);
+//
+//        // Average both stacks
+//        int stack1Fuel = getFuel(slotStack) * slotStack.getCount();
+//        int stack2Fuel = getFuel(otherStack) * addedNew;
+//        int totalFuel = stack1Fuel + stack2Fuel;
+//
+//        // NBT
+//        CompoundNBT nbt = new CompoundNBT();
+//        nbt.putInt("Fuel", totalFuel / (slotStack.getCount() + addedNew));
+//
+//        if (addedNew > 0) {
+//            slotStack.grow(addedNew);
+//            slotStack.setTag(nbt);
+//            otherStack.setCount(otherStack.getCount() - addedNew);
+//            return true;
+//        }
+//
+//        return super.overrideOtherStackedOnMe(slotStack, otherStack, slot, clickAction, player, slotAccess);
+//    }
 }

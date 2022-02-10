@@ -6,31 +6,31 @@ import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.BlockState;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.conditions.ILootCondition;
 
-public class TorchLootFunction extends LootItemConditionalFunction {
+public class TorchLootFunction extends LootFunction {
 
-    public TorchLootFunction(LootItemCondition[] lootConditions) {
+    public TorchLootFunction(ILootCondition[] lootConditions) {
         super(lootConditions);
     }
 
     @Override
-    public LootItemFunctionType getType() {
+    public LootFunctionType getType() {
         return MainMod.HARDCORE_TORCH_LOOT_FUNCTION;
     }
 
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
-        BlockEntity blockEntity = context.getParam(LootContextParams.BLOCK_ENTITY);
-        BlockState state = context.getParam(LootContextParams.BLOCK_STATE);
+        TileEntity blockEntity = context.getParamOrNull(LootParameters.BLOCK_ENTITY);
+        BlockState state = context.getParamOrNull(LootParameters.BLOCK_STATE);
         ItemStack itemStack = new ItemStack(state.getBlock().asItem());
         ETorchState torchState;
         ETorchState dropTorchState;
@@ -75,9 +75,9 @@ public class TorchLootFunction extends LootItemConditionalFunction {
         return new ItemStack(((AbstractHardcoreTorchBlock) state.getBlock()).group.getStandingTorch(torchState).asItem());
     }
 
-    public static class Serializer extends LootItemConditionalFunction.Serializer<TorchLootFunction> {
+    public static class Serializer extends LootFunction.Serializer<TorchLootFunction> {
 
-        public TorchLootFunction deserialize(JsonObject jsonObject, JsonDeserializationContext jsonDeserializationContext, LootItemCondition[] lootConditions) {
+        public TorchLootFunction deserialize(JsonObject jsonObject, JsonDeserializationContext jsonDeserializationContext, ILootCondition[] lootConditions) {
             return new TorchLootFunction(lootConditions);
         }
     }

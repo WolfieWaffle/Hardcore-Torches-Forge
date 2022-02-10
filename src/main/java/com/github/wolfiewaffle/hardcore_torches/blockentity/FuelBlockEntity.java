@@ -1,25 +1,24 @@
 package com.github.wolfiewaffle.hardcore_torches.blockentity;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.world.World;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.BlockState;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class FuelBlockEntity extends BlockEntity {
+public abstract class FuelBlockEntity extends TileEntity implements ITickableTileEntity {
     protected int fuel;
     protected static Random random = new Random();
 
-    public FuelBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
+    public FuelBlockEntity(TileEntityType<?> type) {
+        super(type);
     }
 
     public int getFuel() {
@@ -31,7 +30,7 @@ public class FuelBlockEntity extends BlockEntity {
     }
 
     public void changeFuel(int increment) {
-        Level world = this.getLevel();
+        World world = this.getLevel();
         BlockPos pos = this.getBlockPos();
 
         fuel += increment;
@@ -48,30 +47,32 @@ public class FuelBlockEntity extends BlockEntity {
 
     // region necessary methods
     @Override
-    public void load(CompoundTag nbt) {
+    public void load(BlockState state, CompoundNBT nbt) {
         if (nbt != null) {
-            super.load(nbt);
+            super.load(state, nbt);
 
             fuel = nbt.getInt("Fuel");
         }
     }
 
     @Override
-    public void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    public CompoundNBT save(CompoundNBT nbt) {
+        super.save(nbt);
 
         nbt.putInt("Fuel", fuel);
+
+        return nbt;
     }
 
     @Nullable
     @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.worldPosition, -1, this.save(new CompoundNBT()));
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        this.load(pkt.getTag());
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        this.load(this.getBlockState(), pkt.getTag());
     }
     // endregion
 }

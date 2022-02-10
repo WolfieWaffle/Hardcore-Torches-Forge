@@ -1,16 +1,15 @@
 package com.github.wolfiewaffle.hardcore_torches.util;
 
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
-import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
 import com.github.wolfiewaffle.hardcore_torches.item.TorchItem;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class TorchTools {
 
@@ -29,7 +28,7 @@ public class TorchTools {
         return false;
     }
 
-    public static void displayParticle(SimpleParticleType particle, BlockState state, Level world, BlockPos pos, float spread) {
+    public static void displayParticle(BasicParticleType particle, BlockState state, World world, BlockPos pos, float spread) {
         double d = (double)pos.getX() + 0.5;
         double e = (double)pos.getY() + 0.7;
         double f = (double)pos.getZ() + 0.5;
@@ -46,7 +45,7 @@ public class TorchTools {
         }
     }
 
-    public static void displayParticle(SimpleParticleType particle, BlockState state, Level world, BlockPos pos) {
+    public static void displayParticle(BasicParticleType particle, BlockState state, World world, BlockPos pos) {
         displayParticle(particle, state, world, pos, 0f);
     }
 }

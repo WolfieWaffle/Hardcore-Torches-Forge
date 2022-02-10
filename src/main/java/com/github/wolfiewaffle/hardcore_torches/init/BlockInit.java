@@ -6,13 +6,13 @@ import com.github.wolfiewaffle.hardcore_torches.block.HardcoreFloorTorchBlock;
 import com.github.wolfiewaffle.hardcore_torches.block.HardcoreWallTorchBlock;
 import com.github.wolfiewaffle.hardcore_torches.block.LanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 public class BlockInit {
 

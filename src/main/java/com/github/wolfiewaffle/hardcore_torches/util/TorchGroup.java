@@ -2,7 +2,7 @@ package com.github.wolfiewaffle.hardcore_torches.util;
 
 import com.github.wolfiewaffle.hardcore_torches.block.HardcoreFloorTorchBlock;
 import com.github.wolfiewaffle.hardcore_torches.block.HardcoreWallTorchBlock;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.block.Block;
 
 import java.util.HashMap;
 

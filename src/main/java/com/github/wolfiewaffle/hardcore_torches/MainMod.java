@@ -11,37 +11,30 @@ import com.github.wolfiewaffle.hardcore_torches.loot.SetFuelLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.loot.TorchLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.recipe.OilCanRecipe;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.loot.LootFunctionType;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import top.theillusivec4.curios.api.SlotTypeMessage;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @net.minecraftforge.fml.common.Mod(MainMod.MOD_ID)
@@ -60,27 +53,27 @@ public class MainMod
     public static TorchGroup basicTorches = new TorchGroup("basic");
 
     // Tags
-    public static final Tag.Named<Item> ALL_TORCH_ITEMS = ItemTags.bind("hardcore_torches:torches");
-    public static final Tag.Named<Block> FREE_TORCH_LIGHT_BLOCKS = BlockTags.bind("hardcore_torches:free_torch_light_blocks");
-    public static final Tag.Named<Item> FREE_TORCH_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:free_torch_light_items");
-    public static final Tag.Named<Item> DAMAGE_TORCH_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:damage_torch_light_items");
-    public static final Tag.Named<Item> CONSUME_TORCH_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:consume_torch_light_items");
-    public static final Tag.Named<Item> FREE_TORCH_EXTINGUISH_ITEMS = ItemTags.bind("hardcore_torches:free_torch_extinguish_items");
-    public static final Tag.Named<Item> DAMAGE_TORCH_EXTINGUISH_ITEMS = ItemTags.bind("hardcore_torches:damage_torch_extinguish_items");
-    public static final Tag.Named<Item> CONSUME_TORCH_EXTINGUISH_ITEMS = ItemTags.bind("hardcore_torches:consume_torch_extinguish_items");
-    public static final Tag.Named<Item> FREE_TORCH_SMOTHER_ITEMS = ItemTags.bind("hardcore_torches:free_torch_smother_items");
-    public static final Tag.Named<Item> DAMAGE_TORCH_SMOTHER_ITEMS = ItemTags.bind("hardcore_torches:damage_torch_smother_items");
-    public static final Tag.Named<Item> CONSUME_TORCH_SMOTHER_ITEMS = ItemTags.bind("hardcore_torches:consume_torch_smother_items");
-    public static final Tag.Named<Item> FREE_LANTERN_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:free_lantern_light_items");
-    public static final Tag.Named<Item> DAMAGE_LANTERN_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:damage_lantern_light_items");
-    public static final Tag.Named<Item> CONSUME_LANTERN_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:consume_lantern_light_items");
+    public static final ITag.INamedTag<Item> ALL_TORCH_ITEMS = ItemTags.bind("hardcore_torches:torches");
+    public static final ITag.INamedTag<Block> FREE_TORCH_LIGHT_BLOCKS = BlockTags.bind("hardcore_torches:free_torch_light_blocks");
+    public static final ITag.INamedTag<Item> FREE_TORCH_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:free_torch_light_items");
+    public static final ITag.INamedTag<Item> DAMAGE_TORCH_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:damage_torch_light_items");
+    public static final ITag.INamedTag<Item> CONSUME_TORCH_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:consume_torch_light_items");
+    public static final ITag.INamedTag<Item> FREE_TORCH_EXTINGUISH_ITEMS = ItemTags.bind("hardcore_torches:free_torch_extinguish_items");
+    public static final ITag.INamedTag<Item> DAMAGE_TORCH_EXTINGUISH_ITEMS = ItemTags.bind("hardcore_torches:damage_torch_extinguish_items");
+    public static final ITag.INamedTag<Item> CONSUME_TORCH_EXTINGUISH_ITEMS = ItemTags.bind("hardcore_torches:consume_torch_extinguish_items");
+    public static final ITag.INamedTag<Item> FREE_TORCH_SMOTHER_ITEMS = ItemTags.bind("hardcore_torches:free_torch_smother_items");
+    public static final ITag.INamedTag<Item> DAMAGE_TORCH_SMOTHER_ITEMS = ItemTags.bind("hardcore_torches:damage_torch_smother_items");
+    public static final ITag.INamedTag<Item> CONSUME_TORCH_SMOTHER_ITEMS = ItemTags.bind("hardcore_torches:consume_torch_smother_items");
+    public static final ITag.INamedTag<Item> FREE_LANTERN_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:free_lantern_light_items");
+    public static final ITag.INamedTag<Item> DAMAGE_LANTERN_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:damage_lantern_light_items");
+    public static final ITag.INamedTag<Item> CONSUME_LANTERN_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:consume_lantern_light_items");
 
     // Loot Functions
-    public static final LootItemFunctionType HARDCORE_TORCH_LOOT_FUNCTION = new LootItemFunctionType(new TorchLootFunction.Serializer());
-    public static final LootItemFunctionType SET_FUEL_LOOT_FUNCTION = new LootItemFunctionType(new SetFuelLootFunction.Serializer());
+    public static final LootFunctionType HARDCORE_TORCH_LOOT_FUNCTION = new LootFunctionType(new TorchLootFunction.Serializer());
+    public static final LootFunctionType SET_FUEL_LOOT_FUNCTION = new LootFunctionType(new SetFuelLootFunction.Serializer());
 
     // Recipe Types
-    public static final RecipeType<OilCanRecipe> OIL_CAN_RECIPE = RecipeType.register("hardcore_torches:oil_can");
+    public static final IRecipeType<OilCanRecipe> OIL_CAN_RECIPE = IRecipeType.register("hardcore_torches:oil_can");
 
     // Register Loot Tables
     private static final DeferredRegister<GlobalLootModifierSerializer<?>> GLM = DeferredRegister.create(ForgeRegistries.LOOT_MODIFIER_SERIALIZERS, MOD_ID);
@@ -128,18 +121,11 @@ public class MainMod
         Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation("hardcore_torches", "set_damage"), SET_FUEL_LOOT_FUNCTION);
     }
 
-    @SubscribeEvent
-    public static void modEventCommunication(InterModEnqueueEvent event) {
-        if (ModList.get().isLoaded("curios")) {
-            InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("belt").build());
-        }
-    }
-
     @SubscribeEvent //ModBus, can't use addListener due to nested genetics.
-    public static void registerRecipeSerialziers(RegistryEvent.Register<RecipeSerializer<?>> event) {
-        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> {return Config.craftUnlit.get();}, new ResourceLocation("hardcore_torches", "config_craft_unlit")));
-        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> {return (Config.oilRecipeType.get() == 0 || Config.oilRecipeType.get() == 2);}, new ResourceLocation("hardcore_torches", "config_can_fat")));
-        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> {return (Config.oilRecipeType.get() == 1 || Config.oilRecipeType.get() == 2);}, new ResourceLocation("hardcore_torches", "config_can_coal")));
+    public static void registerRecipeSerialziers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.craftUnlit.get(), new ResourceLocation("hardcore_torches", "config_craft_unlit")));
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 0 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_fat")));
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 1 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_coal")));
         event.getRegistry().register(new OilCanRecipe.Serializer().setRegistryName("hardcore_torches:oil_can"));
     }
 }
