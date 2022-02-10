@@ -243,8 +243,6 @@ public class TorchItem extends StandingAndWallBlockItem {
         int remainder = Math.max(0, usedCount - (max - slotStack.getCount()));
         int addedNew = usedCount - remainder;
 
-        System.out.println("TEST " + remainder + " " + addedNew);
-
         // Average both stacks
         int stack1Fuel = getFuel(slotStack) * slotStack.getCount();
         int stack2Fuel = getFuel(otherStack) * addedNew;
