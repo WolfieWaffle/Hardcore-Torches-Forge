@@ -33,6 +33,8 @@ public class Config {
     public static ForgeConfigSpec.IntValue minLanternIgnitionFuel;
     public static ForgeConfigSpec.IntValue maxCanFuel;
     public static ForgeConfigSpec.IntValue oilRecipeType;
+    public static ForgeConfigSpec.IntValue invExtinguishInWater;
+    public static ForgeConfigSpec.IntValue invExtinguishInRain;
 
     public static void init() {
         //initServer();
@@ -72,6 +74,8 @@ public class Config {
         torchesSmolder = builder.comment("If a torch is in the rain and torchesRain = true, then it will smolder and burn fuel at 1/3rd the normal rate instead of becoming unlit.").define("torchesSmolder", true);
         craftUnlit = builder.comment("If true, torches must be lit after crafting.").define("craftUnlit", false);
         handUnlightTorch = builder.comment("Right click a torch without holding fuel or a lighter to unlight it.").define("handUnlightTorch", false);
+        invExtinguishInWater = builder.comment("0: When going underwater, torches in your inventory will be unaffected\n1: When going underwater, torches in mainhand or offhand will be extinguished\n2: When going underwater, torches in inventory will be extinguished").defineInRange("invExtinguishInWater", 2, 0, 2);
+        invExtinguishInRain = builder.comment("0: When in rain, torches in your inventory will be unaffected\n1: When in rain, torches in mainhand or offhand will be extinguished or smolder\n2: When in rain, torches in inventory will be extinguished or smolder").defineInRange("invExtinguishInRain", 2, 0, 2);
         builder.pop();
 
         builder.comment("Lantern Settings").push("lantern");
