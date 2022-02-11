@@ -13,7 +13,7 @@ import java.util.Random;
 
 public interface IFuelBlock {
 
-    public void outOfFuel(Level world, BlockPos pos, BlockState state);
+    void outOfFuel(Level world, BlockPos pos, BlockState state);
 
     default boolean itemValid(ItemStack stack, Tag free, Tag damage, Tag consume) {
 
