@@ -1,6 +1,7 @@
 package com.github.wolfiewaffle.hardcore_torches.item;
 
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
+import com.github.wolfiewaffle.hardcore_torches.compat.curio.LanternCurioProvider;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import net.minecraft.block.Block;
@@ -13,6 +14,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.ModList;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -24,6 +27,17 @@ public class LanternItem extends BlockItem {
     public LanternItem(Block block, Properties properties) {
         super(block, properties);
         this.isLit = ((AbstractLanternBlock) block).isLit;
+    }
+
+    @Nullable
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+
+        if (ModList.get().isLoaded("curios")) {
+            return new LanternCurioProvider();
+        }
+
+        return null;
     }
 
     @Override

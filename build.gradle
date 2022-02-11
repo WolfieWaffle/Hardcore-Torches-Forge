@@ -14,7 +14,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/cd40316e7f9b54e6ef4dfd4d200e8b11dff80efe/classremapper.gradle'
 
-version = '1.0'
+version = '1.1'
 group = 'com.github.wolfiewaffle.hardcore_torches' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'hardcore_torches_forge'
 
@@ -161,8 +161,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 	
-    //implementation fg.deobf("com.legacy:lucent:1.18.1-1.2.0")
-	//implementation fg.deobf("curse.maven:curios-309927:3613028")
+    implementation fg.deobf("com.legacy:lucent:1.16.5-1.0.0")
+	implementation fg.deobf("curse.maven:curios-309927:3456953")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
