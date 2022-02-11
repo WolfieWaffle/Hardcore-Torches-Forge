@@ -149,9 +149,9 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
         }
     }
 
-    public void burnOut(Level world, BlockPos pos, BlockState state) {
+    public void burnOut(Level world, BlockPos pos, BlockState state, boolean playSound) {
         if (!world.isClientSide) {
-            world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
+            if (playSound) world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.SMOKE, state, world, pos);
@@ -213,7 +213,7 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
     // region IFuelBlock
     @Override
     public void outOfFuel(Level world, BlockPos pos, BlockState state) {
-        burnOut(world, pos, state);
+        burnOut(world, pos, state, false);
     }
     // endregion
 }

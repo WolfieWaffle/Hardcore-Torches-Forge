@@ -63,9 +63,9 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
         this.isLit = isLit;
     }
 
-    public void extinguish(Level world, BlockPos pos, BlockState state) {
+    public void extinguish(Level world, BlockPos pos, BlockState state, boolean playSound) {
         if (!world.isClientSide) {
-            world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
+            if (playSound) world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.SMOKE, state, world, pos);
@@ -184,7 +184,7 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
         // Hand extinguish
         if (Config.handUnlightLantern.get() && isLit) {
             if (!TorchTools.canLight(stack.getItem(), this)) {
-                extinguish(world, pos, state);
+                extinguish(world, pos, state, true);
                 return InteractionResult.SUCCESS;
             }
         }
@@ -215,7 +215,7 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
     // region IFuelBlock
     @Override
     public void outOfFuel(Level world, BlockPos pos, BlockState state) {
-        ((AbstractLanternBlock) world.getBlockState(pos).getBlock()).extinguish(world, pos, state);
+        ((AbstractLanternBlock) world.getBlockState(pos).getBlock()).extinguish(world, pos, state, false);
     }
     //endregion
 
