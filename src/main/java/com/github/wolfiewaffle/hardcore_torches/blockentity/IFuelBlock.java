@@ -3,6 +3,7 @@ package com.github.wolfiewaffle.hardcore_torches.blockentity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +16,7 @@ public interface IFuelBlock {
 
     void outOfFuel(Level world, BlockPos pos, BlockState state);
 
-    default boolean itemValid(ItemStack stack, Tag free, Tag damage, Tag consume) {
+    default boolean itemValid(ItemStack stack, TagKey free, TagKey damage, TagKey consume) {
 
         // Infinite items
         if (stack.is(free)) {
@@ -35,7 +36,7 @@ public interface IFuelBlock {
         return false;
     }
 
-    default boolean attemptUse(ItemStack stack, Player player, InteractionHand hand, Tag free, Tag damage, Tag consume) {
+    default boolean attemptUse(ItemStack stack, Player player, InteractionHand hand, TagKey free, TagKey damage, TagKey consume) {
 
         // Infinite items
         if (stack.is(free)) {

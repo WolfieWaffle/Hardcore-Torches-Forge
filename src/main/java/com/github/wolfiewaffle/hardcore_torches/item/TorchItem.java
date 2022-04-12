@@ -77,7 +77,7 @@ public class TorchItem extends StandingAndWallBlockItem {
             if (torchState == ETorchState.UNLIT || torchState == ETorchState.SMOLDERING) {
 
                 // Unlit and Smoldering
-                if (MainMod.FREE_TORCH_LIGHT_BLOCKS.contains(block)) {
+                if (blockState.is(MainMod.FREE_TORCH_LIGHT_BLOCKS)) {
                     // No lighting on unlit fires etc.
                     if (blockState.hasProperty(BlockStateProperties.LIT))
                         if (blockState.getValue(BlockStateProperties.LIT).booleanValue() == false)

@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -60,30 +61,31 @@ public class MainMod
     public static TorchGroup basicTorches = new TorchGroup("basic");
 
     // Tags
-    public static final Tag.Named<Item> ALL_TORCH_ITEMS = ItemTags.bind("hardcore_torches:torches");
-    public static final Tag.Named<Block> FREE_TORCH_LIGHT_BLOCKS = BlockTags.bind("hardcore_torches:free_torch_light_blocks");
-    public static final Tag.Named<Item> FREE_TORCH_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:free_torch_light_items");
-    public static final Tag.Named<Item> DAMAGE_TORCH_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:damage_torch_light_items");
-    public static final Tag.Named<Item> CONSUME_TORCH_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:consume_torch_light_items");
-    public static final Tag.Named<Item> FREE_TORCH_EXTINGUISH_ITEMS = ItemTags.bind("hardcore_torches:free_torch_extinguish_items");
-    public static final Tag.Named<Item> DAMAGE_TORCH_EXTINGUISH_ITEMS = ItemTags.bind("hardcore_torches:damage_torch_extinguish_items");
-    public static final Tag.Named<Item> CONSUME_TORCH_EXTINGUISH_ITEMS = ItemTags.bind("hardcore_torches:consume_torch_extinguish_items");
-    public static final Tag.Named<Item> FREE_TORCH_SMOTHER_ITEMS = ItemTags.bind("hardcore_torches:free_torch_smother_items");
-    public static final Tag.Named<Item> DAMAGE_TORCH_SMOTHER_ITEMS = ItemTags.bind("hardcore_torches:damage_torch_smother_items");
-    public static final Tag.Named<Item> CONSUME_TORCH_SMOTHER_ITEMS = ItemTags.bind("hardcore_torches:consume_torch_smother_items");
-    public static final Tag.Named<Item> FREE_LANTERN_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:free_lantern_light_items");
-    public static final Tag.Named<Item> DAMAGE_LANTERN_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:damage_lantern_light_items");
-    public static final Tag.Named<Item> CONSUME_LANTERN_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:consume_lantern_light_items");
+    public static final TagKey<Item> ALL_TORCH_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:torches"));
+    public static final TagKey<Block> FREE_TORCH_LIGHT_BLOCKS = BlockTags.create(new ResourceLocation("hardcore_torches:free_torch_light_blocks"));
+    public static final TagKey<Item> FREE_TORCH_LIGHT_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:free_torch_light_items"));
+    public static final TagKey<Item> DAMAGE_TORCH_LIGHT_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:damage_torch_light_items"));
+    public static final TagKey<Item> CONSUME_TORCH_LIGHT_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:consume_torch_light_items"));
+    public static final TagKey<Item> FREE_TORCH_EXTINGUISH_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:free_torch_extinguish_items"));
+    public static final TagKey<Item> DAMAGE_TORCH_EXTINGUISH_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:damage_torch_extinguish_items"));
+    public static final TagKey<Item> CONSUME_TORCH_EXTINGUISH_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:consume_torch_extinguish_items"));
+    public static final TagKey<Item> FREE_TORCH_SMOTHER_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:free_torch_smother_items"));
+    public static final TagKey<Item> DAMAGE_TORCH_SMOTHER_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:damage_torch_smother_items"));
+    public static final TagKey<Item> CONSUME_TORCH_SMOTHER_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:consume_torch_smother_items"));
+    public static final TagKey<Item> FREE_LANTERN_LIGHT_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:free_lantern_light_items"));
+    public static final TagKey<Item> DAMAGE_LANTERN_LIGHT_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:damage_lantern_light_items"));
+    public static final TagKey<Item> CONSUME_LANTERN_LIGHT_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:consume_lantern_light_items"));
 
     // Loot Functions
     public static final LootItemFunctionType HARDCORE_TORCH_LOOT_FUNCTION = new LootItemFunctionType(new TorchLootFunction.Serializer());
     public static final LootItemFunctionType SET_FUEL_LOOT_FUNCTION = new LootItemFunctionType(new SetFuelLootFunction.Serializer());
 
     // Recipe Types
-    public static final RecipeType<OilCanRecipe> OIL_CAN_RECIPE = RecipeType.register("hardcore_torches:oil_can");
+    private static final DeferredRegister<RecipeType<?>> RECIPE_TYPE_DEFERRED_REGISTER = DeferredRegister.create(Registry.RECIPE_TYPE_REGISTRY, MOD_ID);
+    public static final RegistryObject<RecipeType<OilCanRecipe>> OIL_CAN_RECIPE = RECIPE_TYPE_DEFERRED_REGISTER.register("oil_can", () -> new RecipeType<>() {});
 
     // Register Loot Tables
-    private static final DeferredRegister<GlobalLootModifierSerializer<?>> GLM = DeferredRegister.create(ForgeRegistries.LOOT_MODIFIER_SERIALIZERS, MOD_ID);
+    private static final DeferredRegister<GlobalLootModifierSerializer<?>> GLM = DeferredRegister.create(ForgeRegistries.Keys.LOOT_MODIFIER_SERIALIZERS, MOD_ID);
     private static final RegistryObject<FatModifier.Serializer> FAT_LOOT_PIG = GLM.register("fat_modifier", FatModifier.Serializer::new);
 
     /**
@@ -110,6 +112,9 @@ public class MainMod
 
         // For loot tables
         GLM.register(modEventBus);
+
+        // For recipe types
+        RECIPE_TYPE_DEFERRED_REGISTER.register(modEventBus);
     }
 
     private void setup(final FMLCommonSetupEvent event) {

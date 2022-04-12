@@ -14,13 +14,13 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class TorchTools {
 
-    public static boolean canLight(Item item, Block block) {
+    public static boolean canLight(Item item, BlockState block) {
 
         if (item instanceof TorchItem) {
             ETorchState state = ((TorchItem) item).burnState;
 
             if (state == ETorchState.UNLIT || state == ETorchState.SMOLDERING) {
-                if (MainMod.FREE_TORCH_LIGHT_BLOCKS.contains(block)) {
+                if (block.is(MainMod.FREE_TORCH_LIGHT_BLOCKS)) {
                     return true;
                 }
             }

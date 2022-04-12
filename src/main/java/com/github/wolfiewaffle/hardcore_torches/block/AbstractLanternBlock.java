@@ -183,7 +183,7 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
 
         // Hand extinguish
         if (Config.handUnlightLantern.get() && isLit) {
-            if (!TorchTools.canLight(stack.getItem(), this)) {
+            if (!TorchTools.canLight(stack.getItem(), this.defaultBlockState())) {
                 extinguish(world, pos, state, true);
                 return InteractionResult.SUCCESS;
             }
@@ -205,10 +205,10 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
         }
     }
 
-    public static boolean isLightItem(Item item) {
-        if (MainMod.FREE_LANTERN_LIGHT_ITEMS.contains(item)) return true;
-        if (MainMod.DAMAGE_LANTERN_LIGHT_ITEMS.contains(item)) return true;
-        if (MainMod.CONSUME_LANTERN_LIGHT_ITEMS.contains(item)) return true;
+    public static boolean isLightItem(ItemStack stack) {
+        if (stack.is(MainMod.FREE_LANTERN_LIGHT_ITEMS)) return true;
+        if (stack.is(MainMod.DAMAGE_LANTERN_LIGHT_ITEMS)) return true;
+        if (stack.is(MainMod.CONSUME_LANTERN_LIGHT_ITEMS)) return true;
         return false;
     }
 
