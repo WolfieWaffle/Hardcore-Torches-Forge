@@ -2,6 +2,7 @@ package com.github.wolfiewaffle.hardcore_torches;
 
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.config.ConfigRecipeCondition;
+import com.github.wolfiewaffle.hardcore_torches.event.BiomeLoadingEventHandler;
 import com.github.wolfiewaffle.hardcore_torches.event.PlayerEventHandler;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
@@ -11,19 +12,23 @@ import com.github.wolfiewaffle.hardcore_torches.loot.SetFuelLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.loot.TorchLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.recipe.OilCanRecipe;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
+import com.github.wolfiewaffle.hardcore_torches.world.ReplaceAllFeature;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.RepeatingPlacement;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -43,6 +48,8 @@ import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.SlotTypeMessage;
+
+import java.util.ArrayList;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @net.minecraftforge.fml.common.Mod(MainMod.MOD_ID)
@@ -88,6 +95,16 @@ public class MainMod
     private static final DeferredRegister<GlobalLootModifierSerializer<?>> GLM = DeferredRegister.create(ForgeRegistries.Keys.LOOT_MODIFIER_SERIALIZERS, MOD_ID);
     private static final RegistryObject<FatModifier.Serializer> FAT_LOOT_PIG = GLM.register("fat_modifier", FatModifier.Serializer::new);
 
+    // Register World features (replacement of vanilla torches and lanterns)
+    private static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, MOD_ID);
+    private static final RegistryObject<ReplaceAllFeature> REPLACE_ALL_FEATURE = FEATURE_REGISTER.register("replace_all", () -> new ReplaceAllFeature(NoneFeatureConfiguration.CODEC.stable()));
+
+    private static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIG_FEATURE_REGISTER = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, MOD_ID);
+    private static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ReplaceAllFeature>> REPLACE_ALL_CONFIG_FEATURE = CONFIG_FEATURE_REGISTER.register("replace_all", () -> new ConfiguredFeature<>(REPLACE_ALL_FEATURE.get(), NoneFeatureConfiguration.INSTANCE));
+
+    private static final DeferredRegister<PlacedFeature> PLACED_FEATURE_REGISTER = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, MOD_ID);
+    public static final RegistryObject<PlacedFeature> REPLACE_ALL_PLACED_FEATURE = PLACED_FEATURE_REGISTER.register("replace_all", () -> new PlacedFeature(Holder.hackyErase(REPLACE_ALL_CONFIG_FEATURE.getHolder().get()), new ArrayList<>()));
+
     /**
      * Order of initialization:
      * 1. Registration
@@ -109,12 +126,18 @@ public class MainMod
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
+        MinecraftForge.EVENT_BUS.register(new BiomeLoadingEventHandler());
 
         // For loot tables
         GLM.register(modEventBus);
 
         // For recipe types
         RECIPE_TYPE_DEFERRED_REGISTER.register(modEventBus);
+
+        // World generation
+        FEATURE_REGISTER.register(modEventBus);
+        CONFIG_FEATURE_REGISTER.register(modEventBus);
+        PLACED_FEATURE_REGISTER.register(modEventBus);
     }
 
     private void setup(final FMLCommonSetupEvent event) {
