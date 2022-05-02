@@ -24,7 +24,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -47,20 +46,34 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.IntSupplier;
+
 public abstract class AbstractLanternBlock extends BaseEntityBlock implements EntityBlock, IFuelBlock, SimpleWaterloggedBlock {
     public static final BooleanProperty HANGING;
     public static final BooleanProperty WATERLOGGED;
     public static final int LANTERN_LIGHT_LEVEL = 15;
     public boolean isLit;
+    public IntSupplier maxFuel;
 
     static {
         HANGING = BlockStateProperties.HANGING;
         WATERLOGGED = BlockStateProperties.WATERLOGGED;
     }
 
-    protected AbstractLanternBlock(Properties prop, boolean isLit) {
+    protected AbstractLanternBlock(Properties prop, boolean isLit, IntSupplier maxFuel) {
         super(prop);
         this.isLit = isLit;
+        this.maxFuel = maxFuel;
+    }
+
+    @Override
+    public int getMaxFuel() {
+        return maxFuel.getAsInt();
+    }
+
+    @Override
+    public boolean canLight(Level world, BlockPos pos) {
+        return ((LanternBlockEntity) world.getBlockEntity(pos)).getFuel() > 0 && !isLit;
     }
 
     public void extinguish(Level world, BlockPos pos, BlockState state, boolean playSound) {
@@ -144,15 +157,15 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
             if (be instanceof FuelBlockEntity && !world.isClientSide) {
                 int oldFuel = ((FuelBlockEntity) be).getFuel();
 
-                if (oldFuel < Config.defaultLanternFuel.get()) {
-                    if (oldFuel + Config.defLanternFuelItem.get() < Config.defaultLanternFuel.get()) {
+                if (oldFuel < getMaxFuel()) {
+                    if (oldFuel + Config.defLanternFuelItem.get() < getMaxFuel()) {
                         world.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1f, 1f);
                     } else {
                         world.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1f, 1f);
                     }
 
                     stack.grow(-1);
-                    ((FuelBlockEntity) be).setFuel(Math.min(oldFuel + Config.defLanternFuelItem.get(), Config.defaultLanternFuel.get()));
+                    ((FuelBlockEntity) be).setFuel(Math.min(oldFuel + Config.defLanternFuelItem.get(), getMaxFuel()));
                 }
             }
             player.swing(hand);

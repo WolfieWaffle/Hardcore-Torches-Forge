@@ -6,13 +6,16 @@ import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TorchBlockEntity extends FuelBlockEntity {
 
     public TorchBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntityInit.TORCH_BLOCK_ENTITY.get(), pos, state);
-        fuel = Config.defaultTorchFuel.get();
+        Block block =  state.getBlock();
+
+        if (block instanceof AbstractHardcoreTorchBlock) fuel = ((AbstractHardcoreTorchBlock) state.getBlock()).maxFuel.getAsInt();
     }
 
     public void tick() {

@@ -1,6 +1,7 @@
 package com.github.wolfiewaffle.hardcore_torches.item;
 
 import com.github.wolfiewaffle.hardcore_torches.blockentity.FuelBlockEntity;
+import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlock;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.LanternBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.TorchBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
@@ -10,6 +11,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import java.awt.*;
 
@@ -115,19 +117,16 @@ public class OilCanItem extends Item {
 
     public static boolean fuelBlock(FuelBlockEntity be, Level world, ItemStack stack) {
         if (!world.isClientSide) {
-            int maxTaken = 0;
+            int maxFromCan = 0;
 
-            // Lanterns
-            if (be instanceof LanternBlockEntity) {
-                maxTaken = Math.max(0, Config.defaultLanternFuel.get() - be.getFuel());
+            // Max that can be applied to the block
+            Block block = be.getBlockState().getBlock();
+            if (block instanceof IFuelBlock) {
+                int maxFuel = ((IFuelBlock) block).getMaxFuel();
+                maxFromCan = Math.max(0, maxFuel - be.getFuel());
             }
 
-            // Torches
-            if (be instanceof TorchBlockEntity) {
-                maxTaken = Math.max(0, Config.defaultTorchFuel.get() - be.getFuel());
-            }
-
-            int taken = Math.min(maxTaken, getFuel(stack));
+            int taken = Math.min(maxFromCan, getFuel(stack));
 
             // Set the fuel values
             addFuel(stack, -taken);

@@ -23,14 +23,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Random;
+import java.util.function.IntSupplier;
 
 public class HardcoreWallTorchBlock extends AbstractHardcoreTorchBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     protected static final float AABB_OFFSET = 2.5F;
     private static final Map<Direction, VoxelShape> AABBS = Maps.newEnumMap(ImmutableMap.of(Direction.NORTH, Block.box(5.5D, 3.0D, 11.0D, 10.5D, 13.0D, 16.0D), Direction.SOUTH, Block.box(5.5D, 3.0D, 0.0D, 10.5D, 13.0D, 5.0D), Direction.WEST, Block.box(11.0D, 3.0D, 5.5D, 16.0D, 13.0D, 10.5D), Direction.EAST, Block.box(0.0D, 3.0D, 5.5D, 5.0D, 13.0D, 10.5D)));
 
-    public HardcoreWallTorchBlock(Properties prop, SimpleParticleType particle, ETorchState burnState, TorchGroup group) {
-        super(prop, particle, burnState, group);
+    public HardcoreWallTorchBlock(Properties prop, SimpleParticleType particle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {
+        super(prop, particle, burnState, group, maxFuel);
     }
 
     @Override

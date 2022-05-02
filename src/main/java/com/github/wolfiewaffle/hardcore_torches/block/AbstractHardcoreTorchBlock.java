@@ -21,10 +21,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -32,25 +33,35 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.IntSupplier;
+
 public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock implements IFuelBlock, EntityBlock {
 
     public SimpleParticleType particle;
     public ETorchState burnState;
     public TorchGroup group;
     public static final BlockEntityTicker<TorchBlockEntity> TICKER = (level, pos, state, be) -> be.tick();
+    public IntSupplier maxFuel;
 
-    public static final float pX = 0.5f;
-    public static final float pY = 0.7f;
-    public static final float pZ = 0.5f;
-
-    public AbstractHardcoreTorchBlock(Properties prop, SimpleParticleType particle, ETorchState burnState, TorchGroup group) {
+    public AbstractHardcoreTorchBlock(Properties prop, SimpleParticleType particle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {
         super(prop);
         this.particle = particle;
         this.burnState = burnState;
         this.group = group;
+        this.maxFuel = maxFuel;
     }
 
     public abstract boolean isWall();
+
+    @Override
+    public int getMaxFuel() {
+        return maxFuel.getAsInt();
+    }
+
+    @Override
+    public boolean canLight(Level world, BlockPos pos) {
+        return burnState != ETorchState.BURNT && burnState != ETorchState.LIT;
+    }
 
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
@@ -112,7 +123,7 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
             int fuel = TorchItem.getFuel(itemStack);
 
             if (fuel == 0) {
-                ((FuelBlockEntity) be).setFuel(Config.defaultTorchFuel.get());
+                ((FuelBlockEntity) be).setFuel(getMaxFuel());
             } else {
                 ((FuelBlockEntity) be).setFuel(fuel);
             }
@@ -205,7 +216,7 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         TorchBlockEntity be = new TorchBlockEntity(pos, state);
-        be.setFuel(Config.defaultTorchFuel.get());
+        be.setFuel(getMaxFuel());
         return be;
     }
     // endregion

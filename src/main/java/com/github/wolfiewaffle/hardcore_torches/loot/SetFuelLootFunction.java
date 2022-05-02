@@ -4,7 +4,7 @@ import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractHardcoreTorchBlock;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.FuelBlockEntity;
-import com.github.wolfiewaffle.hardcore_torches.config.Config;
+import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlock;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
@@ -43,7 +43,7 @@ public class SetFuelLootFunction extends LootItemConditionalFunction {
             if (blockEntity != null && blockEntity instanceof FuelBlockEntity) {
                 int remainingFuel = ((FuelBlockEntity) blockEntity).getFuel();
 
-                if (remainingFuel != Config.defaultTorchFuel.get()) {
+                if (remainingFuel != ((IFuelBlock) block).getMaxFuel()) {
                     CompoundTag nbt = new CompoundTag();
                     nbt.putInt("Fuel", (remainingFuel));
                     stack.setTag(nbt);

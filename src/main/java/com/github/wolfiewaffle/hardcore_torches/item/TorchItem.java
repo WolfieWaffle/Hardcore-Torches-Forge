@@ -13,7 +13,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
@@ -23,22 +22,29 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.awt.*;
+import java.util.function.IntSupplier;
 
 public class TorchItem extends StandingAndWallBlockItem {
     public ETorchState burnState;
     TorchGroup torchGroup;
+    public IntSupplier maxFuel;
 
     public TorchItem(Block floorBlock, Block wallBlock, Properties properties) {
         super(floorBlock, wallBlock, properties);
-        this.burnState = ((AbstractHardcoreTorchBlock) getBlock()).burnState;
-        this.torchGroup = ((AbstractHardcoreTorchBlock) getBlock()).group;
+        this.burnState = ((AbstractHardcoreTorchBlock) floorBlock).burnState;
+        this.torchGroup = ((AbstractHardcoreTorchBlock) floorBlock).group;
+        this.maxFuel = ((AbstractHardcoreTorchBlock) floorBlock).maxFuel;
+    }
+
+    public int getMaxFuel() {
+        return maxFuel.getAsInt();
     }
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
         int fuel = getFuel(stack);
 
-        if (fuel > 0 && fuel < Config.defaultTorchFuel.get()) {
+        if (fuel > 0 && fuel < getMaxFuel()) {
             return true;
         }
 
@@ -47,11 +53,11 @@ public class TorchItem extends StandingAndWallBlockItem {
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        int maxFuel = Config.defaultTorchFuel.get();
         int fuel = getFuel(stack);
+        int max = getMaxFuel();
 
-        if (maxFuel != 0) {
-            return Math.round(13.0f - (maxFuel - fuel) * 13.0f / maxFuel);
+        if (max != 0) {
+            return Math.round(13.0f - (max - fuel) * 13.0f / max);
         }
 
         return 0;
@@ -145,14 +151,16 @@ public class TorchItem extends StandingAndWallBlockItem {
     }
 
     public static int getFuel(ItemStack stack) {
+        Item item = stack.getItem();
+        if (!(item instanceof TorchItem)) return 0;
+
         CompoundTag nbt = stack.getTag();
-        int fuel;
 
         if (nbt != null && nbt.contains("Fuel")) {
             return nbt.getInt("Fuel");
+        } else {
+            return ((TorchItem) item).getMaxFuel();
         }
-
-        return Config.defaultTorchFuel.get();
     }
 
     public boolean sameTorchGroup(TorchItem item1, TorchItem item2) {
@@ -163,10 +171,17 @@ public class TorchItem extends StandingAndWallBlockItem {
     }
 
     public static ItemStack addFuel(ItemStack stack, Level world, int amount) {
+        int maxFuel;
+        Item item = stack.getItem();
+        if (item instanceof TorchItem) {
+            maxFuel = ((TorchItem) item).getMaxFuel();
+        } else {
+            maxFuel = 0;
+        }
 
         if (stack.getItem() instanceof  TorchItem && !world.isClientSide) {
             CompoundTag nbt = stack.getTag();
-            int fuel = Config.defaultTorchFuel.get();
+            int fuel = maxFuel;
 
             if (nbt != null) {
                 fuel = nbt.getInt("Fuel");
@@ -184,8 +199,8 @@ public class TorchItem extends StandingAndWallBlockItem {
                     stack = stateStack(stack, ETorchState.BURNT);
                 }
             } else {
-                if (fuel > Config.defaultTorchFuel.get()) {
-                    fuel = Config.defaultTorchFuel.get();
+                if (fuel > maxFuel) {
+                    fuel = maxFuel;
                 }
 
                 nbt.putInt("Fuel", fuel);

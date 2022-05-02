@@ -9,8 +9,6 @@ public class BiomeLoadingEventHandler {
 
     @SubscribeEvent
     public void biomeLoad(BiomeLoadingEvent event) {
-        System.out.println("BIOME LOAD");
         event.getGeneration().addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, MainMod.REPLACE_ALL_PLACED_FEATURE.getHolder().get());
-        System.out.println("BIOME LOAD " + event.getGeneration().getFeatures(GenerationStep.Decoration.TOP_LAYER_MODIFICATION));
     }
 }

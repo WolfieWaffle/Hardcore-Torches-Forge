@@ -2,7 +2,6 @@ package com.github.wolfiewaffle.hardcore_torches.blockentity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -13,6 +12,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Random;
 
 public interface IFuelBlock {
+
+    int getMaxFuel();
 
     void outOfFuel(Level world, BlockPos pos, BlockState state);
 
@@ -61,4 +62,6 @@ public interface IFuelBlock {
 
         return false;
     }
+
+    boolean canLight(Level world, BlockPos pos);
 }

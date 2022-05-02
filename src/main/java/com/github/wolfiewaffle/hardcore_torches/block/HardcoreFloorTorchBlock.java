@@ -16,11 +16,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Random;
+import java.util.function.IntSupplier;
 
 public class HardcoreFloorTorchBlock extends AbstractHardcoreTorchBlock {
 
-    public HardcoreFloorTorchBlock(Properties prop, SimpleParticleType particle, ETorchState burnState, TorchGroup group) {
-        super(prop, particle, burnState, group);
+    public HardcoreFloorTorchBlock(Properties prop, SimpleParticleType particle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {
+        super(prop, particle, burnState, group, maxFuel);
     }
 
     @Override

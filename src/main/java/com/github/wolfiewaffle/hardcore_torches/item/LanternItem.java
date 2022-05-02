@@ -1,6 +1,7 @@
 package com.github.wolfiewaffle.hardcore_torches.item;
 
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
+import com.github.wolfiewaffle.hardcore_torches.block.LanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.compat.curio.LanternCurioProvider;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
@@ -24,14 +25,21 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import java.awt.*;
 import java.util.List;
+import java.util.function.IntSupplier;
 
 public class LanternItem extends BlockItem {
     public static Capability<ICurio> CURIO_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
     public boolean isLit;
+    public IntSupplier maxFuel;
 
     public LanternItem(Block block, Properties properties) {
         super(block, properties);
         this.isLit = ((AbstractLanternBlock) block).isLit;
+        this.maxFuel = ((AbstractLanternBlock) block).maxFuel;
+    }
+
+    public int getMaxFuel() {
+        return maxFuel.getAsInt();
     }
 
     @Nullable
@@ -59,11 +67,11 @@ public class LanternItem extends BlockItem {
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        int maxFuel = Config.defaultLanternFuel.get();
         int fuel = getFuel(stack);
+        int max = getMaxFuel();
 
-        if (maxFuel != 0) {
-            return Math.round(13.0f - (maxFuel - fuel) * 13.0f / maxFuel);
+        if (max != 0) {
+            return Math.round(13.0f - (max - fuel) * 13.0f / max);
         }
 
         return 0;
@@ -101,22 +109,29 @@ public class LanternItem extends BlockItem {
         if (!(item instanceof LanternItem)) return 0;
 
         CompoundTag nbt = stack.getTag();
-        int fuel;
 
         if (nbt != null && nbt.contains("Fuel")) {
             return nbt.getInt("Fuel");
+        } else {
+            LanternItem lanternItem = ((LanternItem) item);
+            return lanternItem.isLit ? lanternItem.getMaxFuel() : 0;
         }
-
-        return ((LanternItem) stack.getItem()).isLit ? Config.defaultLanternFuel.get(): 0;
     }
 
     public static ItemStack addFuel(ItemStack stack, Level world, int amount) {
+        int maxFuel;
+        Item item = stack.getItem();
+        if (item instanceof LanternItem) {
+            maxFuel = ((LanternItem) item).getMaxFuel();
+        } else {
+            maxFuel = 0;
+        }
 
         if (stack.getItem() instanceof  LanternItem && !world.isClientSide) {
-            LanternItem item = (LanternItem) stack.getItem();
+            LanternItem lanternItem = (LanternItem) item;
 
             CompoundTag nbt = stack.getTag();
-            int fuel = item.isLit ? Config.defaultLanternFuel.get() : 0;
+            int fuel = lanternItem.isLit ? maxFuel : 0;
 
             if (nbt != null) {
                 fuel = nbt.getInt("Fuel");
@@ -130,8 +145,8 @@ public class LanternItem extends BlockItem {
             if (fuel <= 0) {
                 stack = stateStack(stack, false);
             } else {
-                if (fuel > Config.defaultLanternFuel.get()) {
-                    fuel = Config.defaultLanternFuel.get();
+                if (fuel > maxFuel) {
+                    fuel = maxFuel;
                 }
 
                 nbt.putInt("Fuel", fuel);

@@ -24,8 +24,13 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue animalsDropFat;
     public static ForgeConfigSpec.BooleanValue handUnlightTorch;
     public static ForgeConfigSpec.BooleanValue handUnlightLantern;
+    public static ForgeConfigSpec.BooleanValue starterLightCampfires;
+    public static ForgeConfigSpec.BooleanValue starterLightTorches;
+    public static ForgeConfigSpec.BooleanValue starterStartFires;
+    public static ForgeConfigSpec.BooleanValue starterLightLanterns;
 
     public static ForgeConfigSpec.DoubleValue oilRecipeMultiplier;
+    public static ForgeConfigSpec.DoubleValue starterSuccessChance;
 
     public static ForgeConfigSpec.IntValue defaultTorchFuel;
     public static ForgeConfigSpec.IntValue defaultLanternFuel;
@@ -83,6 +88,14 @@ public class Config {
         minLanternIgnitionFuel = builder.comment("A lantern must have at least this much fuel to be ignited from unlit. Once lit it will continue to burn to 0").defineInRange("minLanternIgnitionFuel", 1, 1, Integer.MAX_VALUE);
         defLanternFuelItem = builder.comment("The amount a fuel item adds to the lantern by default").defineInRange("defLanternFuelItem", 72000, 1, Integer.MAX_VALUE);
         handUnlightLantern = builder.comment("Right click a lantern without holding fuel or a lighter to unlight it.").define("handUnlightLantern", false);
+        builder.pop();
+
+        builder.comment("Fire Starter Settings").push("fire_starter");
+        starterLightCampfires = builder.comment("Can the fire starter light campfires").define("canLightCampfires", true);
+        starterLightTorches = builder.comment("Can the fire starter light torches").define("canLightTorches", true);
+        starterStartFires = builder.comment("Can the fire starter start full-block fires").define("canStartFires", true);
+        starterLightLanterns = builder.comment("Can the fire starter light lanterns").define("canLightLanterns", false);
+        starterSuccessChance = builder.comment("Percentage chance that the fire starter works").defineInRange("starterSuccessChance", 0.33, 0, 1);
         builder.pop();
 
         COMMON_CONFIG = builder.build();
