@@ -268,7 +268,7 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         LanternBlockEntity be = new LanternBlockEntity(pos, state);
-        be.setFuel(Config.defLanternFuelItem.get());
+        be.setFuel(Config.startingLanternFuel.get());
         return be;
     }
     //endregion

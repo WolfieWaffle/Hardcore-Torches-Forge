@@ -40,6 +40,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue oilRecipeType;
     public static ForgeConfigSpec.IntValue invExtinguishInWater;
     public static ForgeConfigSpec.IntValue invExtinguishInRain;
+    public static ForgeConfigSpec.IntValue startingLanternFuel;
 
     public static void init() {
         //initServer();
@@ -88,6 +89,7 @@ public class Config {
         minLanternIgnitionFuel = builder.comment("A lantern must have at least this much fuel to be ignited from unlit. Once lit it will continue to burn to 0").defineInRange("minLanternIgnitionFuel", 1, 1, Integer.MAX_VALUE);
         defLanternFuelItem = builder.comment("The amount a fuel item adds to the lantern by default").defineInRange("defLanternFuelItem", 72000, 1, Integer.MAX_VALUE);
         handUnlightLantern = builder.comment("Right click a lantern without holding fuel or a lighter to unlight it.").define("handUnlightLantern", false);
+        startingLanternFuel = builder.comment("How much fuel a newly crafted lantern starts with.").defineInRange("startingLanternFuel", 0, 0, Integer.MAX_VALUE);
         builder.pop();
 
         builder.comment("Fire Starter Settings").push("fire_starter");

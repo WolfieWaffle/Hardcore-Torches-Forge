@@ -1,7 +1,7 @@
 package com.github.wolfiewaffle.hardcore_torches.blockentity;
 
-import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
+import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -11,7 +11,7 @@ public class LanternBlockEntity extends FuelBlockEntity {
 
     public LanternBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntityInit.LANTERN_BLOCK_ENTITY.get(), pos, state);
-        fuel = 0;
+        fuel = Config.startingLanternFuel.get();
     }
 
     public void tick() {

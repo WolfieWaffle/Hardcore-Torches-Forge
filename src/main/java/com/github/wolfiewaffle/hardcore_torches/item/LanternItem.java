@@ -114,7 +114,7 @@ public class LanternItem extends BlockItem {
             return nbt.getInt("Fuel");
         } else {
             LanternItem lanternItem = ((LanternItem) item);
-            return lanternItem.isLit ? lanternItem.getMaxFuel() : 0;
+            return lanternItem.isLit ? lanternItem.getMaxFuel() : Config.startingLanternFuel.get();
         }
     }
 
