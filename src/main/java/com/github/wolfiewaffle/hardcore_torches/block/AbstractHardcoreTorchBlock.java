@@ -184,9 +184,9 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
         BlockState newState;
 
         if (isWall()) {
-            newState = group.getWallTorch(newType).defaultBlockState().setValue(HardcoreWallTorchBlock.FACING, curState.getValue(HardcoreWallTorchBlock.FACING));
+            newState = group.getWallTorch(newType).withPropertiesOf(curState);
         } else {
-            newState = group.getStandingTorch(newType).defaultBlockState();
+            newState = group.getStandingTorch(newType).withPropertiesOf(curState);
         }
 
         int newFuel = 0;

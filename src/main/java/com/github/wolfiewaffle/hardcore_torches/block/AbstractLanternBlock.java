@@ -10,7 +10,6 @@ import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
 import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
-import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
