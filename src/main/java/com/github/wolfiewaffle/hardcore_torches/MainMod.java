@@ -66,6 +66,7 @@ public class MainMod
     public static TorchGroup basicTorches = new TorchGroup("basic");
 
     // Tags
+    public static final TagKey<Item> MC_ANIMAL_FAT = ItemTags.create(new ResourceLocation("minecraft:animal_fat"));
     public static final TagKey<Item> ALL_TORCH_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:torches"));
     public static final TagKey<Block> FREE_TORCH_LIGHT_BLOCKS = BlockTags.create(new ResourceLocation("hardcore_torches:free_torch_light_blocks"));
     public static final TagKey<Item> FREE_TORCH_LIGHT_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:free_torch_light_items"));
