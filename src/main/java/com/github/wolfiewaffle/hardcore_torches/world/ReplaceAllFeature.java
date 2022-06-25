@@ -1,5 +1,7 @@
 package com.github.wolfiewaffle.hardcore_torches.world;
 
+import com.github.wolfiewaffle.hardcore_torches.blockentity.LanternBlockEntity;
+import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
@@ -18,6 +20,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraftforge.fml.config.ModConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,6 +75,11 @@ public class ReplaceAllFeature extends Feature<NoneFeatureConfiguration> {
                         if (newBlock instanceof BaseEntityBlock) {
                             BlockEntity newEntity = ((BaseEntityBlock) chunk.getBlockState(pos).getBlock()).newBlockEntity(pos, newState);
                             chunk.setBlockEntity(newEntity);
+
+                            if (newEntity instanceof LanternBlockEntity) {
+                                ((LanternBlockEntity) newEntity).setFuel(Config.defaultLanternFuel.get());
+                            }
+
                             newEntity.setChanged();
                         }
                     }
