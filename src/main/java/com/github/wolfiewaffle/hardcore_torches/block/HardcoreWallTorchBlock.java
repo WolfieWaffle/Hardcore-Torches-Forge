@@ -6,6 +6,7 @@ import com.github.wolfiewaffle.hardcore_torches.util.TorchTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -36,7 +37,7 @@ public class HardcoreWallTorchBlock extends AbstractHardcoreTorchBlock {
 
     // region Overridden methods for TorchBlock since I can't extend 2 classes
     @Override
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random random) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         TorchTools.displayParticle(particle, state, world, pos);
     }
 

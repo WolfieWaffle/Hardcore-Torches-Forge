@@ -3,6 +3,7 @@ package com.github.wolfiewaffle.hardcore_torches.blockentity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -47,7 +48,7 @@ public interface IFuelBlock {
         // Durability items
         if (stack.is(damage)) {
             if (stack.isDamageableItem() && player instanceof ServerPlayer) {
-                stack.hurt(1, new Random(), (ServerPlayer) player);
+                stack.hurt(1, RandomSource.create(), (ServerPlayer) player);
             }
             return true;
         }

@@ -1,24 +1,16 @@
 package com.github.wolfiewaffle.hardcore_torches.recipe;
 
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
-import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
 import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraft.world.level.Level;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class OilCanRecipe extends ShapelessRecipe {
     final int fuelAmount;
@@ -47,7 +39,7 @@ public class OilCanRecipe extends ShapelessRecipe {
         return ItemStack.EMPTY;
     }
 
-    public static class Serializer extends net.minecraftforge.registries.ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<OilCanRecipe> {
+    public static class Serializer implements RecipeSerializer<OilCanRecipe> {
         private static final ResourceLocation NAME = new ResourceLocation("hardcore_torches", "oil_can");
 
         public OilCanRecipe fromJson(ResourceLocation resourceLocation, JsonObject json) {

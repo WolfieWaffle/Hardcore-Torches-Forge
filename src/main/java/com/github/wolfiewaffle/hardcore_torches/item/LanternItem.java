@@ -8,7 +8,6 @@ import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -55,8 +54,8 @@ public class LanternItem extends BlockItem {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-        if (Config.lanternsNeedCan.get()) list.add(new TextComponent("Requires an Oil Can").withStyle(ChatFormatting.GRAY));
-        list.add(new TextComponent("Light with Flint and Steel").withStyle(ChatFormatting.GRAY));
+        if (Config.lanternsNeedCan.get()) list.add(Component.literal("Requires an Oil Can").withStyle(ChatFormatting.GRAY));
+        list.add(Component.literal("Light with Flint and Steel").withStyle(ChatFormatting.GRAY));
         super.appendHoverText(stack, world, list, flag);
     }
 

@@ -14,7 +14,7 @@ import com.github.wolfiewaffle.hardcore_torches.util.TorchTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -92,10 +92,10 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
         // Fuel message
         BlockEntity be = world.getBlockEntity(pos);
         if (be.getType() == BlockEntityInit.TORCH_BLOCK_ENTITY.get() && !world.isClientSide && Config.fuelMessage.get() && stack.isEmpty()) {
-            player.displayClientMessage(new TextComponent("Fuel: " + ((TorchBlockEntity) be).getFuel()), true);
+            player.displayClientMessage(Component.literal("Fuel: " + ((TorchBlockEntity) be).getFuel()), true);
         }
 
-        // Oil Can
+        // Oil CanJTextComponent
         if (Config.torchesUseCan.get() && burnState != ETorchState.BURNT && !world.isClientSide) {
             if (OilCanItem.fuelBlock((FuelBlockEntity) be, world, stack)) {
                 world.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1f, 1f);

@@ -4,6 +4,7 @@ import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -47,7 +48,7 @@ public class ReplaceAllFeature extends Feature<NoneFeatureConfiguration> {
     }
 
     @Override
-    public boolean place(NoneFeatureConfiguration p_204741_, WorldGenLevel p_204742_, ChunkGenerator p_204743_, Random p_204744_, BlockPos p_204745_) {
+    public boolean place(NoneFeatureConfiguration p_204741_, WorldGenLevel p_204742_, ChunkGenerator p_204743_, RandomSource p_204744_, BlockPos p_204745_) {
         return super.place(p_204741_, p_204742_, p_204743_, p_204744_, p_204745_);
     }
 

@@ -7,7 +7,6 @@ import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -53,7 +52,7 @@ public class FireStarterItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-        list.add(new TextComponent("Has a chance to fail").withStyle(ChatFormatting.GRAY));
+        list.add(Component.literal("Has a chance to fail").withStyle(ChatFormatting.GRAY));
         super.appendHoverText(stack, world, list, flag);
     }
 

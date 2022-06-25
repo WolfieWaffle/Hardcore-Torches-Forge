@@ -23,7 +23,7 @@ public class ConfigRecipeCondition implements ICondition
     }
 
     @Override
-    public boolean test()
+    public boolean test(IContext context)
     {
         return bool.get();
     }

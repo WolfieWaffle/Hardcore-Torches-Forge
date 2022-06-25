@@ -15,7 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
@@ -141,7 +141,7 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
             if (!world.isClientSide) {
                 if (((FuelBlockEntity) world.getBlockEntity(pos)).getFuel() < Config.minLanternIgnitionFuel.get()) {
                     world.playSound(null, pos, SoundEvents.LANTERN_HIT, SoundSource.BLOCKS, 1f, 1f);
-                    player.displayClientMessage(new TextComponent("Not enough fuel to ignite!"), true);
+                    player.displayClientMessage(Component.literal("Not enough fuel to ignite!"), true);
                 } else if (attemptUse(stack, player, hand, MainMod.FREE_LANTERN_LIGHT_ITEMS, MainMod.DAMAGE_LANTERN_LIGHT_ITEMS, MainMod.CONSUME_LANTERN_LIGHT_ITEMS)) {
                     light(world, pos, state);
                 }
@@ -186,11 +186,11 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
 
         // Fuel message
         if (be.getType() == BlockEntityInit.LANTERN_BLOCK_ENTITY.get() && hand == InteractionHand.MAIN_HAND && !world.isClientSide && showFuel) {
-            player.displayClientMessage(new TextComponent("Fuel: " + ((FuelBlockEntity) be).getFuel()), true);
+            player.displayClientMessage(Component.literal("Fuel: " + ((FuelBlockEntity) be).getFuel()), true);
         }
 
         if (Config.lanternsNeedCan.get() && hand == InteractionHand.MAIN_HAND && !stack.isEmpty() && stack.getItem() != ItemInit.OIL_CAN.get() && !world.isClientSide) {
-            player.displayClientMessage(new TextComponent("Requires an Oil Can to fuel!"), true);
+            player.displayClientMessage(Component.literal("Requires an Oil Can to fuel!"), true);
         }
 
         // Hand extinguish
