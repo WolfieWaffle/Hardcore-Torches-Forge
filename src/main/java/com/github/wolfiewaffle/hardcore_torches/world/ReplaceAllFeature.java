@@ -57,6 +57,8 @@ public class ReplaceAllFeature extends Feature<NoneFeatureConfiguration> {
 
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+        if (!Config.lanternsUseFuel.get()) return true;
+
         BlockPos origin = context.origin();
         WorldGenLevel level = context.level();
         ChunkAccess chunk = level.getChunk(origin);

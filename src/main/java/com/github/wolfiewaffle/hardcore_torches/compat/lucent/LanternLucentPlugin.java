@@ -41,6 +41,12 @@ public class LanternLucentPlugin implements ILucentPlugin {
                         if (handlerModifiable.getStackInSlot(i).getItem() == ItemInit.LIT_LANTERN.get()) {
                             entityBrightness.setLightLevel(AbstractLanternBlock.LANTERN_LIGHT_LEVEL);
                         }
+                        if (handlerModifiable.getStackInSlot(i).getItem() == Items.LANTERN) {
+                            entityBrightness.setLightLevel(15);
+                        }
+                        if (handlerModifiable.getStackInSlot(i).getItem() == Items.SOUL_LANTERN) {
+                            entityBrightness.setLightLevel(10);
+                        }
                     }
                 });
             }

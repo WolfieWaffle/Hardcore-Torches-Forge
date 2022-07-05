@@ -19,13 +19,17 @@
     },
     "result":
     {
-        "item": "hardcore_torches:unlit_lantern",
+        "item": "minecraft:lantern",
         "count": 1
     },
     "conditions":
     [
         {
-            "type": "hardcore_torches:lanterns_use_fuel"
+            "type": "forge:not",
+            "value":
+            {
+                "type": "hardcore_torches:lanterns_use_fuel"
+            }
         }
     ]
 }

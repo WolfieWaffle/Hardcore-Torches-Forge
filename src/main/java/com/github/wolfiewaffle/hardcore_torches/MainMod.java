@@ -173,6 +173,7 @@ public class MainMod
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.craftUnlit.get(), new ResourceLocation("hardcore_torches", "config_craft_unlit")));
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 0 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_fat")));
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 1 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_coal")));
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.lanternsUseFuel.get(), new ResourceLocation("hardcore_torches", "lanterns_use_fuel")));
     }
 
     @SubscribeEvent

@@ -28,6 +28,7 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue starterLightTorches;
     public static ForgeConfigSpec.BooleanValue starterStartFires;
     public static ForgeConfigSpec.BooleanValue starterLightLanterns;
+    public static ForgeConfigSpec.BooleanValue lanternsUseFuel;
 
     public static ForgeConfigSpec.DoubleValue oilRecipeMultiplier;
     public static ForgeConfigSpec.DoubleValue starterSuccessChance;
@@ -85,6 +86,7 @@ public class Config {
         builder.pop();
 
         builder.comment("Lantern Settings").push("lantern");
+        lanternsUseFuel = builder.comment("If this mod also affects lanterns.").define("lanternsUseFuel", true);
         defaultLanternFuel = builder.comment("The max amount of fuel a lantern can hold. There are 20 ticks per second so 144000 ticks = 60 minutes.").defineInRange("defaultLanternFuel", 144000, 1, Integer.MAX_VALUE);
         minLanternIgnitionFuel = builder.comment("A lantern must have at least this much fuel to be ignited from unlit. Once lit it will continue to burn to 0").defineInRange("minLanternIgnitionFuel", 1, 1, Integer.MAX_VALUE);
         defLanternFuelItem = builder.comment("The amount a fuel item adds to the lantern by default").defineInRange("defLanternFuelItem", 72000, 1, Integer.MAX_VALUE);
