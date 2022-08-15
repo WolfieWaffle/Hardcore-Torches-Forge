@@ -146,7 +146,7 @@ dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.19-41.0.45'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.0.11'
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
@@ -159,9 +159,9 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-	
-    implementation fg.deobf("com.legacy:lucent:1.19-1.2.2")
-	implementation fg.deobf("curse.maven:curios-309927:3841962")
+
+    implementation fg.deobf("curse.maven:lucent-493280:3930627")
+	implementation fg.deobf("curse.maven:curios-309927:3924518")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

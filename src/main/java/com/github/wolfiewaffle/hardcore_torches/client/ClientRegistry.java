@@ -15,6 +15,8 @@ public class ClientRegistry {
     public static void setupClient(FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(BlockInit.LIT_LANTERN.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockInit.UNLIT_LANTERN.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(BlockInit.LIT_SOUL_LANTERN.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(BlockInit.UNLIT_SOUL_LANTERN.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockInit.LIT_TORCH.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockInit.LIT_WALL_TORCH.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockInit.UNLIT_TORCH.get(), RenderType.cutout());

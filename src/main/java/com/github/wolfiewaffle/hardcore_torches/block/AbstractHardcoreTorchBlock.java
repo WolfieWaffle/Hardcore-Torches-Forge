@@ -68,13 +68,13 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
         ItemStack stack = player.getItemInHand(hand);
 
         if (burnState == ETorchState.LIT) {
-            if (attemptUse(stack, player, hand, MainMod.FREE_TORCH_EXTINGUISH_ITEMS, MainMod.DAMAGE_TORCH_EXTINGUISH_ITEMS, MainMod.CONSUME_TORCH_EXTINGUISH_ITEMS)) {
+            if (attemptUseItem(stack, player, hand, ETorchState.UNLIT)) {
                 extinguish(world, pos, state);
                 player.swing(hand);
                 return InteractionResult.SUCCESS;
             }
 
-            if (attemptUse(stack, player, hand, MainMod.FREE_TORCH_SMOTHER_ITEMS, MainMod.DAMAGE_TORCH_SMOTHER_ITEMS, MainMod.CONSUME_TORCH_SMOTHER_ITEMS)) {
+            if (attemptUseItem(stack, player, hand, ETorchState.SMOLDERING)) {
                 smother(world, pos, state);
                 player.swing(hand);
                 return InteractionResult.SUCCESS;
@@ -82,7 +82,7 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
         }
 
         if (burnState == ETorchState.SMOLDERING || burnState == ETorchState.UNLIT) {
-            if (attemptUse(stack, player, hand, MainMod.FREE_TORCH_LIGHT_ITEMS, MainMod.DAMAGE_TORCH_LIGHT_ITEMS, MainMod.CONSUME_TORCH_LIGHT_ITEMS)) {
+            if (attemptUseItem(stack, player, hand, ETorchState.LIT)) {
                 light(world, pos, state);
                 player.swing(hand);
                 return InteractionResult.SUCCESS;

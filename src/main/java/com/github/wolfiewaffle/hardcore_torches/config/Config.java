@@ -29,9 +29,11 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue starterStartFires;
     public static ForgeConfigSpec.BooleanValue starterLightLanterns;
     public static ForgeConfigSpec.BooleanValue lanternsUseFuel;
+    public static ForgeConfigSpec.BooleanValue pickUpLanterns;
 
     public static ForgeConfigSpec.DoubleValue oilRecipeMultiplier;
     public static ForgeConfigSpec.DoubleValue starterSuccessChance;
+    public static ForgeConfigSpec.DoubleValue soulExpRatio;
 
     public static ForgeConfigSpec.IntValue defaultTorchFuel;
     public static ForgeConfigSpec.IntValue defaultLanternFuel;
@@ -42,6 +44,8 @@ public class Config {
     public static ForgeConfigSpec.IntValue invExtinguishInWater;
     public static ForgeConfigSpec.IntValue invExtinguishInRain;
     public static ForgeConfigSpec.IntValue startingLanternFuel;
+    public static ForgeConfigSpec.IntValue expIncrement;
+    public static ForgeConfigSpec.IntValue defaultSoulLanternFuel;
 
     public static void init() {
         //initServer();
@@ -62,6 +66,8 @@ public class Config {
         builder.comment("General Settings").push("general");
         tickInInventory = builder.comment("If true, torches and lanterns will continue to lose fuel even while in the players inventory.").define("tickInInventory", false);
         animalsDropFat = builder.comment("If true, certain animals will drop fat as an item, which can be used in lanterns.").define("animalsDropFat", true);
+        soulExpRatio = builder.comment("How many fuel ticks you get for a single experience point in the soul lanterns and torches.").defineInRange("soulExpRatio", 1200, 1, Double.MAX_VALUE);
+        expIncrement = builder.comment("How many experience points are used in a single right click.").defineInRange("expIncrement", 1, 1, Integer.MAX_VALUE);
         builder.pop();
 
         builder.comment("Oil Can Settings").push("oil_can");
@@ -88,10 +94,12 @@ public class Config {
         builder.comment("Lantern Settings").push("lantern");
         lanternsUseFuel = builder.comment("If this mod also affects lanterns.").define("lanternsUseFuel", true);
         defaultLanternFuel = builder.comment("The max amount of fuel a lantern can hold. There are 20 ticks per second so 144000 ticks = 60 minutes.").defineInRange("defaultLanternFuel", 144000, 1, Integer.MAX_VALUE);
+        defaultSoulLanternFuel = builder.comment("The max amount of fuel a soul lantern can hold. There are 20 ticks per second so 144000 ticks = 60 minutes.").defineInRange("defaultSoulLanternFuel", 144000, 1, Integer.MAX_VALUE);
         minLanternIgnitionFuel = builder.comment("A lantern must have at least this much fuel to be ignited from unlit. Once lit it will continue to burn to 0").defineInRange("minLanternIgnitionFuel", 1, 1, Integer.MAX_VALUE);
         defLanternFuelItem = builder.comment("The amount a fuel item adds to the lantern by default").defineInRange("defLanternFuelItem", 72000, 1, Integer.MAX_VALUE);
         handUnlightLantern = builder.comment("Right click a lantern without holding fuel or a lighter to unlight it.").define("handUnlightLantern", false);
         startingLanternFuel = builder.comment("How much fuel a newly crafted lantern starts with.").defineInRange("startingLanternFuel", 0, 0, Integer.MAX_VALUE);
+        pickUpLanterns = builder.comment("Allow the player to pick up lanterns with sneak-clicking.").define("pickUpLanterns", true);
         builder.pop();
 
         builder.comment("Fire Starter Settings").push("fire_starter");

@@ -2,6 +2,7 @@ package com.github.wolfiewaffle.hardcore_torches.compat.lucent;
 
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
+import com.github.wolfiewaffle.hardcore_torches.block.SoulLanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
@@ -40,6 +41,9 @@ public class LanternLucentPlugin implements ILucentPlugin {
                     for (int i = 0; i < handlerModifiable.getSlots(); i++) {
                         if (handlerModifiable.getStackInSlot(i).getItem() == ItemInit.LIT_LANTERN.get()) {
                             entityBrightness.setLightLevel(AbstractLanternBlock.LANTERN_LIGHT_LEVEL);
+                        }
+                        if (handlerModifiable.getStackInSlot(i).getItem() == ItemInit.LIT_SOUL_LANTERN.get()) {
+                            entityBrightness.setLightLevel(SoulLanternBlock.SOUL_LANTERN_LIGHT_LEVEL);
                         }
                         if (handlerModifiable.getStackInSlot(i).getItem() == Items.LANTERN) {
                             entityBrightness.setLightLevel(15);

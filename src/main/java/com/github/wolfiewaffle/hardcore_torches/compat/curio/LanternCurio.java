@@ -1,5 +1,6 @@
 package com.github.wolfiewaffle.hardcore_torches.compat.curio;
 
+import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -32,9 +33,11 @@ public class LanternCurio implements ICurio {
         stackHandler.ifPresent((handler) -> {
             IDynamicStackHandler dynamicStackHandler = handler.getCurios().get(identifier).getStacks();
 
-            ItemStack newStack = LanternItem.addFuel(dynamicStackHandler.getStackInSlot(index), entity.level, -1);
-            dynamicStackHandler.setStackInSlot(index, newStack);
-            this.stack = newStack;
+            if (Config.tickInInventory.get()) {
+                ItemStack newStack = LanternItem.addFuel(dynamicStackHandler.getStackInSlot(index), entity.level, -1);
+                dynamicStackHandler.setStackInSlot(index, newStack);
+                this.stack = newStack;
+            }
         });
     }
 }

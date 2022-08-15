@@ -1,5 +1,6 @@
 package com.github.wolfiewaffle.hardcore_torches.item;
 
+import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.block.LanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.compat.curio.LanternCurioProvider;
@@ -14,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -30,11 +32,13 @@ public class LanternItem extends BlockItem {
     public static Capability<ICurio> CURIO_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
     public boolean isLit;
     public IntSupplier maxFuel;
+    private AbstractLanternBlock lanternBlock;
 
     public LanternItem(Block block, Properties properties) {
         super(block, properties);
         this.isLit = ((AbstractLanternBlock) block).isLit;
         this.maxFuel = ((AbstractLanternBlock) block).maxFuel;
+        if (block instanceof AbstractLanternBlock) lanternBlock = (AbstractLanternBlock) block;
     }
 
     public int getMaxFuel() {
@@ -50,13 +54,6 @@ public class LanternItem extends BlockItem {
         }
 
         return null;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-        if (Config.lanternsNeedCan.get()) list.add(Component.literal("Requires an Oil Can").withStyle(ChatFormatting.GRAY));
-        list.add(Component.literal("Light with Flint and Steel").withStyle(ChatFormatting.GRAY));
-        super.appendHoverText(stack, world, list, flag);
     }
 
     @Override
@@ -113,7 +110,10 @@ public class LanternItem extends BlockItem {
             return nbt.getInt("Fuel");
         } else {
             LanternItem lanternItem = ((LanternItem) item);
-            return lanternItem.isLit ? lanternItem.getMaxFuel() : Config.startingLanternFuel.get();
+            int startingFuel = Config.startingLanternFuel.get();
+            if (lanternItem.lanternBlock.group == MainMod.soulLanterns) startingFuel = 0;
+
+            return lanternItem.isLit ? lanternItem.getMaxFuel() : startingFuel;
         }
     }
 
@@ -160,7 +160,7 @@ public class LanternItem extends BlockItem {
         ItemStack outputStack = ItemStack.EMPTY;
 
         if (inputStack.getItem() instanceof BlockItem && inputStack.getItem() instanceof LanternItem) {
-            LanternItem newItem = (LanternItem) (isLit ? BlockInit.LIT_LANTERN.get().asItem() : BlockInit.UNLIT_LANTERN.get().asItem());
+            LanternItem newItem = (LanternItem) ((LanternItem) inputStack.getItem()).lanternBlock.group.getLanternBlock(isLit).asItem();
 
             outputStack = new ItemStack(newItem, inputStack.getCount());
 

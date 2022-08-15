@@ -6,10 +6,11 @@ import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlock;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.LanternBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
-import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
 import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
+import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
+import com.github.wolfiewaffle.hardcore_torches.util.LanternGroup;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -52,6 +53,7 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
     public static final BooleanProperty WATERLOGGED;
     public static final int LANTERN_LIGHT_LEVEL = 15;
     public boolean isLit;
+    public LanternGroup group;
     public IntSupplier maxFuel;
 
     static {
@@ -86,7 +88,23 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
         }
     }
 
-    public void light(Level world, BlockPos pos, BlockState state) {
+    public InteractionResult attemptLight(Level world, BlockPos pos, BlockState state, Player player, ItemStack stack, InteractionHand hand) {
+
+        // If not enough fuel to light
+        if (!world.isClientSide) {
+            if (((FuelBlockEntity) world.getBlockEntity(pos)).getFuel() < Config.minLanternIgnitionFuel.get()) {
+                world.playSound(null, pos, SoundEvents.LANTERN_HIT, SoundSource.BLOCKS, 1f, 1f);
+                player.displayClientMessage(Component.literal("Not enough fuel to ignite!"), true);
+            } else if (attemptUseItem(stack, player, hand, ETorchState.LIT)) {
+                light(world, pos);
+            }
+        }
+
+        player.swing(hand);
+        return InteractionResult.SUCCESS;
+    }
+
+    public void light(Level world, BlockPos pos) {
         if (!world.isClientSide) {
             world.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1f, 1f);
             setState(world, pos, true);
@@ -95,7 +113,7 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
 
     public void setState(Level world, BlockPos pos, boolean lit) {
         BlockState oldState = world.getBlockState(pos);
-        BlockState newState = lit ? BlockInit.LIT_LANTERN.get().defaultBlockState() : BlockInit.UNLIT_LANTERN.get().defaultBlockState();
+        BlockState newState = group.getLanternBlock(lit).defaultBlockState();
         newState = newState.setValue(HANGING, oldState.getValue(HANGING)).setValue(WATERLOGGED, oldState.getValue(WATERLOGGED));
         int newFuel = 0;
 
@@ -126,7 +144,7 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
         BlockEntity be = world.getBlockEntity(pos);
 
         // Pick up lantern
-        if (player.isCrouching()) {
+        if (player.isCrouching() && Config.pickUpLanterns.get()) {
             if (!world.isClientSide) player.addItem(getStack(world, pos));
             world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             if (!world.isClientSide) world.playSound(null, pos, SoundEvents.LANTERN_PLACE, SoundSource.BLOCKS, 1f, 1f);
@@ -135,20 +153,8 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
         }
 
         // Igniting
-        if (!this.isLit && itemValid(stack, MainMod.FREE_LANTERN_LIGHT_ITEMS, MainMod.DAMAGE_LANTERN_LIGHT_ITEMS, MainMod.CONSUME_LANTERN_LIGHT_ITEMS)) {
-
-            // If not enough fuel to light
-            if (!world.isClientSide) {
-                if (((FuelBlockEntity) world.getBlockEntity(pos)).getFuel() < Config.minLanternIgnitionFuel.get()) {
-                    world.playSound(null, pos, SoundEvents.LANTERN_HIT, SoundSource.BLOCKS, 1f, 1f);
-                    player.displayClientMessage(Component.literal("Not enough fuel to ignite!"), true);
-                } else if (attemptUse(stack, player, hand, MainMod.FREE_LANTERN_LIGHT_ITEMS, MainMod.DAMAGE_LANTERN_LIGHT_ITEMS, MainMod.CONSUME_LANTERN_LIGHT_ITEMS)) {
-                    light(world, pos, state);
-                }
-            }
-
-            player.swing(hand);
-            return InteractionResult.SUCCESS;
+        if (!this.isLit && itemValid(stack, ETorchState.LIT)) {
+            return attemptLight(world, pos, state, player, stack, hand);
         }
 
         // Adding fuel

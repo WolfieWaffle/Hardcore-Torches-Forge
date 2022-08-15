@@ -10,6 +10,7 @@ import com.github.wolfiewaffle.hardcore_torches.loot.FatModifier;
 import com.github.wolfiewaffle.hardcore_torches.loot.SetFuelLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.loot.TorchLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.recipe.OilCanRecipe;
+import com.github.wolfiewaffle.hardcore_torches.util.LanternGroup;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
 import com.github.wolfiewaffle.hardcore_torches.world.ReplaceAllBiomeModifier;
 import com.github.wolfiewaffle.hardcore_torches.world.ReplaceAllFeature;
@@ -32,7 +33,8 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
+import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -45,11 +47,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 
-import java.lang.annotation.ElementType;
 import java.util.ArrayList;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -64,6 +63,8 @@ public class MainMod
 
     // Groups
     public static TorchGroup basicTorches = new TorchGroup("basic");
+    public static LanternGroup basicLanterns = new LanternGroup("basic");
+    public static LanternGroup soulLanterns = new LanternGroup("soul");
 
     // Tags
     @SuppressWarnings("unused")
@@ -85,6 +86,7 @@ public class MainMod
     public static final TagKey<Item> FREE_LANTERN_LIGHT_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:free_lantern_light_items"));
     public static final TagKey<Item> DAMAGE_LANTERN_LIGHT_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:damage_lantern_light_items"));
     public static final TagKey<Item> CONSUME_LANTERN_LIGHT_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:consume_lantern_light_items"));
+    public static final TagKey<Item> SOUL_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:soul_attunement_items"));
 
     // Loot Functions
     public static final LootItemFunctionType HARDCORE_TORCH_LOOT_FUNCTION = new LootItemFunctionType(new TorchLootFunction.Serializer());
@@ -98,8 +100,8 @@ public class MainMod
     private static final RegistryObject<OilCanRecipe.Serializer> OIL_CAN_RECIPE_SERIALIZER = RECIPE_SERIALIZER_DEFERRED_REGISTER.register("oil_can", OilCanRecipe.Serializer::new);
 
     // Register Loot Tables
-    private static final DeferredRegister<GlobalLootModifierSerializer<?>> GLM = DeferredRegister.create(ForgeRegistries.Keys.LOOT_MODIFIER_SERIALIZERS, MOD_ID);
-    private static final RegistryObject<FatModifier.Serializer> FAT_LOOT_PIG = GLM.register("fat_modifier", FatModifier.Serializer::new);
+    private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MOD_CODEC_REGISTER = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MOD_ID);
+    public static final RegistryObject<Codec<FatModifier>> FAT_MOD_CODEC = LOOT_MOD_CODEC_REGISTER.register("fat_modifier", () -> FatModifier.codec);
 
     // Register World features (replacement of vanilla torches and lanterns)
     private static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, MOD_ID);
@@ -136,7 +138,7 @@ public class MainMod
         MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
 
         // For loot tables
-        GLM.register(modEventBus);
+        LOOT_MOD_CODEC_REGISTER.register(modEventBus);
 
         // For recipe types
         RECIPE_TYPE_DEFERRED_REGISTER.register(modEventBus);
@@ -161,6 +163,10 @@ public class MainMod
         basicTorches.add(BlockInit.SMOLDERING_WALL_TORCH.get());
         basicTorches.add(BlockInit.BURNT_TORCH.get());
         basicTorches.add(BlockInit.BURNT_WALL_TORCH.get());
+        basicLanterns.add(BlockInit.LIT_LANTERN.get());
+        basicLanterns.add(BlockInit.UNLIT_LANTERN.get());
+        soulLanterns.add(BlockInit.LIT_SOUL_LANTERN.get());
+        soulLanterns.add(BlockInit.UNLIT_SOUL_LANTERN.get());
 
         // Register Loot Functions
         Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation("hardcore_torches", "torch"), HARDCORE_TORCH_LOOT_FUNCTION);

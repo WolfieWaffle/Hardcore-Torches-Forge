@@ -86,7 +86,7 @@ public class FireStarterItem extends Item {
             } else if (block instanceof AbstractLanternBlock && Config.starterLightLanterns.get()) {
                 if (((AbstractLanternBlock) block).canLight(world, pos)) {
                     attempt = true;
-                    if (success) ((AbstractLanternBlock) block).light(world, pos, world.getBlockState(pos));
+                    if (success) ((AbstractLanternBlock) block).light(world, pos);
                 }
             } else if (Config.starterStartFires.get()) {
                 attempt = true;
