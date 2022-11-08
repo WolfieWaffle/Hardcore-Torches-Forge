@@ -57,6 +57,7 @@ public class MainMod
     public static TorchGroup basicTorches = new TorchGroup("basic");
 
     // Tags
+    public static final ITag.INamedTag<Item> MC_ANIMAL_FAT = ItemTags.bind("minecraft:animal_fat");
     public static final ITag.INamedTag<Item> ALL_TORCH_ITEMS = ItemTags.bind("hardcore_torches:torches");
     public static final ITag.INamedTag<Block> FREE_TORCH_LIGHT_BLOCKS = BlockTags.bind("hardcore_torches:free_torch_light_blocks");
     public static final ITag.INamedTag<Item> FREE_TORCH_LIGHT_ITEMS = ItemTags.bind("hardcore_torches:free_torch_light_items");
