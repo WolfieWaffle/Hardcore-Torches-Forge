@@ -42,7 +42,7 @@ public class TorchLootFunction extends LootFunction {
 
             // If torches burn out when dropped
             if (Config.torchesBurnWhenDropped.get()) {
-                if (dropTorchState != ETorchState.BURNT && dropTorchState != ETorchState.UNLIT) {
+                if (dropTorchState != ETorchState.BURNT) {
                     dropTorchState = ETorchState.BURNT;
                 }
             } else {
