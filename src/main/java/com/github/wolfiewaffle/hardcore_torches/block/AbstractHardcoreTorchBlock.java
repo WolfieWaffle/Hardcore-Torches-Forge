@@ -146,9 +146,9 @@ public abstract class AbstractHardcoreTorchBlock extends Block implements IFuelB
         }
     }
 
-    public void burnOut(World world, BlockPos pos, BlockState state) {
+    public void burnOut(World world, BlockPos pos, BlockState state, boolean playSound) {
         if (!world.isClientSide) {
-            world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1f, 1f);
+            if (playSound) world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1f, 1f);
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.SMOKE, state, world, pos);
@@ -205,7 +205,7 @@ public abstract class AbstractHardcoreTorchBlock extends Block implements IFuelB
     // region IFuelBlock
     @Override
     public void outOfFuel(World world, BlockPos pos, BlockState state) {
-        burnOut(world, pos, state);
+        burnOut(world, pos, state, false);
     }
     // endregion
 }

@@ -61,7 +61,7 @@ public class TorchBlockEntity extends FuelBlockEntity {
                 fuel--;
 
                 if (fuel <= 0) {
-                    ((AbstractHardcoreTorchBlock) world.getBlockState(pos).getBlock()).burnOut(world, pos, state);
+                    ((AbstractHardcoreTorchBlock) world.getBlockState(pos).getBlock()).burnOut(world, pos, state, false);
                 }
             }
         }

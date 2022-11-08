@@ -59,9 +59,9 @@ public abstract class AbstractLanternBlock extends Block implements IFuelBlock {
         this.isLit = isLit;
     }
 
-    public void extinguish(World world, BlockPos pos, BlockState state) {
+    public void extinguish(World world, BlockPos pos, BlockState state, boolean playSound) {
         if (!world.isClientSide) {
-            world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1f, 1f);
+            if (playSound) world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1f, 1f);
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.SMOKE, state, world, pos);
@@ -180,7 +180,7 @@ public abstract class AbstractLanternBlock extends Block implements IFuelBlock {
         // Hand extinguish
         if (Config.handUnlightLantern.get() && isLit) {
             if (!TorchTools.canLight(stack.getItem(), this)) {
-                extinguish(world, pos, state);
+                extinguish(world, pos, state, true);
                 return ActionResultType.SUCCESS;
             }
         }
@@ -211,7 +211,7 @@ public abstract class AbstractLanternBlock extends Block implements IFuelBlock {
     // region IFuelBlock
     @Override
     public void outOfFuel(World world, BlockPos pos, BlockState state) {
-        ((AbstractLanternBlock) world.getBlockState(pos).getBlock()).extinguish(world, pos, state);
+        ((AbstractLanternBlock) world.getBlockState(pos).getBlock()).extinguish(world, pos, state, false);
     }
     //endregion
 
