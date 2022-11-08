@@ -14,7 +14,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/cd40316e7f9b54e6ef4dfd4d200e8b11dff80efe/classremapper.gradle'
 
-version = '1.2'
+version = '1.16.5-1.2'
 group = 'com.github.wolfiewaffle.hardcore_torches' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'hardcore_torches_forge'
 
