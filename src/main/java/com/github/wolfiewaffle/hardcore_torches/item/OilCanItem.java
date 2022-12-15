@@ -138,12 +138,12 @@ public class OilCanItem extends Item {
     }
     // endregion
 
-    @Override
-    public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> stacks) {
-        super.fillItemCategory(tab, stacks);
-
-        if (this.allowedIn(tab)) {
-            stacks.add(OilCanItem.setFuel(new ItemStack(this), Config.maxCanFuel.get()));
-        }
-    }
+//    @Override
+//    public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> stacks) {
+//        super.fillItemCategory(tab, stacks);
+//
+//        if (this.allowedIn(tab)) {
+//            stacks.add(OilCanItem.setFuel(new ItemStack(this), Config.maxCanFuel.get()));
+//        }
+//    }
 }

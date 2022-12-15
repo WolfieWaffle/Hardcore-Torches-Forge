@@ -6,6 +6,7 @@ import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -29,8 +30,8 @@ public class TorchItem extends StandingAndWallBlockItem {
     TorchGroup torchGroup;
     public IntSupplier maxFuel;
 
-    public TorchItem(Block floorBlock, Block wallBlock, Properties properties) {
-        super(floorBlock, wallBlock, properties);
+    public TorchItem(Block floorBlock, Block wallBlock, Properties properties, Direction direction) {
+        super(floorBlock, wallBlock, properties, direction);
         this.burnState = ((AbstractHardcoreTorchBlock) floorBlock).burnState;
         this.torchGroup = ((AbstractHardcoreTorchBlock) floorBlock).group;
         this.maxFuel = ((AbstractHardcoreTorchBlock) floorBlock).maxFuel;

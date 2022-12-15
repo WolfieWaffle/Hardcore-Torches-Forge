@@ -8,6 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -16,7 +17,7 @@ public class OilCanRecipe extends ShapelessRecipe {
     final int fuelAmount;
 
     public OilCanRecipe(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> recipeItems, int fuelAmount) {
-        super(id, group, result, recipeItems);
+        super(id, group, CraftingBookCategory.EQUIPMENT, result, recipeItems);
         this.fuelAmount = fuelAmount;
     }
 
@@ -57,7 +58,7 @@ public class OilCanRecipe extends ShapelessRecipe {
         }
 
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, OilCanRecipe oilCanRecipe) {
-            ShapelessRecipe rec = new ShapelessRecipe(oilCanRecipe.getId(), oilCanRecipe.getGroup(), oilCanRecipe.getResultItem(), oilCanRecipe.getIngredients());
+            ShapelessRecipe rec = new ShapelessRecipe(oilCanRecipe.getId(), oilCanRecipe.getGroup(), CraftingBookCategory.EQUIPMENT, oilCanRecipe.getResultItem(), oilCanRecipe.getIngredients());
             ShapelessRecipe.Serializer.SHAPELESS_RECIPE.toNetwork(friendlyByteBuf, rec);
 
             friendlyByteBuf.writeVarInt(oilCanRecipe.fuelAmount);
