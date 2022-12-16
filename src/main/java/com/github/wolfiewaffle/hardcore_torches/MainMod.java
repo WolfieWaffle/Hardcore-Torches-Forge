@@ -6,6 +6,7 @@ import com.github.wolfiewaffle.hardcore_torches.event.PlayerEventHandler;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
+import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
 import com.github.wolfiewaffle.hardcore_torches.loot.FatModifier;
 import com.github.wolfiewaffle.hardcore_torches.loot.SetFuelLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.loot.TorchLootFunction;
@@ -23,6 +24,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
@@ -193,6 +195,7 @@ public class MainMod
 
         if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(ItemInit.OIL_CAN);
+            event.accept(OilCanItem.setFuel(new ItemStack(ItemInit.OIL_CAN.get()), Config.maxCanFuel.get()));
             event.accept(ItemInit.FIRE_STARTER);
         }
 
