@@ -1,6 +1,7 @@
 package com.github.wolfiewaffle.hardcore_torches.world;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -10,12 +11,11 @@ import net.minecraftforge.common.world.ModifiableBiomeInfo;
 
 public class ReplaceAllBiomeModifier implements BiomeModifier
 {
-    public static final ReplaceAllBiomeModifier INSTANCE = new ReplaceAllBiomeModifier();
-    public static final Codec<ReplaceAllBiomeModifier> CODEC = Codec.unit(INSTANCE);
-    private ReplaceAllBiomeModifier() {}
-    Holder<PlacedFeature> feature;
+    public Holder<PlacedFeature> feature;
 
-    public ReplaceAllBiomeModifier(Holder<PlacedFeature> feature) {
+    public static Codec<ReplaceAllBiomeModifier> CODEC = PlacedFeature.CODEC.fieldOf("feature").xmap(ReplaceAllBiomeModifier::new, (o) -> o.feature).codec();
+
+    private ReplaceAllBiomeModifier(Holder<PlacedFeature> feature) {
         this.feature = feature;
     }
 

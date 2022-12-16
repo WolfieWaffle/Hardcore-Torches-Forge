@@ -136,6 +136,7 @@ public class MainMod
 
         // For loot tables
         LOOT_MOD_CODEC_REGISTER.register(modEventBus);
+        LOOT_FUNC_REGISTER.register(modEventBus);
 
         // For recipe types
         RECIPE_TYPE_DEFERRED_REGISTER.register(modEventBus);
