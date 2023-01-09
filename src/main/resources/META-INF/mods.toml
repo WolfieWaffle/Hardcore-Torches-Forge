@@ -54,7 +54,7 @@ Makes torches burn out and adds Lanterns that run on fuel
     mandatory=true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange="[1.18.1,1.19)"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 [[dependencies.examplemod]]
     modId="lucent"
