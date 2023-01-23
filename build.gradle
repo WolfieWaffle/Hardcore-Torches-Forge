@@ -4,7 +4,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '5.1.61'
 }
 
-version = '1.19.3-2.8'
+version = '1.19.3-2.7a'
 group = 'com.github.wolfiewaffle.hardcore_torches' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'hardcore_torches_forge'
 

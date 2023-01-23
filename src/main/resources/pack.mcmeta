@@ -1,6 +1,14 @@
 {
     "pack": {
         "description": "hardcore_torches resources",
-        "pack_format": 9
+        "pack_format": 10
+    },
+    "filter": {
+        "block": [
+            {
+                "namespace": "minecraft",
+                "path": "recipes/torch"
+            }
+        ]
     }
 }
