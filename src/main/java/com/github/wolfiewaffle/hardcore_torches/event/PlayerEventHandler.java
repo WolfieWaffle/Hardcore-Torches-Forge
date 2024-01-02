@@ -23,7 +23,7 @@ public class PlayerEventHandler {
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event) {
         Inventory inventory = event.player.getInventory();
-        Level world = event.player.level;
+        Level world = event.player.level();
 
         // There are 2 phases to tick event, apparently. I chose START arbitrarily.
         if (!world.isClientSide && event.phase == TickEvent.Phase.START) {

@@ -60,7 +60,7 @@ public class FireStarterItem extends Item {
     public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int number) {
         if (world.isClientSide) return;
 
-        BlockHitResult hit = world.clip(new ClipContext(entity.getEyePosition(), entity.getEyePosition().add(entity.getLookAngle().scale(entity.getAttributeValue(ForgeMod.REACH_DISTANCE.get()))), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity));
+        BlockHitResult hit = world.clip(new ClipContext(entity.getEyePosition(), entity.getEyePosition().add(entity.getLookAngle().scale(entity.getAttributeValue(ForgeMod.BLOCK_REACH.get()))), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity));
         BlockPos pos = hit.getBlockPos();
         Block block = world.getBlockState(pos).getBlock();
         boolean attempt = false;

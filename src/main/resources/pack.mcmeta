@@ -1,14 +1,8 @@
 {
-    "pack": {
-        "description": "hardcore_torches resources",
-        "pack_format": 10
+  "pack": {
+    "description": {
+      "text": "${mod_id} resources"
     },
-    "filter": {
-        "block": [
-            {
-                "namespace": "minecraft",
-                "path": "recipes/torch"
-            }
-        ]
-    }
+    "pack_format": 18
+  }
 }

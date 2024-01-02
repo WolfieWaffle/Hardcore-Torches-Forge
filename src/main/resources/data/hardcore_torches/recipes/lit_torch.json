@@ -21,14 +21,12 @@
         "item": "hardcore_torches:lit_torch",
         "count": 1
     },
-	"conditions": 
-	[
-		{
-			"type": "forge:not",
-			"value": 
-			{
-				"type": "hardcore_torches:config_craft_unlit"
-			}
-		}
-	]
+	"forge:condition":
+    {
+      "type": "forge:not",
+      "value":
+      {
+        "type": "hardcore_torches:config_craft_unlit"
+      }
+    }
 }

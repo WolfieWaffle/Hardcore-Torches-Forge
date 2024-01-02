@@ -34,7 +34,7 @@ public class LanternCurio implements ICurio {
             IDynamicStackHandler dynamicStackHandler = handler.getCurios().get(identifier).getStacks();
 
             if (Config.tickInInventory.get()) {
-                ItemStack newStack = LanternItem.addFuel(dynamicStackHandler.getStackInSlot(index), entity.level, -1);
+                ItemStack newStack = LanternItem.addFuel(dynamicStackHandler.getStackInSlot(index), entity.level(), -1);
                 dynamicStackHandler.setStackInSlot(index, newStack);
                 this.stack = newStack;
             }
