@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "entries": [
+    "hardcore_torches:entities/chicken",
+	"hardcore_torches:entities/cow",
+	"hardcore_torches:entities/goat",
+	"hardcore_torches:entities/hoglin",
+	"hardcore_torches:entities/horse",
+	"hardcore_torches:entities/mooshroom",
+	"hardcore_torches:entities/pig",
+	"hardcore_torches:entities/sheep"
+  ]
+}

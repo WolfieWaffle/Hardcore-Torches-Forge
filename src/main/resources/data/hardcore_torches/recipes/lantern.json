@@ -1,0 +1,31 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "###",
+        "#|#",
+        "###"
+    ],
+    "key":
+    {
+        "#":
+        {
+            "item": "minecraft:iron_nugget"
+        },
+        "|":
+        {
+            "tag": "hardcore_torches:torches"
+        }
+    },
+    "result":
+    {
+        "item": "hardcore_torches:unlit_lantern",
+        "count": 1
+    },
+    "conditions":
+    [
+        {
+            "type": "hardcore_torches:lanterns_use_fuel"
+        }
+    ]
+}

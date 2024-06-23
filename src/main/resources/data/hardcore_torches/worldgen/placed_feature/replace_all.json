@@ -1,0 +1,8 @@
+{
+  "feature": "hardcore_torches:replace_all",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "hardcore_torches:fat_modifier",
+  "conditions": [
+    {
+      "condition": "minecraft:entity_properties",
+      "entity": "this",
+	  "predicate": {
+        "type": "minecraft:sheep"
+	  }
+    }
+  ],
+  "choices": [
+	0,
+	1
+  ]
+}

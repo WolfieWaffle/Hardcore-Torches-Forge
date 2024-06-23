@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "###",
+    "#|#",
+    "###"
+  ],
+  "key":
+  {
+    "#":
+    {
+      "item": "minecraft:iron_nugget"
+    },
+    "|":
+    {
+      "tag": "minecraft:soul_fire_base_blocks"
+    }
+  },
+  "result":
+  {
+    "item": "hardcore_torches:unlit_soul_lantern",
+    "count": 1
+  },
+  "conditions":
+  [
+    {
+      "type": "hardcore_torches:lanterns_use_fuel"
+    }
+  ]
+}
