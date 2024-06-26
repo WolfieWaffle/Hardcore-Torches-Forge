@@ -5,7 +5,7 @@ import net.minecraft.tags.TagKey;
 
 import java.util.function.IntSupplier;
 
-public class LanternBlock extends AbstractLanternBlock {
+public abstract class LanternBlock extends AbstractLanternBlock {
 
     public LanternBlock(Properties prop, boolean isLit, IntSupplier maxFuel) {
         super(prop, isLit, maxFuel);

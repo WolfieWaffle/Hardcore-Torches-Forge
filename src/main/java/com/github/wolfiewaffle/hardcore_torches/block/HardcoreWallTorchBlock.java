@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Random;
 import java.util.function.IntSupplier;
 
-public class HardcoreWallTorchBlock extends AbstractHardcoreTorchBlock {
+public abstract class HardcoreWallTorchBlock extends AbstractHardcoreTorchBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public HardcoreWallTorchBlock(Properties prop, SimpleParticleType particle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {

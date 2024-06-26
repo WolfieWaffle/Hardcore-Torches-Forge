@@ -23,7 +23,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.function.IntSupplier;
 
-public class SoulLanternBlock extends AbstractLanternBlock {
+public abstract class SoulLanternBlock extends AbstractLanternBlock {
     public static final int SOUL_LANTERN_LIGHT_LEVEL = 10;
     public static final int bottleAmount = 100;
 
