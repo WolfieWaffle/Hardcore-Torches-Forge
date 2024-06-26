@@ -1,28 +1,65 @@
 package com.github.wolfiewaffle.hardcore_torches.config;
 
 import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-import com.mojang.serialization.Codec;
+import com.google.gson.JsonObject;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
 public class ConfigRecipeCondition implements ICondition
 {
-    public ConfigRecipeCondition() {
-        System.out.println("CONSTRUCTED");
+    private static final ResourceLocation NAME = new ResourceLocation("hardcore_torches", "config");
+    private final Supplier<Boolean> bool;
+
+    // Supplier is a functional interface that returns a boolean
+    public ConfigRecipeCondition(Supplier<Boolean> bool) {
+        this.bool = bool;
+    }
+
+    @Override
+    public ResourceLocation getID()
+    {
+        return NAME;
     }
 
     @Override
     public boolean test(IContext context)
     {
-        System.out.println("REACHED");
-        return Config.craftUnlit.get();
+        return bool.get();
     }
 
-    public static final Supplier<ConfigRecipeCondition> INSTANCE = Suppliers.memoize(ConfigRecipeCondition::new);
-    public static final Codec<ConfigRecipeCondition> CODEC = Codec.unit(INSTANCE);
-
     @Override
-    public Codec<? extends ICondition> codec() {
-        return CODEC;
+    public String toString()
+    {
+        return "hardcore_torches:config";
+    }
+
+    public static class Serializer implements IConditionSerializer<ConfigRecipeCondition>
+    {
+        Supplier<Boolean> bool;
+        ResourceLocation id;
+
+        public Serializer(Supplier<Boolean> bool, ResourceLocation id) {
+            this.bool = bool;
+            this.id = id;
+        }
+
+        @Override
+        public void write(JsonObject json, ConfigRecipeCondition value)
+        {
+
+        }
+
+        @Override
+        public ConfigRecipeCondition read(JsonObject json)
+        {
+            return new ConfigRecipeCondition(bool);
+        }
+
+        @Override
+        public ResourceLocation getID()
+        {
+            return id;
+        }
     }
 }

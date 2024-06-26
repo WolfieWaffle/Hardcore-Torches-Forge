@@ -21,8 +21,10 @@
         "item": "hardcore_torches:unlit_torch",
         "count": 1
     },
-	"forge:condition":
-    {
-        "type": "hardcore_torches:config_craft_unlit"
-    }
+	"conditions": 
+	[
+		{
+			"type": "hardcore_torches:config_craft_unlit"
+		}
+	]
 }

@@ -6,29 +6,32 @@ import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.FuelBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlock;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
-import com.mojang.serialization.Codec;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-public class SetFuelLootFunction implements LootItemFunction {
+public class SetFuelLootFunction extends LootItemConditionalFunction {
+
+    public SetFuelLootFunction(LootItemCondition[] lootConditions) {
+        super(lootConditions);
+    }
 
     @Override
-    public @NotNull LootItemFunctionType getType() {
+    public LootItemFunctionType getType() {
         return MainMod.SET_FUEL_LOOT_FUNCTION;
     }
 
-    public static final Codec<SetFuelLootFunction> CODEC = Codec.unit(SetFuelLootFunction::new);
-
     @Override
-    public ItemStack apply(ItemStack stack, LootContext context) {
+    protected ItemStack run(ItemStack stack, LootContext context) {
         if (!(stack.getItem() instanceof BlockItem)) return stack; // No regular items
 
         BlockEntity blockEntity = context.getParam(LootContextParams.BLOCK_ENTITY);
@@ -53,5 +56,12 @@ public class SetFuelLootFunction implements LootItemFunction {
         }
 
         return stack;
+    }
+
+    public static class Serializer extends LootItemConditionalFunction.Serializer<SetFuelLootFunction> {
+
+        public SetFuelLootFunction deserialize(JsonObject jsonObject, JsonDeserializationContext jsonDeserializationContext, LootItemCondition[] lootConditions) {
+            return new SetFuelLootFunction(lootConditions);
+        }
     }
 }

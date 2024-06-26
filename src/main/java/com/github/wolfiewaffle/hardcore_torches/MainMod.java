@@ -21,7 +21,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
@@ -29,7 +31,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -43,7 +45,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(MainMod.MOD_ID)
+@net.minecraftforge.fml.common.Mod(MainMod.MOD_ID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = MainMod.MOD_ID)
 public class MainMod
 {
@@ -80,8 +82,8 @@ public class MainMod
     public static final TagKey<Item> SOUL_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:soul_attunement_items"));
 
     // Loot Functions
-    public static final LootItemFunctionType HARDCORE_TORCH_LOOT_FUNCTION = new LootItemFunctionType(TorchLootFunction.CODEC);
-    public static final LootItemFunctionType SET_FUEL_LOOT_FUNCTION = new LootItemFunctionType(SetFuelLootFunction.CODEC);
+    public static final LootItemFunctionType HARDCORE_TORCH_LOOT_FUNCTION = new LootItemFunctionType(new TorchLootFunction.Serializer());
+    public static final LootItemFunctionType SET_FUEL_LOOT_FUNCTION = new LootItemFunctionType(new SetFuelLootFunction.Serializer());
 
     // Recipe Types
     private static final DeferredRegister<RecipeType<?>> RECIPE_TYPE_DEFERRED_REGISTER = DeferredRegister.create(Registries.RECIPE_TYPE, MOD_ID);
@@ -93,10 +95,6 @@ public class MainMod
     // Register Loot Tables
     private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MOD_CODEC_REGISTER = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MOD_ID);
     public static final RegistryObject<Codec<FatModifier>> FAT_MOD_CODEC = LOOT_MOD_CODEC_REGISTER.register("fat_modifier", () -> FatModifier.codec);
-
-    // Register Conditions?
-    public static final DeferredRegister<Codec<? extends ICondition>> CONDITION_REGISTRY = DeferredRegister.create(ForgeRegistries.CONDITION_SERIALIZERS, MOD_ID);
-    public static final RegistryObject<Codec<ConfigRecipeCondition>> CONFIG_CONDITION = CONDITION_REGISTRY.register("config_craft_unlit", () -> ConfigRecipeCondition.CODEC);
 
     // Register Loot Functions
     private static final DeferredRegister<LootItemFunctionType> LOOT_FUNC_REGISTER = DeferredRegister.create(Registries.LOOT_FUNCTION_TYPE, MOD_ID);
@@ -131,9 +129,6 @@ public class MainMod
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
-
-        // Crafting
-        CONDITION_REGISTRY.register(modEventBus);
 
         // For loot tables
         LOOT_MOD_CODEC_REGISTER.register(modEventBus);
@@ -172,47 +167,38 @@ public class MainMod
 
     private void afterCommonSetup() {
 
-
-
         // Recipe Conditions
-//        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.craftUnlit.get(), new ResourceLocation("hardcore_torches", "config_craft_unlit")));
-//        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 0 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_fat")));
-//        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 1 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_coal")));
-//        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.lanternsUseFuel.get(), new ResourceLocation("hardcore_torches", "lanterns_use_fuel")));
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.craftUnlit.get(), new ResourceLocation("hardcore_torches", "config_craft_unlit")));
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 0 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_fat")));
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 1 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_coal")));
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.lanternsUseFuel.get(), new ResourceLocation("hardcore_torches", "lanterns_use_fuel")));
     }
 
 //    @SubscribeEvent
 //    public static void modEventCommunication(InterModEnqueueEvent event) {
 //        if (ModList.get().isLoaded("curios")) {
-//            //InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("belt").build());
+//            InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("belt").build());
 //        }
 //    }
 
     @SubscribeEvent
     public static void buildContents(BuildCreativeModeTabContentsEvent event) {
-
-        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.getEntries().putBefore(Items.LEATHER.getDefaultInstance(), ItemInit.ANIMAL_FAT.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-        }
-
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            ItemStack stack = Items.FIRE_CHARGE.getDefaultInstance();
-            event.getEntries().putAfter(stack, ItemInit.ANIMAL_FAT.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-            event.getEntries().putAfter(stack, ItemInit.OIL_CAN.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-            event.getEntries().putAfter(stack, OilCanItem.setFuel(new ItemStack(ItemInit.OIL_CAN.get()), Config.maxCanFuel.get()), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-            event.getEntries().putAfter(stack, ItemInit.FIRE_STARTER.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.accept(ItemInit.OIL_CAN);
+            event.accept(OilCanItem.setFuel(new ItemStack(ItemInit.OIL_CAN.get()), Config.maxCanFuel.get()));
+            event.accept(ItemInit.FIRE_STARTER);
+            event.accept(ItemInit.ANIMAL_FAT);
         }
 
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            ItemStack stack = Items.SOUL_LANTERN.getDefaultInstance();
-            event.getEntries().putAfter(stack, ItemInit.LIT_TORCH.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-            event.getEntries().putAfter(stack, ItemInit.UNLIT_TORCH.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-            event.getEntries().putAfter(stack, ItemInit.SMOLDERING_TORCH.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-            event.getEntries().putAfter(stack, ItemInit.BURNT_TORCH.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-            event.getEntries().putAfter(stack, ItemInit.LIT_LANTERN.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-            event.getEntries().putAfter(stack, ItemInit.UNLIT_LANTERN.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-            event.getEntries().putAfter(stack, ItemInit.LIT_SOUL_LANTERN.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-            event.getEntries().putAfter(stack, ItemInit.UNLIT_SOUL_LANTERN.get().getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.accept(ItemInit.LIT_TORCH);
+            event.accept(ItemInit.UNLIT_TORCH);
+            event.accept(ItemInit.SMOLDERING_TORCH);
+            event.accept(ItemInit.BURNT_TORCH);
+            event.accept(ItemInit.LIT_LANTERN);
+            event.accept(ItemInit.UNLIT_LANTERN);
+            event.accept(ItemInit.LIT_SOUL_LANTERN);
+            event.accept(ItemInit.UNLIT_SOUL_LANTERN);
         }
     }
 }

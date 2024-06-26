@@ -1,15 +1,12 @@
 package com.github.wolfiewaffle.hardcore_torches.recipe;
 
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
-import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
@@ -19,15 +16,12 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.RecipeMatcher;
-import org.jetbrains.annotations.Nullable;
 
 public class OilCanRecipe extends ShapelessRecipe {
     final int fuelAmount;
-    static final ItemStack result = new ItemStack(ItemInit.OIL_CAN.get());
 
-    public OilCanRecipe(String group, CraftingBookCategory category, ItemStack result, NonNullList<Ingredient> recipeItems, int fuelAmount) {
-        super(group, category, result, recipeItems);
+    public OilCanRecipe(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> recipeItems, int fuelAmount) {
+        super(id, group, CraftingBookCategory.EQUIPMENT, result, recipeItems);
         this.fuelAmount = fuelAmount;
     }
 
@@ -90,51 +84,26 @@ public class OilCanRecipe extends ShapelessRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<OilCanRecipe> {
-        private static final Codec<OilCanRecipe> CODEC = RecordCodecBuilder.create((recipe) -> {
-            return recipe.group(ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter((rec) -> {
-                return rec.getGroup();
-            }), CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter((rec) -> {
-                return rec.category();
-            }), ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter((red) -> {
-                return red.getResultItem(null);
-            }), Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap((ingredients) -> {
-                Ingredient[] aingredient = ingredients.stream().filter((ingredient) -> {
-                    return !ingredient.isEmpty();
-                }).toArray((index) -> {
-                    return new Ingredient[index];
-                });
-                if (aingredient.length == 0) {
-                    return DataResult.error(() -> {
-                        return "No ingredients for shapeless recipe";
-                    });
-                } else {
-                    return (aingredient.length > 9) ? DataResult.error(() -> {
-                        return "Too many ingredients for shapeless recipe";
-                    }) : DataResult.success(NonNullList.of(Ingredient.EMPTY, aingredient));
-                }
-            }, DataResult::success).forGetter((rec) -> {
-                return rec.getIngredients();
-            }), Codec.INT.fieldOf("fuel").forGetter((rec) -> {
-                return rec.fuelAmount;
-            })).apply(recipe, OilCanRecipe::new);
-        });
+        private static final ResourceLocation NAME = new ResourceLocation("hardcore_torches", "oil_can");
 
-        public Codec<OilCanRecipe> codec() {
-            return CODEC;
+        public OilCanRecipe fromJson(ResourceLocation resourceLocation, JsonObject json) {
+            ShapelessRecipe recipe = ShapelessRecipe.Serializer.SHAPELESS_RECIPE.fromJson(resourceLocation, json);
+            int fuel = json.get("fuel").getAsInt();
+
+            return new OilCanRecipe(recipe.getId(), recipe.getGroup(), recipe.getResultItem(null), recipe.getIngredients(), fuel);
         }
 
-        @Override
-        public @Nullable OilCanRecipe fromNetwork(FriendlyByteBuf friendlyByteBuf) {
-            ShapelessRecipe rec = ShapelessRecipe.Serializer.SHAPELESS_RECIPE.fromNetwork(friendlyByteBuf);
-            int fuel = friendlyByteBuf.readVarInt();
+        public OilCanRecipe fromNetwork(ResourceLocation resourceLocation, FriendlyByteBuf friendlyByteBuf) {
+            ShapelessRecipe recipe = ShapelessRecipe.Serializer.SHAPELESS_RECIPE.fromNetwork(resourceLocation, friendlyByteBuf);
 
-            return new OilCanRecipe(rec.getGroup(), CraftingBookCategory.EQUIPMENT, rec.getResultItem(null), rec.getIngredients(), fuel);
+            int fuelValue = friendlyByteBuf.readVarInt();
+            return new OilCanRecipe(recipe.getId(), recipe.getGroup(), recipe.getResultItem(null), recipe.getIngredients(), fuelValue);
         }
 
         public void toNetwork(FriendlyByteBuf friendlyByteBuf, OilCanRecipe oilCanRecipe) {
-            ShapelessRecipe rec = new ShapelessRecipe(oilCanRecipe.getGroup(), CraftingBookCategory.EQUIPMENT, result, oilCanRecipe.getIngredients());
-
+            ShapelessRecipe rec = new ShapelessRecipe(oilCanRecipe.getId(), oilCanRecipe.getGroup(), CraftingBookCategory.EQUIPMENT, oilCanRecipe.getResultItem(null), oilCanRecipe.getIngredients());
             ShapelessRecipe.Serializer.SHAPELESS_RECIPE.toNetwork(friendlyByteBuf, rec);
+
             friendlyByteBuf.writeVarInt(oilCanRecipe.fuelAmount);
         }
     }
