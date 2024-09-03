@@ -1,0 +1,17 @@
+{
+  "type": "hardcore_torches:damage_light",
+  "damage": "false",
+  "ingredients": [
+    {
+      "item": "hardcore_torches:unlit_torch"
+    },
+    {
+      "tag": "hardcore_torches:free_torch_light_items"
+    }
+  ],
+  "result":
+  {
+    "item": "hardcore_torches:lit_torch",
+    "count": 1
+  }
+}

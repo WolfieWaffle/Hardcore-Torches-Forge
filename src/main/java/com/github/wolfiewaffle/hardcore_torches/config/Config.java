@@ -30,6 +30,7 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue starterLightLanterns;
     public static ForgeConfigSpec.BooleanValue lanternsUseFuel;
     public static ForgeConfigSpec.BooleanValue pickUpLanterns;
+    public static ForgeConfigSpec.BooleanValue craftLight;
 
     public static ForgeConfigSpec.DoubleValue oilRecipeMultiplier;
     public static ForgeConfigSpec.DoubleValue starterSuccessChance;
@@ -68,6 +69,7 @@ public class Config {
         animalsDropFat = builder.comment("If true, certain animals will drop fat as an item, which can be used in lanterns.").define("animalsDropFat", true);
         soulExpRatio = builder.comment("How many fuel ticks you get for a single experience point in the soul lanterns and torches.").defineInRange("soulExpRatio", 1200, 1, Double.MAX_VALUE);
         expIncrement = builder.comment("How many experience points are used in a single right click.").defineInRange("expIncrement", 1, 1, Integer.MAX_VALUE);
+        craftLight = builder.comment("If true, you can light torches and lanterns within the crafting inventory.").define("craftLight", true);
         builder.pop();
 
         builder.comment("Oil Can Settings").push("oil_can");

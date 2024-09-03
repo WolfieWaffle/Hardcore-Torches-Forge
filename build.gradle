@@ -73,6 +73,8 @@ minecraft {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
                 "${mod_id}" {
@@ -164,6 +166,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     compileOnly(fg.deobf("curse.maven:lucent-493280:4951434"));
     compileOnly(fg.deobf("curse.maven:curios-309927:5367944"));
+    //implementation(fg.deobf("curse.maven:coroutil-237749:5096038"));
+    //implementation(fg.deobf("curse.maven:weather2-237746:5244118"));
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

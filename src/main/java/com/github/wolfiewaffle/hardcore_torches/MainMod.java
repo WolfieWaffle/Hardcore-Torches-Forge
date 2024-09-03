@@ -10,6 +10,7 @@ import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
 import com.github.wolfiewaffle.hardcore_torches.loot.FatModifier;
 import com.github.wolfiewaffle.hardcore_torches.loot.SetFuelLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.loot.TorchLootFunction;
+import com.github.wolfiewaffle.hardcore_torches.recipe.DamageLightRecipe;
 import com.github.wolfiewaffle.hardcore_torches.recipe.OilCanRecipe;
 import com.github.wolfiewaffle.hardcore_torches.util.LanternGroup;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
@@ -88,9 +89,11 @@ public class MainMod
     // Recipe Types
     private static final DeferredRegister<RecipeType<?>> RECIPE_TYPE_DEFERRED_REGISTER = DeferredRegister.create(Registries.RECIPE_TYPE, MOD_ID);
     public static final RegistryObject<RecipeType<OilCanRecipe>> OIL_CAN_RECIPE = RECIPE_TYPE_DEFERRED_REGISTER.register("oil_can", () -> new RecipeType<>() {});
+    public static final RegistryObject<RecipeType<DamageLightRecipe>> DAMAGE_LIGHT_RECIPE = RECIPE_TYPE_DEFERRED_REGISTER.register("damage_light", () -> new RecipeType<>() {});
 
     private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZER_DEFERRED_REGISTER = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MOD_ID);
     private static final RegistryObject<OilCanRecipe.Serializer> OIL_CAN_RECIPE_SERIALIZER = RECIPE_SERIALIZER_DEFERRED_REGISTER.register("oil_can", OilCanRecipe.Serializer::new);
+    private static final RegistryObject<DamageLightRecipe.Serializer> DAMAGE_LIGHT_RECIPE_SERIALIZER = RECIPE_SERIALIZER_DEFERRED_REGISTER.register("damage_light", DamageLightRecipe.Serializer::new);
 
     // Register Loot Tables
     private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MOD_CODEC_REGISTER = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MOD_ID);
@@ -169,6 +172,7 @@ public class MainMod
 
         // Recipe Conditions
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.craftUnlit.get(), new ResourceLocation("hardcore_torches", "config_craft_unlit")));
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.craftLight.get(), new ResourceLocation("hardcore_torches", "config_craft_light")));
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 0 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_fat")));
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 1 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_coal")));
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.lanternsUseFuel.get(), new ResourceLocation("hardcore_torches", "lanterns_use_fuel")));
