@@ -67,6 +67,8 @@ public class MainMod
     @SuppressWarnings("unused")
     public static final TagKey<Item> ALL_TORCH_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:torches"));
 
+    public static final TagKey<Item> ACTIVE_TORCHES = ItemTags.create(new ResourceLocation("hardcore_torches:active_torches"));
+    public static final TagKey<Item> INACTIVE_TORCHES = ItemTags.create(new ResourceLocation("hardcore_torches:inactive_torches"));
     public static final TagKey<Block> FREE_TORCH_LIGHT_BLOCKS = BlockTags.create(new ResourceLocation("hardcore_torches:free_torch_light_blocks"));
     public static final TagKey<Item> FREE_TORCH_LIGHT_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:free_torch_light_items"));
     public static final TagKey<Item> DAMAGE_TORCH_LIGHT_ITEMS = ItemTags.create(new ResourceLocation("hardcore_torches:damage_torch_light_items"));

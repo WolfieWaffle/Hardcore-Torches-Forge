@@ -1,14 +1,16 @@
 package com.github.wolfiewaffle.hardcore_torches.recipe;
 
-import com.github.wolfiewaffle.hardcore_torches.MainMod;
-import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
+import com.github.wolfiewaffle.hardcore_torches.config.Config;
+import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
+import com.github.wolfiewaffle.hardcore_torches.item.TorchItem;
 import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -23,6 +25,26 @@ public class DamageLightRecipe extends ShapelessRecipe {
     }
 
     @Override
+    public ItemStack assemble(CraftingContainer grid, RegistryAccess registryAccess) {
+        int fuel = 0;
+        ItemStack resultStack = this.getResultItem(registryAccess).copy();
+
+        for(int i = 0; i < grid.getContainerSize(); ++i) {
+            ItemStack itemstack = grid.getItem(i);
+
+            if (itemstack.getItem() instanceof TorchItem) {
+                fuel = TorchItem.getFuel(itemstack);
+            }
+        }
+
+        if (resultStack.getItem() instanceof TorchItem) {
+            return TorchItem.setFuel(resultStack, fuel);
+        }
+
+        return ItemStack.EMPTY;
+    }
+
+    @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer container) {
         NonNullList<ItemStack> nonnulllist = NonNullList.withSize(container.getContainerSize(), ItemStack.EMPTY);
 
@@ -31,22 +53,19 @@ public class DamageLightRecipe extends ShapelessRecipe {
 
             if (damageItem == false) {
                 ItemStack result = item.copy();
-                if (item.getItem() != ItemInit.UNLIT_TORCH.get() && item.getItem() != ItemInit.SMOLDERING_TORCH.get())
+                if (!(item.getItem() instanceof TorchItem))
                 nonnulllist.set(i, result);
-                System.out.println("ITEM " + item);
                 continue;
             }
 
             if (item.hasCraftingRemainingItem()) {
                 nonnulllist.set(i, item.getCraftingRemainingItem());
-                System.out.println("REMAIN " + item);
             } else if (item.isDamageableItem() && damageItem == true) {
                 if (item.getDamageValue() == item.getMaxDamage() - 1) continue;
                 else {
                     ItemStack result = item.copy();
                     result.setDamageValue(item.getDamageValue() + 1);
                     nonnulllist.set(i, result);
-                    System.out.println("DAMAGE " + item);
                 }
             }
         }

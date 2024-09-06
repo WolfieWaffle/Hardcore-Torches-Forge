@@ -164,6 +164,21 @@ public class TorchItem extends StandingAndWallBlockItem {
         }
     }
 
+    public static ItemStack setFuel(ItemStack stack, int amount) {
+        if (stack.getItem() instanceof TorchItem) {
+            CompoundTag nbt = stack.getTag();
+
+            if (nbt == null) {
+                nbt = new CompoundTag();
+            }
+
+            nbt.putInt("Fuel", amount);
+            stack.setTag(nbt);
+        }
+
+        return stack;
+    }
+
     public boolean sameTorchGroup(TorchItem item1, TorchItem item2) {
         if (item1.torchGroup == item2.torchGroup) {
             return true;

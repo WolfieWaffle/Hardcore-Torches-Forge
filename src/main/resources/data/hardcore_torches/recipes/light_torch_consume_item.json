@@ -1,5 +1,6 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "hardcore_torches:damage_light",
+  "damage": "true",
   "ingredients": [
     {
       "item": "hardcore_torches:unlit_torch"

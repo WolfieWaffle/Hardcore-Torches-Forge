@@ -1,0 +1,17 @@
+{
+  "type": "hardcore_torches:damage_light",
+  "damage": "true",
+  "ingredients": [
+    {
+      "item": "hardcore_torches:lit_torch"
+    },
+    {
+      "tag": "hardcore_torches:consume_torch_smother_items"
+    }
+  ],
+  "result":
+  {
+    "item": "hardcore_torches:smoldering_torch",
+    "count": 1
+  }
+}
