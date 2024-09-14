@@ -1,7 +1,5 @@
 package com.github.wolfiewaffle.hardcore_torches.recipe;
 
-import com.github.wolfiewaffle.hardcore_torches.config.Config;
-import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
 import com.github.wolfiewaffle.hardcore_torches.item.TorchItem;
 import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
@@ -9,7 +7,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -20,7 +17,7 @@ public class DamageLightRecipe extends ShapelessRecipe {
     final boolean damageItem;
 
     public DamageLightRecipe(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> recipeItems, int damageItem) {
-        super(id, group, CraftingBookCategory.EQUIPMENT, result, recipeItems);
+        super(id, group, CraftingBookCategory.MISC, result, recipeItems);
         this.damageItem = damageItem == 1 ? true : false;
     }
 

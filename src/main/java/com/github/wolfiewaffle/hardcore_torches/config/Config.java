@@ -47,6 +47,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue startingLanternFuel;
     public static ForgeConfigSpec.IntValue expIncrement;
     public static ForgeConfigSpec.IntValue defaultSoulLanternFuel;
+    public static ForgeConfigSpec.IntValue torchCraftAmount;
 
     public static void init() {
         //initServer();
@@ -81,7 +82,7 @@ public class Config {
         builder.pop();
 
         builder.comment("Torch Settings").push("torch");
-        defaultTorchFuel = builder.comment("How long a torch lasts when crafted. There are 20 ticks per second so 48000 ticks = 20 minutes.").defineInRange("defaultTorchFuel", 48000, 1, Integer.MAX_VALUE);
+        defaultTorchFuel = builder.comment("How long a torch lasts when crafted. There are 20 ticks per second so 48000 ticks = 40 minutes.").defineInRange("defaultTorchFuel", 48000, 1, Integer.MAX_VALUE);
         torchesExtinguishWhenBroken = builder.comment("Torches will become unlit when broken.").define("torchesExtinguishWhenBroken", true);
         torchesBurnWhenDropped = builder.comment("Overrides torchesExtinguishWhenBroken. Torches will be fully expended when broken (burnt torch or stick).").define("torchesBurnWhenDropped", true);
         burntStick = builder.comment("Fully expended torches will drop as sticks rather than burnt torches.").define("burntStick", true);
@@ -91,6 +92,7 @@ public class Config {
         handUnlightTorch = builder.comment("Right click a torch without holding fuel or a lighter to unlight it.").define("handUnlightTorch", false);
         invExtinguishInWater = builder.comment("0: When going underwater, torches in your inventory will be unaffected\n1: When going underwater, torches in mainhand or offhand will be extinguished\n2: When going underwater, torches in inventory will be extinguished").defineInRange("invExtinguishInWater", 2, 0, 2);
         invExtinguishInRain = builder.comment("0: When in rain, torches in your inventory will be unaffected\n1: When in rain, torches in mainhand or offhand will be extinguished or smolder\n2: When in rain, torches in inventory will be extinguished or smolder").defineInRange("invExtinguishInRain", 2, 0, 2);
+        torchCraftAmount = builder.comment("How many torches are crafted.").defineInRange("torchCraftAmount", 1, 1, Integer.MAX_VALUE);
         builder.pop();
 
         builder.comment("Lantern Settings").push("lantern");

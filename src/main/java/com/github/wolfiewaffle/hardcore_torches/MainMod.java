@@ -12,6 +12,7 @@ import com.github.wolfiewaffle.hardcore_torches.loot.SetFuelLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.loot.TorchLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.recipe.DamageLightRecipe;
 import com.github.wolfiewaffle.hardcore_torches.recipe.OilCanRecipe;
+import com.github.wolfiewaffle.hardcore_torches.recipe.TorchRecipe;
 import com.github.wolfiewaffle.hardcore_torches.util.LanternGroup;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
 import com.github.wolfiewaffle.hardcore_torches.world.ReplaceAllBiomeModifier;
@@ -92,10 +93,12 @@ public class MainMod
     private static final DeferredRegister<RecipeType<?>> RECIPE_TYPE_DEFERRED_REGISTER = DeferredRegister.create(Registries.RECIPE_TYPE, MOD_ID);
     public static final RegistryObject<RecipeType<OilCanRecipe>> OIL_CAN_RECIPE = RECIPE_TYPE_DEFERRED_REGISTER.register("oil_can", () -> new RecipeType<>() {});
     public static final RegistryObject<RecipeType<DamageLightRecipe>> DAMAGE_LIGHT_RECIPE = RECIPE_TYPE_DEFERRED_REGISTER.register("damage_light", () -> new RecipeType<>() {});
+    public static final RegistryObject<RecipeType<TorchRecipe>> TORCH_RECIPE = RECIPE_TYPE_DEFERRED_REGISTER.register("torch", () -> new RecipeType<>() {});
 
     private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZER_DEFERRED_REGISTER = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MOD_ID);
     private static final RegistryObject<OilCanRecipe.Serializer> OIL_CAN_RECIPE_SERIALIZER = RECIPE_SERIALIZER_DEFERRED_REGISTER.register("oil_can", OilCanRecipe.Serializer::new);
     private static final RegistryObject<DamageLightRecipe.Serializer> DAMAGE_LIGHT_RECIPE_SERIALIZER = RECIPE_SERIALIZER_DEFERRED_REGISTER.register("damage_light", DamageLightRecipe.Serializer::new);
+    private static final RegistryObject<TorchRecipe.Serializer> TORCH_RECIPE_SERIALIZER = RECIPE_SERIALIZER_DEFERRED_REGISTER.register("torch", TorchRecipe.Serializer::new);
 
     // Register Loot Tables
     private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MOD_CODEC_REGISTER = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MOD_ID);
