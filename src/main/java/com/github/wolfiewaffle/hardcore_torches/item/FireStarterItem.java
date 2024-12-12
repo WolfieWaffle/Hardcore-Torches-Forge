@@ -2,7 +2,9 @@ package com.github.wolfiewaffle.hardcore_torches.item;
 
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractHardcoreTorchBlock;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
+import com.github.wolfiewaffle.hardcore_torches.block.HardcoreCampfire;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
+import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -37,15 +39,19 @@ public class FireStarterItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        BlockPos pos = context.getClickedPos();
-        Level world = context.getLevel();
-        BlockState state = world.getBlockState(pos);
-
-        if (state.getBlock() == Blocks.CAMPFIRE) {
-            if (state.getValue(BlockStateProperties.LIT)) {
-                world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, true));
-            }
-        }
+//        BlockPos pos = context.getClickedPos();
+//        Level world = context.getLevel();
+//        BlockState state = world.getBlockState(pos);
+//
+//        if (state.getBlock() instanceof HardcoreCampfire campfire) {
+//            if (campfire.getFuel(world, pos) <= 0) {
+//                if (context.getPlayer() != null) return campfire.needsFuel(context.getPlayer());
+//            }
+//        } else if (state.getBlock() == Blocks.CAMPFIRE) {
+//            if (state.getValue(BlockStateProperties.LIT)) {
+//                world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.LIT, true));
+//            }
+//        }
 
         return super.useOn(context);
     }
@@ -75,7 +81,14 @@ public class FireStarterItem extends Item {
         if (number <= USE_DURATION - 15 && entity instanceof Player) {
             boolean simulateFlintAndSteel = false;
 
-            if (block instanceof CampfireBlock && Config.starterLightCampfires.get()) {
+            if (block instanceof HardcoreCampfire campfire && Config.starterLightCampfires.get()) {
+                if (campfire.getFuel(world, pos) <= 0) {
+                    if (entity != null && entity instanceof Player player) campfire.needsFuel(player);
+                } else {
+                    attempt = true;
+                    if (success) campfire.light(world, pos, world.getBlockState(pos));
+                }
+            } else if (block instanceof CampfireBlock && Config.starterLightCampfires.get()) {
                 attempt = true;
                 if (success) simulateFlintAndSteel = true;
             } else if (block instanceof AbstractHardcoreTorchBlock && Config.starterLightTorches.get()) {

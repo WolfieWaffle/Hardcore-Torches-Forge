@@ -142,7 +142,7 @@ public class HardcoreCampfire extends CampfireBlock implements IFuelBlock {
         return 0;
     }
 
-    private InteractionResult needsFuel(Player player) {
+    public InteractionResult needsFuel(Player player) {
         player.displayClientMessage(Component.literal("Drop combustible items on top to add fuel!"), true);
         return InteractionResult.CONSUME;
     }
