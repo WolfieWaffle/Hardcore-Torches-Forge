@@ -3,7 +3,9 @@ package com.github.wolfiewaffle.hardcore_torches.init;
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.item.*;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -26,4 +28,6 @@ public class ItemInit {
 
     public static final RegistryObject<Item> LIT_SOUL_LANTERN = ITEMS.register("lit_soul_lantern", () -> new SoulLanternItem(BlockInit.LIT_SOUL_LANTERN.get(), new Item.Properties()));
     public static final RegistryObject<Item> UNLIT_SOUL_LANTERN = ITEMS.register("unlit_soul_lantern", () -> new SoulLanternItem(BlockInit.UNLIT_SOUL_LANTERN.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> UNLIT_CAMPFIRE = ITEMS.register("unlit_campfire", () -> new BlockItem(BlockInit.HARDCORE_CAMPFIRE.get(), new Item.Properties()));
 }

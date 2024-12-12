@@ -208,6 +208,7 @@ public class MainMod
             event.accept(ItemInit.UNLIT_LANTERN);
             event.accept(ItemInit.LIT_SOUL_LANTERN);
             event.accept(ItemInit.UNLIT_SOUL_LANTERN);
+            event.accept(ItemInit.UNLIT_CAMPFIRE);
         }
     }
 }

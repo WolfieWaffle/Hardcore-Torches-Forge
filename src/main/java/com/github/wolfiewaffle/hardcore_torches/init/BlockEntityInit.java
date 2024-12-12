@@ -1,6 +1,7 @@
 package com.github.wolfiewaffle.hardcore_torches.init;
 
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
+import com.github.wolfiewaffle.hardcore_torches.blockentity.HardcoreCampfireBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.LanternBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.TorchBlockEntity;
 import net.minecraft.world.level.block.Block;
@@ -33,4 +34,5 @@ public class BlockEntityInit {
 
     public static final RegistryObject<BlockEntityType<TorchBlockEntity>> TORCH_BLOCK_ENTITY = BLOCK_ENTITIES.register("torch_block_entity", () -> BlockEntityType.Builder.of(TorchBlockEntity::new, torchTe()).build(null));
     public static final RegistryObject<BlockEntityType<LanternBlockEntity>> LANTERN_BLOCK_ENTITY = BLOCK_ENTITIES.register("lantern_block_entity", () -> BlockEntityType.Builder.of(LanternBlockEntity::new, lanternTe()).build(null));
+    public static final RegistryObject<BlockEntityType<HardcoreCampfireBlockEntity>> CAMPFIRE_BLOCK_ENTITY = BLOCK_ENTITIES.register("campfire_block_entity", () -> BlockEntityType.Builder.of(HardcoreCampfireBlockEntity::new, BlockInit.HARDCORE_CAMPFIRE.get()).build(null));
 }

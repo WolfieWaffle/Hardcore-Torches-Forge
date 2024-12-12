@@ -6,7 +6,10 @@ import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.registries.DeferredRegister;
@@ -34,4 +37,6 @@ public class BlockInit {
 
     public static final RegistryObject<Block> BURNT_TORCH = BLOCKS.register("burnt_torch", () -> new HardcoreFloorTorchBlock(Block.Properties.of().mapColor(MapColor.NONE).pushReaction(PushReaction.DESTROY).noCollission().instabreak().sound(SoundType.WOOD).noOcclusion(), null, ETorchState.BURNT, MainMod.basicTorches, () -> Config.defaultTorchFuel.get()));
     public static final RegistryObject<Block> BURNT_WALL_TORCH = BLOCKS.register("burnt_wall_torch", () -> new HardcoreWallTorchBlock(Block.Properties.of().mapColor(MapColor.NONE).pushReaction(PushReaction.DESTROY).noCollission().instabreak().sound(SoundType.WOOD).noOcclusion(), null, ETorchState.BURNT, MainMod.basicTorches, () -> Config.defaultTorchFuel.get()));
+
+    public static final RegistryObject<Block> HARDCORE_CAMPFIRE = BLOCKS.register("hardcore_campfire", () -> new HardcoreCampfire(true, 1, BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).lightLevel(HardcoreCampfire.litBlockEmission(15)).noOcclusion().ignitedByLava()));
 }

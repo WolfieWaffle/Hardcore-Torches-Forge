@@ -35,6 +35,7 @@ public class Config {
     public static ForgeConfigSpec.DoubleValue oilRecipeMultiplier;
     public static ForgeConfigSpec.DoubleValue starterSuccessChance;
     public static ForgeConfigSpec.DoubleValue soulExpRatio;
+    public static ForgeConfigSpec.DoubleValue campfireFuelFactor;
 
     public static ForgeConfigSpec.IntValue defaultTorchFuel;
     public static ForgeConfigSpec.IntValue defaultLanternFuel;
@@ -48,6 +49,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue expIncrement;
     public static ForgeConfigSpec.IntValue defaultSoulLanternFuel;
     public static ForgeConfigSpec.IntValue torchCraftAmount;
+    public static ForgeConfigSpec.IntValue campfireMaxFuel;
 
     public static void init() {
         //initServer();
@@ -112,6 +114,11 @@ public class Config {
         starterStartFires = builder.comment("Can the fire starter start full-block fires").define("canStartFires", true);
         starterLightLanterns = builder.comment("Can the fire starter light lanterns").define("canLightLanterns", false);
         starterSuccessChance = builder.comment("Percentage chance that the fire starter works").defineInRange("starterSuccessChance", 0.33, 0, 1);
+        builder.pop();
+
+        builder.comment("Campfire Settings").push("campfire");
+        campfireMaxFuel = builder.comment("Max fuel that can be added to a campfire").defineInRange("campfireMaxFuel", 24000, 0, Integer.MAX_VALUE);
+        campfireFuelFactor = builder.comment("Burn time for campfire fuel items is calculated by this value times its furnace duration").defineInRange("campfireFuelFactor", 8, 1, Double.MAX_VALUE);
         builder.pop();
 
         COMMON_CONFIG = builder.build();

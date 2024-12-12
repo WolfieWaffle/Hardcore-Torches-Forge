@@ -1,9 +1,12 @@
 package com.github.wolfiewaffle.hardcore_torches.client;
 
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
+import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.blockentity.CampfireRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,5 +28,7 @@ public class ClientRegistry {
         ItemBlockRenderTypes.setRenderLayer(BlockInit.SMOLDERING_WALL_TORCH.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockInit.BURNT_TORCH.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockInit.BURNT_WALL_TORCH.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(BlockInit.HARDCORE_CAMPFIRE.get(), RenderType.cutout());
+        BlockEntityRenderers.register(BlockEntityInit.CAMPFIRE_BLOCK_ENTITY.get(), CampfireRenderer::new);
     }
 }

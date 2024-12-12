@@ -21,11 +21,11 @@ public interface IFuelBlock {
     default boolean itemValid(ItemStack stack, ETorchState attemptedState) {
         switch (attemptedState) {
             case LIT:
-                return privateValid(stack, getFreeLightItems(), getDamageLightItems(), getConsumeLightItems());
+                return isValidStack(stack, getFreeLightItems(), getDamageLightItems(), getConsumeLightItems());
             case SMOLDERING:
-                return privateValid(stack, getFreeSmotherItems(), getDamageSmotherItems(), getConsumeSmotherItems());
+                return isValidStack(stack, getFreeSmotherItems(), getDamageSmotherItems(), getConsumeSmotherItems());
             case UNLIT:
-                return privateValid(stack, getFreeExtinguishItems(), getDamageExtinguishItems(), getConsumeExtinguishItems());
+                return isValidStack(stack, getFreeExtinguishItems(), getDamageExtinguishItems(), getConsumeExtinguishItems());
         }
         return false;
     }
@@ -42,7 +42,7 @@ public interface IFuelBlock {
         return false;
     }
 
-    private boolean privateValid(ItemStack stack, TagKey free, TagKey damage, TagKey consume) {
+    default boolean isValidStack(ItemStack stack, TagKey free, TagKey damage, TagKey consume) {
 
         // Infinite items
         if (stack.is(free)) {
