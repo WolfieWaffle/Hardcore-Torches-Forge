@@ -20,5 +20,11 @@
   "result": {
     "item": "hardcore_torches:unlit_campfire"
   },
-  "show_notification": true
+  "show_notification": true,
+  "conditions":
+  [
+    {
+      "type": "hardcore_torches:config_hardcore_campfire"
+    }
+  ]
 }

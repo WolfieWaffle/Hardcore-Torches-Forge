@@ -31,6 +31,7 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue lanternsUseFuel;
     public static ForgeConfigSpec.BooleanValue pickUpLanterns;
     public static ForgeConfigSpec.BooleanValue craftLight;
+    public static ForgeConfigSpec.BooleanValue craftHardcoreCampfire;
 
     public static ForgeConfigSpec.DoubleValue oilRecipeMultiplier;
     public static ForgeConfigSpec.DoubleValue starterSuccessChance;
@@ -117,6 +118,7 @@ public class Config {
         builder.pop();
 
         builder.comment("Campfire Settings").push("campfire");
+        craftHardcoreCampfire = builder.comment("Whether campfires should be crafted as unlit or vanilla. Setting this to false effectively disables the campfire section of this mod.").define("craftHardcoreCampfire", true);
         campfireMaxFuel = builder.comment("Max fuel that can be added to a campfire").defineInRange("campfireMaxFuel", 24000, 0, Integer.MAX_VALUE);
         campfireFuelFactor = builder.comment("Burn time for campfire fuel items is calculated by this value times its furnace duration").defineInRange("campfireFuelFactor", 8, 1, Double.MAX_VALUE);
         builder.pop();

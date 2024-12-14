@@ -176,6 +176,7 @@ public class MainMod
     private void afterCommonSetup() {
 
         // Recipe Conditions
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.craftHardcoreCampfire.get(), new ResourceLocation("hardcore_torches", "config_hardcore_campfire")));
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.craftUnlit.get(), new ResourceLocation("hardcore_torches", "config_craft_unlit")));
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.craftLight.get(), new ResourceLocation("hardcore_torches", "config_craft_light")));
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 0 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_fat")));
