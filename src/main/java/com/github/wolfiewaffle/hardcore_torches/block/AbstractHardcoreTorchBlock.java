@@ -3,6 +3,7 @@ package com.github.wolfiewaffle.hardcore_torches.block;
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.FuelBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlock;
+import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.TorchBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
@@ -66,51 +67,44 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
-
-        if (burnState == ETorchState.LIT) {
-            if (attemptUseItem(stack, player, hand, ETorchState.UNLIT)) {
-                extinguish(world, pos, state);
+        if (this.burnState == ETorchState.LIT) {
+            if (this.attemptUseItem(stack, player, hand, ETorchState.UNLIT)) {
+                this.extinguish(world, pos, state);
                 player.swing(hand);
                 return InteractionResult.SUCCESS;
             }
 
-            if (attemptUseItem(stack, player, hand, ETorchState.SMOLDERING)) {
-                smother(world, pos, state);
-                player.swing(hand);
-                return InteractionResult.SUCCESS;
-            }
-        }
-
-        if (burnState == ETorchState.SMOLDERING || burnState == ETorchState.UNLIT) {
-            if (attemptUseItem(stack, player, hand, ETorchState.LIT)) {
-                light(world, pos, state);
+            if (this.attemptUseItem(stack, player, hand, ETorchState.SMOLDERING)) {
+                this.smother(world, pos, state);
                 player.swing(hand);
                 return InteractionResult.SUCCESS;
             }
         }
 
-        // Fuel message
-        BlockEntity be = world.getBlockEntity(pos);
-        if (be.getType() == BlockEntityInit.TORCH_BLOCK_ENTITY.get() && !world.isClientSide && Config.fuelMessage.get() && stack.isEmpty()) {
-            player.displayClientMessage(Component.literal("Fuel: " + ((TorchBlockEntity) be).getFuel()), true);
-        }
-
-        // Oil CanJTextComponent
-        if (Config.torchesUseCan.get() && burnState != ETorchState.BURNT && !world.isClientSide) {
-            if (OilCanItem.fuelBlock((FuelBlockEntity) be, world, stack)) {
-                world.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1f, 1f);
+        if ((this.burnState == ETorchState.SMOLDERING || this.burnState == ETorchState.UNLIT) && this.attemptUseItem(stack, player, hand, ETorchState.LIT)) {
+            this.light(world, pos, state);
+            player.swing(hand);
+            return InteractionResult.SUCCESS;
+        } else {
+            // Message
+            BlockEntity be = world.getBlockEntity(pos);
+            if (be.getType() == BlockEntityInit.TORCH_BLOCK_ENTITY.get() && !world.isClientSide && Config.fuelMessage.get() && stack.isEmpty()) {
+                player.displayClientMessage(Component.literal("Fuel: " + ((TorchBlockEntity)be).getFuel()), true);
             }
-        }
 
-        // Hand extinguish
-        if (Config.handUnlightTorch.get() && (burnState == ETorchState.LIT || burnState == ETorchState.SMOLDERING)) {
-            if (!TorchTools.canLight(stack.getItem(), this.defaultBlockState())) {
-                extinguish(world, pos, state);
+            // Fueling a torch with oil can
+            if (Config.torchesUseCan.get() && this.burnState != ETorchState.BURNT && !world.isClientSide && OilCanItem.fuelBlock((IFuelBlockEntity) be, world, stack)) {
+                world.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+            }
+
+            // Hand extinguish
+            if (Config.handUnlightTorch.get() && (this.burnState == ETorchState.LIT || this.burnState == ETorchState.SMOLDERING) && !TorchTools.canLight(stack.getItem(), this.defaultBlockState())) {
+                this.extinguish(world, pos, state);
                 return InteractionResult.SUCCESS;
+            } else {
+                return InteractionResult.PASS;
             }
         }
-
-        return InteractionResult.PASS;
     }
 
     @Override

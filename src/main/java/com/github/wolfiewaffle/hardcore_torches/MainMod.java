@@ -1,5 +1,6 @@
 package com.github.wolfiewaffle.hardcore_torches;
 
+import com.github.wolfiewaffle.hardcore_torches.compat.amendments.AmendmentsCommonCompat;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.config.ConfigRecipeCondition;
 import com.github.wolfiewaffle.hardcore_torches.event.PlayerEventHandler;
@@ -39,6 +40,7 @@ import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -135,6 +137,10 @@ public class MainMod
         BlockInit.BLOCKS.register(modEventBus);
         BlockEntityInit.BLOCK_ENTITIES.register(modEventBus);
 
+        if (ModList.get().isLoaded("amendments")) {
+            AmendmentsCommonCompat.loadCompat();
+        }
+
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new PlayerEventHandler());
 
@@ -167,6 +173,10 @@ public class MainMod
         basicLanterns.add(BlockInit.UNLIT_LANTERN.get());
         soulLanterns.add(BlockInit.LIT_SOUL_LANTERN.get());
         soulLanterns.add(BlockInit.UNLIT_SOUL_LANTERN.get());
+
+        if (ModList.get().isLoaded("amendments")) {
+            AmendmentsCommonCompat.loadData();
+        }
 
         // Register Loot Functions
         //Registry.register(Registries.LOOT_FUNCTION_TYPE, new ResourceLocation("hardcore_torches", "torch"), HARDCORE_TORCH_LOOT_FUNCTION);

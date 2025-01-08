@@ -89,4 +89,20 @@ public class PlayerEventHandler {
             }
         }
     }
+
+//    @SubscribeEvent
+//    public void playerInteract(PlayerInteractEvent.RightClickBlock event) {
+//        if (!Config.placeHardcoreCampfire.get()) {
+//            return;
+//        } else {
+//            System.out.println("SIDE " + event.getSide());
+//            if (event.getItemStack().getItem() == Items.CAMPFIRE) {
+//                event.setCanceled(true);
+//                InteractionResult result = ItemInit.UNLIT_CAMPFIRE.get().useOn(new UseOnContext(event.getEntity(), event.getHand(), event.getHitVec()));
+//                if (result == InteractionResult.SUCCESS) {
+//                    event.getEntity().swing(event.getHand());
+//                }
+//            }
+//        }
+//    }
 }

@@ -3,6 +3,7 @@ package com.github.wolfiewaffle.hardcore_torches.block;
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.FuelBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlock;
+import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.LanternBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
@@ -180,7 +181,7 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
         // Adding fuel with can
         if (stack.getItem() instanceof OilCanItem && Config.lanternsNeedCan.get()) {
             if (be instanceof FuelBlockEntity && !world.isClientSide) {
-                if (OilCanItem.fuelBlock((FuelBlockEntity) be, world, stack)) {
+                if (OilCanItem.fuelBlock((IFuelBlockEntity) be, world, stack)) {
                     world.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1f, 1f);
                 }
             }

@@ -77,7 +77,6 @@ public class FireStarterItem extends Item {
         success = random.nextDouble() < Config.starterSuccessChance.get();
 
         // Attempt to light
-        System.out.println(number);
         if (number <= USE_DURATION - 15 && entity instanceof Player) {
             boolean simulateFlintAndSteel = false;
 
