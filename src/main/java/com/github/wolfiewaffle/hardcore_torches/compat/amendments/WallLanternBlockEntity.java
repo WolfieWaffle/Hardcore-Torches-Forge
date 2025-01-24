@@ -1,11 +1,7 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package com.github.wolfiewaffle.hardcore_torches.compat.amendments;
 
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
+import com.github.wolfiewaffle.hardcore_torches.block.LanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.util.LanternGroup;
@@ -39,17 +35,6 @@ public class WallLanternBlockEntity extends WallLanternBlockTile implements IFue
         return AmendmentsCommonCompat.WALL_LANTERN_BLOCK_ENTITY.get();
     }
 
-    public BlockState getHeldBlock() {
-        return this.group.getLanternBlock(this.isLit).defaultBlockState();
-    }
-
-    public boolean setHeldBlock(BlockState state, int index) {
-        super.setHeldBlock(state, index);
-        BlockState newState = (BlockState)this.getBlockState().setValue(WallLanternBlock.LIT, this.isLit);
-        this.getLevel().setBlock(this.worldPosition, newState, 20);
-        return true;
-    }
-
     public int getFuel() {
         return this.fuel;
     }
@@ -73,23 +58,24 @@ public class WallLanternBlockEntity extends WallLanternBlockTile implements IFue
 
             tile.setChanged();
         }
-
     }
 
     public void setFuel(int newValue) {
         this.fuel = Math.min(this.getMaxFuel(), Math.max(0, newValue));
     }
 
+    @Override
     public void load(CompoundTag nbt) {
         if (nbt != null) {
             super.load(nbt);
             this.fuel = nbt.getInt("Fuel");
         }
-
     }
 
+    @Override
     public void saveAdditional(CompoundTag nbt) {
         super.saveAdditional(nbt);
+
         nbt.putInt("Fuel", this.fuel);
     }
 
