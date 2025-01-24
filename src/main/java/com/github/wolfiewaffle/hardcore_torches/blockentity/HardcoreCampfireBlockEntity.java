@@ -81,6 +81,7 @@ public class HardcoreCampfireBlockEntity extends CampfireBlockEntity {
         }
     }
 
+    // SUPER NECESSARY BECAUSE WE ARE OVERRIDING AN EXISTING BLOCK ENTITY!!!
     @Override
     public BlockEntityType<?> getType() {
         return BlockEntityInit.CAMPFIRE_BLOCK_ENTITY.get();

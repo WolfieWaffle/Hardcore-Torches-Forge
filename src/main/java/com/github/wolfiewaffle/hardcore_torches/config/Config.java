@@ -32,6 +32,7 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue pickUpLanterns;
     public static ForgeConfigSpec.BooleanValue craftLight;
     public static ForgeConfigSpec.BooleanValue craftHardcoreCampfire;
+    public static ForgeConfigSpec.BooleanValue craftHardcoreStove;
 
     public static ForgeConfigSpec.DoubleValue oilRecipeMultiplier;
     public static ForgeConfigSpec.DoubleValue starterSuccessChance;
@@ -121,6 +122,10 @@ public class Config {
         craftHardcoreCampfire = builder.comment("Whether campfires should be crafted as unlit/hardcore. Set this to false and use the placeHardcoreCampfire option instead if you need campfires for crafting recipes.").define("craftHardcoreCampfire", true);
         campfireMaxFuel = builder.comment("Max fuel that can be added to a campfire").defineInRange("campfireMaxFuel", 24000, 0, Integer.MAX_VALUE);
         campfireFuelFactor = builder.comment("Burn time for campfire fuel items is calculated by this value times its furnace duration").defineInRange("campfireFuelFactor", 8, 1, Double.MAX_VALUE);
+        builder.pop();
+
+        builder.comment("Compatibility Settings").push("compat");
+        craftHardcoreStove = builder.comment("If true, and Farmer's Delight is installed, the Stove will be crafted as a hardcore version which needs fuel.").define("craftHardcoreStove", true);
         builder.pop();
 
         COMMON_CONFIG = builder.build();

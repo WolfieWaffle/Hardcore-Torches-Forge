@@ -18,7 +18,7 @@
     "BCB"
   ],
   "result": {
-    "item": "farmersdelight:stove"
+    "item": "hardcore_torches:stove"
   },
   "show_notification": true,
   "conditions":
@@ -28,11 +28,7 @@
       "modid": "farmersdelight"
     },
     {
-      "type": "forge:not",
-      "value":
-      {
-        "type": "hardcore_torches:craft_hardcore_stove"
-      }
+      "type": "hardcore_torches:craft_hardcore_stove"
     }
   ]
 }

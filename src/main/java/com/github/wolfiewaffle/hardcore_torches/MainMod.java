@@ -1,6 +1,7 @@
 package com.github.wolfiewaffle.hardcore_torches;
 
 import com.github.wolfiewaffle.hardcore_torches.compat.amendments.AmendmentsCommonCompat;
+import com.github.wolfiewaffle.hardcore_torches.compat.farmersdelight.FarmersCommonCompat;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.config.ConfigRecipeCondition;
 import com.github.wolfiewaffle.hardcore_torches.event.PlayerEventHandler;
@@ -137,8 +138,13 @@ public class MainMod
         BlockInit.BLOCKS.register(modEventBus);
         BlockEntityInit.BLOCK_ENTITIES.register(modEventBus);
 
+        // Compat
         if (ModList.get().isLoaded("amendments")) {
             AmendmentsCommonCompat.loadCompat();
+        }
+
+        if (ModList.get().isLoaded("farmersdelight")) {
+            FarmersCommonCompat.loadCompat();
         }
 
         MinecraftForge.EVENT_BUS.register(this);
@@ -178,6 +184,10 @@ public class MainMod
             AmendmentsCommonCompat.loadData();
         }
 
+        if (ModList.get().isLoaded("farmersdelight")) {
+            FarmersCommonCompat.loadData();
+        }
+
         // Register Loot Functions
         //Registry.register(Registries.LOOT_FUNCTION_TYPE, new ResourceLocation("hardcore_torches", "torch"), HARDCORE_TORCH_LOOT_FUNCTION);
         //Registry.register(Registries.LOOT_FUNCTION_TYPE, new ResourceLocation("hardcore_torches", "set_damage"), SET_FUEL_LOOT_FUNCTION);
@@ -192,6 +202,7 @@ public class MainMod
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 0 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_fat")));
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> (Config.oilRecipeType.get() == 1 || Config.oilRecipeType.get() == 2), new ResourceLocation("hardcore_torches", "config_can_coal")));
         CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.lanternsUseFuel.get(), new ResourceLocation("hardcore_torches", "lanterns_use_fuel")));
+        CraftingHelper.register(new ConfigRecipeCondition.Serializer(() -> Config.craftHardcoreStove.get(), new ResourceLocation("hardcore_torches", "craft_hardcore_stove")));
     }
 
 //    @SubscribeEvent
@@ -220,6 +231,10 @@ public class MainMod
             event.accept(ItemInit.LIT_SOUL_LANTERN);
             event.accept(ItemInit.UNLIT_SOUL_LANTERN);
             event.accept(ItemInit.UNLIT_CAMPFIRE);
+        }
+
+        if (ModList.get().isLoaded("farmersdelight")) {
+            FarmersCommonCompat.creativeTab(event);
         }
     }
 }

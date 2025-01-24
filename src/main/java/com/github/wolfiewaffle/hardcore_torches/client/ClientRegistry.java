@@ -2,6 +2,7 @@ package com.github.wolfiewaffle.hardcore_torches.client;
 
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.compat.amendments.AmendmentsClientCompat;
+import com.github.wolfiewaffle.hardcore_torches.compat.farmersdelight.FarmersClientCompat;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -35,6 +36,10 @@ public class ClientRegistry {
 
         if (ModList.get().isLoaded("amendments")) {
             AmendmentsClientCompat.loadClientCompat();
+        }
+
+        if (ModList.get().isLoaded("farmersdelight")) {
+            FarmersClientCompat.loadClientCompat();
         }
     }
 }
