@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class FuelBlockEntity extends BlockEntity {
+public class FuelBlockEntity extends BlockEntity implements IFuelBlockEntity {
     protected int fuel;
     protected static Random random = new Random();
 
@@ -22,10 +22,17 @@ public class FuelBlockEntity extends BlockEntity {
         super(type, pos, state);
     }
 
+    @Override
     public int getFuel() {
         return fuel;
     }
 
+    @Override
+    public int getMaxFuel() {
+        return 0;
+    }
+
+    @Override
     public void setFuel(int newValue) {
         fuel = newValue;
     }

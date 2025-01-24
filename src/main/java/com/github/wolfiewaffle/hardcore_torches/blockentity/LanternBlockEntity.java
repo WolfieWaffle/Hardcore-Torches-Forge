@@ -14,6 +14,11 @@ public class LanternBlockEntity extends FuelBlockEntity {
         fuel = Config.startingLanternFuel.get();
     }
 
+    @Override
+    public int getMaxFuel() {
+        return Config.defaultLanternFuel.get();
+    }
+
     public void tick() {
         Level world = getLevel();
 

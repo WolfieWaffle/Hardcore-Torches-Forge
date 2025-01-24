@@ -18,6 +18,11 @@ public class TorchBlockEntity extends FuelBlockEntity {
         if (block instanceof AbstractHardcoreTorchBlock) fuel = ((AbstractHardcoreTorchBlock) state.getBlock()).maxFuel.getAsInt();
     }
 
+    @Override
+    public int getMaxFuel() {
+        return Config.defaultTorchFuel.get();
+    }
+
     public void tick() {
         Level world = getLevel();
 
