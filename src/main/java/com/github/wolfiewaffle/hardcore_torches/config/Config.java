@@ -1,5 +1,6 @@
 package com.github.wolfiewaffle.hardcore_torches.config;
 
+import joptsimple.internal.AbbreviationMap;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
@@ -50,8 +51,10 @@ public class Config {
     public static ForgeConfigSpec.IntValue startingLanternFuel;
     public static ForgeConfigSpec.IntValue expIncrement;
     public static ForgeConfigSpec.IntValue defaultSoulLanternFuel;
+    public static ForgeConfigSpec.IntValue defaultSoulTorchFuel;
     public static ForgeConfigSpec.IntValue torchCraftAmount;
     public static ForgeConfigSpec.IntValue campfireMaxFuel;
+    public static ForgeConfigSpec.IntValue bottleExpAmount;
 
     public static void init() {
         //initServer();
@@ -72,8 +75,9 @@ public class Config {
         builder.comment("General Settings").push("general");
         tickInInventory = builder.comment("If true, torches and lanterns will continue to lose fuel even while in the players inventory.").define("tickInInventory", false);
         animalsDropFat = builder.comment("If true, certain animals will drop fat as an item, which can be used in lanterns.").define("animalsDropFat", true);
-        soulExpRatio = builder.comment("How many fuel ticks you get for a single experience point in the soul lanterns and torches.").defineInRange("soulExpRatio", 1200, 1, Double.MAX_VALUE);
-        expIncrement = builder.comment("How many experience points are used in a single right click.").defineInRange("expIncrement", 1, 1, Integer.MAX_VALUE);
+        soulExpRatio = builder.comment("How many fuel ticks you get for a single experience point in the soul lanterns and torches. Default 4800 (4 minutes).").defineInRange("soulExpRatio", 4800, 1, Double.MAX_VALUE);
+        expIncrement = builder.comment("How many experience points are used in a single right click. Default 1.").defineInRange("expIncrement", 1, 1, Integer.MAX_VALUE);
+        bottleExpAmount = builder.comment("How much exp points should a bottle of enchanting count as. This is multiplied by soulExpRatio. The wiki says 7 is the average.").defineInRange("bottleExpAmount", 7, 1, Integer.MAX_VALUE);
         craftLight = builder.comment("If true, you can light torches and lanterns within the crafting inventory.").define("craftLight", true);
         builder.pop();
 
@@ -87,6 +91,7 @@ public class Config {
 
         builder.comment("Torch Settings").push("torch");
         defaultTorchFuel = builder.comment("How long a torch lasts when crafted. There are 20 ticks per second so 48000 ticks = 40 minutes.").defineInRange("defaultTorchFuel", 48000, 1, Integer.MAX_VALUE);
+        defaultSoulTorchFuel = builder.comment("How long a soul torch can last without being refilled, in ticks.").defineInRange("defaultSoulTorchFuel", 48000, 1, Integer.MAX_VALUE);
         torchesExtinguishWhenBroken = builder.comment("Torches will become unlit when broken.").define("torchesExtinguishWhenBroken", true);
         torchesBurnWhenDropped = builder.comment("Overrides torchesExtinguishWhenBroken. Torches will be fully expended when broken (burnt torch or stick).").define("torchesBurnWhenDropped", true);
         burntStick = builder.comment("Fully expended torches will drop as sticks rather than burnt torches.").define("burntStick", true);

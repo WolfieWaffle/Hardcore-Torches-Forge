@@ -166,7 +166,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     compileOnly(fg.deobf("curse.maven:lucent-493280:4951434"));
     compileOnly(fg.deobf("curse.maven:curios-309927:5367944"));
-    compileOnly(fg.deobf("curse.maven:hct-576846:6018257"));
+    //compileOnly(fg.deobf("curse.maven:hct-576846:6018257"));
     implementation(fg.deobf("curse.maven:moonlight-499980:6058583"));
     implementation(fg.deobf("curse.maven:amendments-896746:6030672"));
     implementation(fg.deobf("curse.maven:farmersdelight-398521:5878214"));

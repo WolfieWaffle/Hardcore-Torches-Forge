@@ -1,4 +1,6 @@
 {
   "block.minecraft.torch": "Everlasting Torch",
-  "block.minecraft.lantern": "Everlasting Lantern"
+  "block.minecraft.lantern": "Everlasting Lantern",
+  "block.minecraft.soul_torch": "Everlasting Soul Torch",
+  "block.minecraft.soul_lantern": "Everlasting Soul Lantern"
 }

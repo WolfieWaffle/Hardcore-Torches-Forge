@@ -1,13 +1,9 @@
 package com.github.wolfiewaffle.hardcore_torches.compat.amendments;
 
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
-import com.github.wolfiewaffle.hardcore_torches.block.LanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.util.LanternGroup;
-import java.util.Random;
-import javax.annotation.Nullable;
-import net.mehvahdjukaar.amendments.common.block.WallLanternBlock;
 import net.mehvahdjukaar.amendments.common.tile.WallLanternBlockTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +13,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import javax.annotation.Nullable;
+import java.util.Random;
 
 public class WallLanternBlockEntity extends WallLanternBlockTile implements IFuelBlockEntity {
     public LanternGroup group;
@@ -41,6 +40,11 @@ public class WallLanternBlockEntity extends WallLanternBlockTile implements IFue
 
     public int getMaxFuel() {
         return ((HardcoreWallLantern)this.getBlockState().getBlock()).getMaxFuel();
+    }
+
+    @Override
+    public boolean canAddFuel() {
+        return getFuel() < getMaxFuel();
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, WallLanternBlockEntity tile) {

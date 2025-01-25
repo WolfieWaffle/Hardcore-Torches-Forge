@@ -6,8 +6,11 @@ import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+import net.minecraft.data.Main;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -36,9 +39,12 @@ public class TorchLootFunction extends LootItemConditionalFunction {
         ETorchState dropTorchState;
 
         // Non-fuel modifications
-        if (state.getBlock() instanceof AbstractHardcoreTorchBlock) {
-            torchState = ((AbstractHardcoreTorchBlock) state.getBlock()).burnState;
+        if (state.getBlock() instanceof AbstractHardcoreTorchBlock torch) {
+            torchState = torch.burnState;
             dropTorchState = torchState;
+
+            // Soul torches work different
+            if (torch.group == MainMod.soulTorches) return getSoulTorch(torch);
 
             // If torches burn out when dropped
             if (Config.torchesBurnWhenDropped.get()) {
@@ -69,6 +75,10 @@ public class TorchLootFunction extends LootItemConditionalFunction {
         }
 
         return itemStack;
+    }
+
+    private ItemStack getSoulTorch(AbstractHardcoreTorchBlock torch) {
+        return new ItemStack(torch.asItem());
     }
 
     private ItemStack getChangedStack(BlockState state, ETorchState torchState) {

@@ -61,6 +61,7 @@ public class MainMod
 
     // Groups
     public static TorchGroup basicTorches = new TorchGroup("basic");
+    public static TorchGroup soulTorches = new TorchGroup("soul");
     public static LanternGroup basicLanterns = new LanternGroup("basic");
     public static LanternGroup soulLanterns = new LanternGroup("soul");
 
@@ -179,6 +180,10 @@ public class MainMod
         basicLanterns.add(BlockInit.UNLIT_LANTERN.get());
         soulLanterns.add(BlockInit.LIT_SOUL_LANTERN.get());
         soulLanterns.add(BlockInit.UNLIT_SOUL_LANTERN.get());
+        soulTorches.add(BlockInit.LIT_SOUL_TORCH.get());
+        soulTorches.add(BlockInit.LIT_WALL_SOUL_TORCH.get());
+        soulTorches.add(BlockInit.UNLIT_SOUL_TORCH.get());
+        soulTorches.add(BlockInit.UNLIT_WALL_SOUL_TORCH.get());
 
         if (ModList.get().isLoaded("amendments")) {
             AmendmentsCommonCompat.loadData();
@@ -226,6 +231,8 @@ public class MainMod
             event.accept(ItemInit.UNLIT_TORCH);
             event.accept(ItemInit.SMOLDERING_TORCH);
             event.accept(ItemInit.BURNT_TORCH);
+            event.accept(ItemInit.LIT_SOUL_TORCH);
+            event.accept(ItemInit.UNLIT_SOUL_TORCH);
             event.accept(ItemInit.LIT_LANTERN);
             event.accept(ItemInit.UNLIT_LANTERN);
             event.accept(ItemInit.LIT_SOUL_LANTERN);

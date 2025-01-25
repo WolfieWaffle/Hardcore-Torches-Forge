@@ -13,11 +13,13 @@ import net.minecraftforge.registries.RegistryObject;
 public class BlockEntityInit {
 
     private static Block[] torchTe() {
-        return  new Block[] {
-             BlockInit.LIT_TORCH.get(),
-             BlockInit.LIT_WALL_TORCH.get(),
-             BlockInit.SMOLDERING_TORCH.get(),
-             BlockInit.SMOLDERING_WALL_TORCH.get()
+        return new Block[] {
+                BlockInit.LIT_TORCH.get(),
+                BlockInit.LIT_WALL_TORCH.get(),
+                BlockInit.LIT_SOUL_TORCH.get(),
+                BlockInit.LIT_WALL_SOUL_TORCH.get(),
+                BlockInit.SMOLDERING_TORCH.get(),
+                BlockInit.SMOLDERING_WALL_TORCH.get(),
         };
     }
 

@@ -1,5 +1,6 @@
 package com.github.wolfiewaffle.hardcore_torches.block;
 
+import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchTools;
@@ -16,7 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import java.util.Random;
 import java.util.function.IntSupplier;
 
 public class HardcoreFloorTorchBlock extends AbstractHardcoreTorchBlock {
@@ -51,6 +51,4 @@ public class HardcoreFloorTorchBlock extends AbstractHardcoreTorchBlock {
         return Blocks.TORCH.canSurvive(state, world, pos);
     }
     // endregion
-
-
 }

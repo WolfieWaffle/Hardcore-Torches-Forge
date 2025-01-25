@@ -22,6 +22,8 @@ public class ItemInit {
     public static final RegistryObject<Item> UNLIT_TORCH = ITEMS.register("unlit_torch", () -> new TorchItem(BlockInit.UNLIT_TORCH.get(), BlockInit.UNLIT_WALL_TORCH.get(), new Item.Properties(), Direction.DOWN));
     public static final RegistryObject<Item> SMOLDERING_TORCH = ITEMS.register("smoldering_torch", () -> new TorchItem(BlockInit.SMOLDERING_TORCH.get(), BlockInit.SMOLDERING_WALL_TORCH.get(), new Item.Properties(), Direction.DOWN));
     public static final RegistryObject<Item> BURNT_TORCH = ITEMS.register("burnt_torch", () -> new TorchItem(BlockInit.BURNT_TORCH.get(), BlockInit.BURNT_WALL_TORCH.get(), new Item.Properties(), Direction.DOWN));
+    public static final RegistryObject<Item> LIT_SOUL_TORCH = ITEMS.register("lit_soul_torch", () -> new TorchItem(BlockInit.LIT_SOUL_TORCH.get(), BlockInit.LIT_WALL_SOUL_TORCH.get(), new Item.Properties(), Direction.DOWN));
+    public static final RegistryObject<Item> UNLIT_SOUL_TORCH = ITEMS.register("unlit_soul_torch", () -> new TorchItem(BlockInit.UNLIT_SOUL_TORCH.get(), BlockInit.UNLIT_WALL_SOUL_TORCH.get(), new Item.Properties(), Direction.DOWN));
 
     public static final RegistryObject<Item> LIT_LANTERN = ITEMS.register("lit_lantern", () -> new BasicLanternItem(BlockInit.LIT_LANTERN.get(), new Item.Properties()));
     public static final RegistryObject<Item> UNLIT_LANTERN = ITEMS.register("unlit_lantern", () -> new BasicLanternItem(BlockInit.UNLIT_LANTERN.get(), new Item.Properties()));

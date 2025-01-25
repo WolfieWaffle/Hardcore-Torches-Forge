@@ -93,7 +93,7 @@ public class FireStarterItem extends Item {
             } else if (block instanceof AbstractHardcoreTorchBlock && Config.starterLightTorches.get()) {
                 if (((AbstractHardcoreTorchBlock) block).burnState != ETorchState.LIT) {
                     attempt = true;
-                    if (success) ((AbstractHardcoreTorchBlock) block).light(world, pos, world.getBlockState(pos));
+                    if (success) ((AbstractHardcoreTorchBlock) block).light(world, pos);
                 }
             } else if (block instanceof AbstractLanternBlock && Config.starterLightLanterns.get()) {
                 if (((AbstractLanternBlock) block).canLight(world, pos)) {

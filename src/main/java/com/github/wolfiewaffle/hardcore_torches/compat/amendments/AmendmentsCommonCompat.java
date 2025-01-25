@@ -4,7 +4,6 @@ import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
-import com.mojang.datafixers.types.Type;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -36,36 +35,11 @@ public class AmendmentsCommonCompat {
     }
 
     static {
-        LIT_WALL_LANTERN = BlockInit.BLOCKS.register("lit_wall_lantern", () -> {
-            return new HardcoreWallLantern(Properties.of().mapColor(MapColor.NONE).pushReaction(PushReaction.DESTROY).instabreak().lightLevel((state) -> {
-                return 15;
-            }).sound(SoundType.LANTERN).noOcclusion(), true, MainMod.basicLanterns, () -> {
-                return (Integer)Config.defaultLanternFuel.get();
-            });
-        });
-        UNLIT_WALL_LANTERN = BlockInit.BLOCKS.register("unlit_wall_lantern", () -> {
-            return new HardcoreWallLantern(Properties.of().mapColor(MapColor.NONE).pushReaction(PushReaction.DESTROY).instabreak().lightLevel((state) -> {
-                return 0;
-            }).sound(SoundType.LANTERN).noOcclusion(), false, MainMod.basicLanterns, () -> {
-                return (Integer)Config.defaultLanternFuel.get();
-            });
-        });
-        LIT_WALL_SOUL_LANTERN = BlockInit.BLOCKS.register("lit_wall_soul_lantern", () -> {
-            return new HardcoreWallLantern(Properties.of().mapColor(MapColor.NONE).pushReaction(PushReaction.DESTROY).instabreak().lightLevel((state) -> {
-                return 15;
-            }).sound(SoundType.LANTERN).noOcclusion(), true, MainMod.soulLanterns, () -> {
-                return (Integer)Config.defaultLanternFuel.get();
-            });
-        });
-        UNLIT_WALL_SOUL_LANTERN = BlockInit.BLOCKS.register("unlit_wall_soul_lantern", () -> {
-            return new HardcoreWallLantern(Properties.of().mapColor(MapColor.NONE).pushReaction(PushReaction.DESTROY).instabreak().lightLevel((state) -> {
-                return 0;
-            }).sound(SoundType.LANTERN).noOcclusion(), false, MainMod.soulLanterns, () -> {
-                return (Integer)Config.defaultLanternFuel.get();
-            });
-        });
-        WALL_LANTERN_BLOCK_ENTITY = BlockEntityInit.BLOCK_ENTITIES.register("wall_lantern_block_entity", () -> {
-            return Builder.of(WallLanternBlockEntity::new, new Block[]{(Block)LIT_WALL_LANTERN.get(), (Block)UNLIT_WALL_LANTERN.get(), (Block)LIT_WALL_SOUL_LANTERN.get(), (Block)UNLIT_WALL_SOUL_LANTERN.get()}).build((Type)null);
-        });
+        LIT_WALL_LANTERN = BlockInit.BLOCKS.register("lit_wall_lantern", () -> new HardcoreWallLantern(Properties.of().mapColor(MapColor.NONE).pushReaction(PushReaction.DESTROY).instabreak().lightLevel((state) -> 15).sound(SoundType.LANTERN).noOcclusion(), true, MainMod.basicLanterns, () -> Config.defaultLanternFuel.get(), BlockInit.LIT_LANTERN.get()));
+        UNLIT_WALL_LANTERN = BlockInit.BLOCKS.register("unlit_wall_lantern", () -> new HardcoreWallLantern(Properties.of().mapColor(MapColor.NONE).pushReaction(PushReaction.DESTROY).instabreak().lightLevel((state) -> 0).sound(SoundType.LANTERN).noOcclusion(), false, MainMod.basicLanterns, () -> Config.defaultLanternFuel.get(), BlockInit.UNLIT_LANTERN.get()));
+        LIT_WALL_SOUL_LANTERN = BlockInit.BLOCKS.register("lit_wall_soul_lantern", () -> new HardcoreWallLantern(Properties.of().mapColor(MapColor.NONE).pushReaction(PushReaction.DESTROY).instabreak().lightLevel((state) -> 15).sound(SoundType.LANTERN).noOcclusion(), true, MainMod.soulLanterns, () -> Config.defaultLanternFuel.get(), BlockInit.LIT_SOUL_LANTERN.get()));
+        UNLIT_WALL_SOUL_LANTERN = BlockInit.BLOCKS.register("unlit_wall_soul_lantern", () -> new HardcoreWallLantern(Properties.of().mapColor(MapColor.NONE).pushReaction(PushReaction.DESTROY).instabreak().lightLevel((state) -> 0).sound(SoundType.LANTERN).noOcclusion(), false, MainMod.soulLanterns, () -> Config.defaultLanternFuel.get(), BlockInit.UNLIT_SOUL_LANTERN.get()));
+
+        WALL_LANTERN_BLOCK_ENTITY = BlockEntityInit.BLOCK_ENTITIES.register("wall_lantern_block_entity", () -> Builder.of(WallLanternBlockEntity::new, new Block[]{LIT_WALL_LANTERN.get(), UNLIT_WALL_LANTERN.get(), LIT_WALL_SOUL_LANTERN.get(), UNLIT_WALL_SOUL_LANTERN.get()}).build(null));
     }
 }

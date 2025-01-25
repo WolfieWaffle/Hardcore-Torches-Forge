@@ -34,7 +34,12 @@ public class FuelBlockEntity extends BlockEntity implements IFuelBlockEntity {
 
     @Override
     public void setFuel(int newValue) {
-        fuel = newValue;
+        this.fuel = Math.min(this.getMaxFuel(), Math.max(0, newValue));
+    }
+
+    @Override
+    public boolean canAddFuel() {
+        return getFuel() < getMaxFuel();
     }
 
     public void changeFuel(int increment) {
@@ -50,6 +55,8 @@ public class FuelBlockEntity extends BlockEntity implements IFuelBlockEntity {
                 IFuelBlock block = (IFuelBlock) world.getBlockState(pos).getBlock();
                 block.outOfFuel(world, pos, world.getBlockState(pos));
             }
+        } else if (fuel > getMaxFuel()) {
+            setFuel(getMaxFuel());
         }
     }
 

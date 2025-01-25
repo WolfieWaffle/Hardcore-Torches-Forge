@@ -24,6 +24,8 @@ public class AmendmentsClientCompat {
         IThirdPersonSpecialItemRenderer.attachToItem(ItemInit.UNLIT_TORCH.get(), torch_anim);
         IThirdPersonSpecialItemRenderer.attachToItem(ItemInit.SMOLDERING_TORCH.get(), torch_anim);
         IThirdPersonSpecialItemRenderer.attachToItem(ItemInit.BURNT_TORCH.get(), torch_anim);
+        IThirdPersonSpecialItemRenderer.attachToItem(ItemInit.LIT_SOUL_TORCH.get(), torch_anim);
+        IThirdPersonSpecialItemRenderer.attachToItem(ItemInit.UNLIT_SOUL_TORCH.get(), torch_anim);
         ItemBlockRenderTypes.setRenderLayer(AmendmentsCommonCompat.LIT_WALL_LANTERN.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(AmendmentsCommonCompat.UNLIT_WALL_LANTERN.get(), RenderType.cutout());
         BlockEntityRenderers.register(AmendmentsCommonCompat.WALL_LANTERN_BLOCK_ENTITY.get(), WallLanternBlockTileRenderer::new);

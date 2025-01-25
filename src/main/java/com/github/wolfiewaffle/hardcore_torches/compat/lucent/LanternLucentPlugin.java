@@ -2,19 +2,13 @@ package com.github.wolfiewaffle.hardcore_torches.compat.lucent;
 
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
-import com.github.wolfiewaffle.hardcore_torches.block.SoulLanternBlock;
-import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
-import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
 import com.legacy.lucent.api.EntityBrightness;
 import com.legacy.lucent.api.plugin.ILucentPlugin;
 import com.legacy.lucent.api.plugin.LucentPlugin;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -43,7 +37,7 @@ public class LanternLucentPlugin implements ILucentPlugin {
                             entityBrightness.setLightLevel(AbstractLanternBlock.LANTERN_LIGHT_LEVEL);
                         }
                         if (handlerModifiable.getStackInSlot(i).getItem() == ItemInit.LIT_SOUL_LANTERN.get()) {
-                            entityBrightness.setLightLevel(SoulLanternBlock.SOUL_LANTERN_LIGHT_LEVEL);
+                            entityBrightness.setLightLevel(10);
                         }
                         if (handlerModifiable.getStackInSlot(i).getItem() == Items.LANTERN) {
                             entityBrightness.setLightLevel(15);

@@ -48,7 +48,7 @@ public class TorchBlockEntity extends FuelBlockEntity {
                 if (Config.torchesSmolder.get()) {
                     ((AbstractHardcoreTorchBlock) world.getBlockState(pos).getBlock()).smother(world, pos, state);
                 } else {
-                    ((AbstractHardcoreTorchBlock) world.getBlockState(pos).getBlock()).extinguish(world, pos, state);
+                    ((AbstractHardcoreTorchBlock) world.getBlockState(pos).getBlock()).extinguish(world, pos, state, true);
                 }
             }
         }

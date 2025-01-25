@@ -6,4 +6,6 @@ public interface IFuelBlockEntity {
     int getMaxFuel();
 
     void setFuel(int var1);
+
+    boolean canAddFuel();
 }

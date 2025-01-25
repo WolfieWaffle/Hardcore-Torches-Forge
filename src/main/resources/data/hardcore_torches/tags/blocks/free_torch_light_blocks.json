@@ -19,6 +19,8 @@
         "minecraft:smoker",
         "hardcore_torches:lit_torch",
         "hardcore_torches:lit_wall_torch",
+        "hardcore_torches:lit_soul_torch",
+        "hardcore_torches:lit_wall_soul_torch",
         "hardcore_torches:smoldering_torch",
         "hardcore_torches:smoldering_wall_torch",
         "hardcore_torches:lit_lantern"

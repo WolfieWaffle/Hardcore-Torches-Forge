@@ -7,16 +7,26 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 public interface IFuelBlock {
 
     int getMaxFuel();
 
+    ItemStack getStack(Level world, BlockPos pos);
+
     void outOfFuel(Level world, BlockPos pos, BlockState state);
+
+    void extinguish(Level world, BlockPos pos, BlockState state, boolean playSound);
+
+    void light(Level world, BlockPos pos);
+
+    InteractionResult attemptLight(Level world, BlockPos pos, BlockState state, Player player, ItemStack stack, InteractionHand hand);
 
     default boolean itemValid(ItemStack stack, ETorchState attemptedState) {
         switch (attemptedState) {
@@ -87,6 +97,8 @@ public interface IFuelBlock {
         return false;
     }
 
+    boolean isLit();
+
     boolean canLight(Level world, BlockPos pos);
 
     default TagKey getFreeLightItems() {
@@ -124,4 +136,6 @@ public interface IFuelBlock {
     default TagKey getConsumeSmotherItems() {
         return MainMod.CONSUME_TORCH_SMOTHER_ITEMS;
     }
+
+    boolean isSoulVariant();
 }

@@ -27,6 +27,10 @@ public class ClientRegistry {
         ItemBlockRenderTypes.setRenderLayer(BlockInit.LIT_WALL_TORCH.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockInit.UNLIT_TORCH.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockInit.UNLIT_WALL_TORCH.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(BlockInit.LIT_SOUL_TORCH.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(BlockInit.LIT_WALL_SOUL_TORCH.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(BlockInit.UNLIT_SOUL_TORCH.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(BlockInit.UNLIT_WALL_SOUL_TORCH.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockInit.SMOLDERING_TORCH.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockInit.SMOLDERING_WALL_TORCH.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockInit.BURNT_TORCH.get(), RenderType.cutout());

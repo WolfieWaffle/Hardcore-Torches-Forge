@@ -10,6 +10,7 @@ import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
 import com.github.wolfiewaffle.hardcore_torches.item.TorchItem;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
+import com.github.wolfiewaffle.hardcore_torches.util.SoulAttunement;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchTools;
 import net.minecraft.core.BlockPos;
@@ -55,6 +56,11 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
     public abstract boolean isWall();
 
     @Override
+    public boolean isSoulVariant() {
+        return group == MainMod.soulTorches;
+    }
+
+    @Override
     public int getMaxFuel() {
         return maxFuel.getAsInt();
     }
@@ -69,7 +75,7 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
         ItemStack stack = player.getItemInHand(hand);
         if (this.burnState == ETorchState.LIT) {
             if (this.attemptUseItem(stack, player, hand, ETorchState.UNLIT)) {
-                this.extinguish(world, pos, state);
+                this.extinguish(world, pos, state, true);
                 player.swing(hand);
                 return InteractionResult.SUCCESS;
             }
@@ -81,30 +87,47 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
             }
         }
 
+        BlockEntity be = world.getBlockEntity(pos);
+
+        // Try to light this torch
         if ((this.burnState == ETorchState.SMOLDERING || this.burnState == ETorchState.UNLIT) && this.attemptUseItem(stack, player, hand, ETorchState.LIT)) {
-            this.light(world, pos, state);
+            if (isSoulVariant()) {
+                if (be instanceof  IFuelBlockEntity fuelBlockEntity) {
+                    if (fuelBlockEntity.getFuel() > 0) this.light(world, pos);
+                    else player.displayClientMessage(Component.literal("Needs XP from an Amethyst Shard"), true);
+                }
+            } else {
+                this.light(world, pos);
+            }
             player.swing(hand);
             return InteractionResult.SUCCESS;
-        } else {
+
+        } else { // Other cases, when torch was not lit
+
             // Message
-            BlockEntity be = world.getBlockEntity(pos);
             if (be.getType() == BlockEntityInit.TORCH_BLOCK_ENTITY.get() && !world.isClientSide && Config.fuelMessage.get() && stack.isEmpty()) {
                 player.displayClientMessage(Component.literal("Fuel: " + ((TorchBlockEntity)be).getFuel()), true);
+            }
+
+            // Hand extinguish
+            if (Config.handUnlightTorch.get() && (this.burnState == ETorchState.LIT || this.burnState == ETorchState.SMOLDERING) && !TorchTools.canLight(stack.getItem(), this.defaultBlockState())) {
+                this.extinguish(world, pos, state, true);
+                return InteractionResult.SUCCESS;
+            }
+
+            // Soul
+            if (isSoulVariant()) {
+                return SoulAttunement.soulAttune(world, pos, (IFuelBlockEntity) be, (IFuelBlock) state.getBlock(), player, hand);
             }
 
             // Fueling a torch with oil can
             if (Config.torchesUseCan.get() && this.burnState != ETorchState.BURNT && !world.isClientSide && OilCanItem.fuelBlock((IFuelBlockEntity) be, world, stack)) {
                 world.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-            }
-
-            // Hand extinguish
-            if (Config.handUnlightTorch.get() && (this.burnState == ETorchState.LIT || this.burnState == ETorchState.SMOLDERING) && !TorchTools.canLight(stack.getItem(), this.defaultBlockState())) {
-                this.extinguish(world, pos, state);
                 return InteractionResult.SUCCESS;
-            } else {
-                return InteractionResult.PASS;
             }
         }
+
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -133,7 +156,8 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
 
     // region state methods
     public void smother(Level world, BlockPos pos, BlockState state) {
-        if (!world.isClientSide) {
+        if (group == MainMod.soulTorches) extinguish(world, pos, state, true);
+        else if (!world.isClientSide) {
             world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
@@ -143,19 +167,9 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
         }
     }
 
-    public void extinguish(Level world, BlockPos pos, BlockState state) {
-        if (!world.isClientSide) {
-            world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
-            TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
-            TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
-            TorchTools.displayParticle(ParticleTypes.SMOKE, state, world, pos);
-            TorchTools.displayParticle(ParticleTypes.SMOKE, state, world, pos);
-            changeTorch(world, pos, state, ETorchState.UNLIT);
-        }
-    }
-
     public void burnOut(Level world, BlockPos pos, BlockState state, boolean playSound) {
-        if (!world.isClientSide) {
+        if (group == MainMod.soulTorches) extinguish(world, pos, state, true);
+        else if (!world.isClientSide) {
             if (playSound) world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
@@ -165,7 +179,10 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
         }
     }
 
-    public void light(Level world, BlockPos pos, BlockState state) {
+    @Override
+    public void light(Level world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+
         if (!world.isClientSide) {
             world.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 0.5f, 1.2f);
             TorchTools.displayParticle(ParticleTypes.LAVA, state, world, pos);
@@ -218,7 +235,39 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
     // region IFuelBlock
     @Override
     public void outOfFuel(Level world, BlockPos pos, BlockState state) {
-        burnOut(world, pos, state, false);
+        if (group == MainMod.soulTorches) extinguish(world, pos, state, true);
+        else burnOut(world, pos, state, false);
+    }
+
+    @Override
+    public void extinguish(Level world, BlockPos pos, BlockState state, boolean playSound) {
+        if (!world.isClientSide) {
+            world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1f, 1f);
+            TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
+            TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
+            TorchTools.displayParticle(ParticleTypes.SMOKE, state, world, pos);
+            TorchTools.displayParticle(ParticleTypes.SMOKE, state, world, pos);
+            changeTorch(world, pos, state, ETorchState.UNLIT);
+        }
+    }
+
+    // DONT USE THIS
+    @Override
+    public ItemStack getStack(Level world, BlockPos pos) {
+        return new ItemStack(world.getBlockState(pos).getBlock());
+    }
+
+    // DONT USE THIS
+    @Override
+    public InteractionResult attemptLight(Level world, BlockPos pos, BlockState state, Player player, ItemStack stack, InteractionHand hand) {
+        attemptUseItem(stack, player, hand, ETorchState.LIT);
+        return InteractionResult.SUCCESS;
+    }
+
+    // DONT USE THIS
+    @Override
+    public boolean isLit() {
+        return burnState == ETorchState.LIT;
     }
     // endregion
 }

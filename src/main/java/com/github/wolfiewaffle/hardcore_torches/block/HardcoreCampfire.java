@@ -5,10 +5,8 @@ import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlock;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -19,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
@@ -28,7 +25,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
@@ -160,5 +156,42 @@ public class HardcoreCampfire extends CampfireBlock implements IFuelBlock {
         } else {
             return state.getValue(LIT) ? createTickerHelper(type, BlockEntityInit.CAMPFIRE_BLOCK_ENTITY.get(), HardcoreCampfireBlockEntity::cookTick) : createTickerHelper(type, BlockEntityInit.CAMPFIRE_BLOCK_ENTITY.get(), HardcoreCampfireBlockEntity::cooldownTick);
         }
+    }
+
+    // These methods are needed for IFuelBlock
+
+    @Override
+    public boolean isSoulVariant() {
+        return false;
+    }
+
+    // NOT USED FOR NOW
+    @Override
+    public ItemStack getStack(Level world, BlockPos pos) {
+        return new ItemStack(world.getBlockState(pos).getBlock());
+    }
+
+    // NOT USED FOR NOW
+    @Override
+    public void extinguish(Level world, BlockPos pos, BlockState state, boolean playSound) {
+        outOfFuel(world, pos, state);
+    }
+
+    // NOT USED FOR NOW
+    @Override
+    public void light(Level world, BlockPos pos) {
+
+    }
+
+    // NOT USED FOR NOW
+    @Override
+    public InteractionResult attemptLight(Level world, BlockPos pos, BlockState state, Player player, ItemStack stack, InteractionHand hand) {
+        return InteractionResult.FAIL;
+    }
+
+    // NOT USED FOR NOW
+    @Override
+    public boolean isLit() {
+        return false;
     }
 }

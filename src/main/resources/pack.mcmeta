@@ -8,6 +8,10 @@
             {
                 "namespace": "minecraft",
                 "path": "recipes/torch"
+            },
+            {
+                "namespace": "minecraft",
+                "path": "recipes/soul_torch"
             }
         ]
     }
