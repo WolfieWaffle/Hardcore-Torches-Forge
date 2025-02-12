@@ -1,5 +1,5 @@
 {
   "variants": {
-    "": { "model": "hardcore_torches:block/lit_soul_torch" }
+    "": { "model": "minecraft:block/soul_torch" }
   }
 }

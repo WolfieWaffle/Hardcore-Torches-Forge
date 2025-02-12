@@ -39,15 +39,17 @@ import java.util.function.IntSupplier;
 
 public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock implements IFuelBlock, EntityBlock {
 
-    public SimpleParticleType particle;
+    public SimpleParticleType fireParticle;
+    public SimpleParticleType smokeParticle;
     public ETorchState burnState;
     public TorchGroup group;
     public static final BlockEntityTicker<TorchBlockEntity> TICKER = (level, pos, state, be) -> be.tick();
     public IntSupplier maxFuel;
 
-    public AbstractHardcoreTorchBlock(Properties prop, SimpleParticleType particle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {
+    public AbstractHardcoreTorchBlock(Properties prop, SimpleParticleType fireParticle, SimpleParticleType smokeParticle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {
         super(prop);
-        this.particle = particle;
+        this.fireParticle = fireParticle;
+        this.smokeParticle = smokeParticle;
         this.burnState = burnState;
         this.group = group;
         this.maxFuel = maxFuel;

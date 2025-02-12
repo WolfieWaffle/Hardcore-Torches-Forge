@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/template_lantern",
   "textures": {
-    "lantern": "hardcore_torches:block/lit_lantern"
+    "lantern": "minecraft:block/lantern"
   },
   "display": {
     "gui": {

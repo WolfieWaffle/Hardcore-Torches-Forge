@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "hardcore_torches:block/lit_soul_torch"
+    "layer0": "minecraft:block/soul_torch"
   }
 }

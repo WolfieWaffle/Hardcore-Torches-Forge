@@ -1,6 +1,5 @@
 package com.github.wolfiewaffle.hardcore_torches.block;
 
-import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchTools;
@@ -21,8 +20,8 @@ import java.util.function.IntSupplier;
 
 public class HardcoreFloorTorchBlock extends AbstractHardcoreTorchBlock {
 
-    public HardcoreFloorTorchBlock(Properties prop, SimpleParticleType particle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {
-        super(prop, particle, burnState, group, maxFuel);
+    public HardcoreFloorTorchBlock(Properties prop, SimpleParticleType fireParticle, SimpleParticleType smokeParticle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {
+        super(prop, fireParticle, smokeParticle, burnState, group, maxFuel);
     }
 
     @Override
@@ -33,7 +32,8 @@ public class HardcoreFloorTorchBlock extends AbstractHardcoreTorchBlock {
     // region Overridden methods for TorchBlock since I can't extend 2 classes
     @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
-        TorchTools.displayParticle(particle, state, world, pos);
+        TorchTools.displayParticle(fireParticle, state, world, pos);
+        TorchTools.displayParticle(smokeParticle, state, world, pos);
     }
 
     @Override

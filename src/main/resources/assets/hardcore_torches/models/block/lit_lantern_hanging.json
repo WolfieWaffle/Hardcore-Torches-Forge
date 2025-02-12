@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/template_hanging_lantern",
+  "parent": "minecraft:block/lantern_hanging",
   "textures": {
-    "lantern": "hardcore_torches:block/lit_lantern"
+    "lantern": "block/lantern"
   }
 }

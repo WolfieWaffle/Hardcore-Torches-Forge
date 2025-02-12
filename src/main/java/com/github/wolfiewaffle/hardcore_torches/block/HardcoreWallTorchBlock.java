@@ -20,14 +20,13 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
 import java.util.function.IntSupplier;
 
 public class HardcoreWallTorchBlock extends AbstractHardcoreTorchBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
-    public HardcoreWallTorchBlock(Properties prop, SimpleParticleType particle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {
-        super(prop, particle, burnState, group, maxFuel);
+    public HardcoreWallTorchBlock(Properties prop, SimpleParticleType fireParticle, SimpleParticleType smokeParticle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {
+        super(prop, fireParticle, smokeParticle, burnState, group, maxFuel);
     }
 
     @Override
@@ -38,7 +37,8 @@ public class HardcoreWallTorchBlock extends AbstractHardcoreTorchBlock {
     // region Overridden methods for TorchBlock since I can't extend 2 classes
     @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
-        TorchTools.displayParticle(particle, state, world, pos);
+        TorchTools.displayParticle(fireParticle, state, world, pos);
+        TorchTools.displayParticle(smokeParticle, state, world, pos);
     }
 
     @Override

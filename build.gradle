@@ -168,7 +168,7 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:curios-309927:5367944"));
     //compileOnly(fg.deobf("curse.maven:hct-576846:6018257"));
     implementation(fg.deobf("curse.maven:moonlight-499980:6058583"));
-    implementation(fg.deobf("curse.maven:amendments-896746:6030672"));
+    compileOnly(fg.deobf("curse.maven:amendments-896746:6030672"));
     implementation(fg.deobf("curse.maven:farmersdelight-398521:5878214"));
     implementation(fg.deobf("curse.maven:jei-238222:5846810"));
     //implementation(fg.deobf("curse.maven:coroutil-237749:5096038"));

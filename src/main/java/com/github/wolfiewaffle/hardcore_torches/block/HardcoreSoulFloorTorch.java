@@ -8,7 +8,7 @@ import java.util.function.IntSupplier;
 
 public class HardcoreSoulFloorTorch extends HardcoreFloorTorchBlock {
 
-    public HardcoreSoulFloorTorch(Properties prop, SimpleParticleType particle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {
-        super(prop, particle, burnState, group, maxFuel);
+    public HardcoreSoulFloorTorch(Properties prop, SimpleParticleType fireParticle, SimpleParticleType smokeParticle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {
+        super(prop, fireParticle, smokeParticle, burnState, group, maxFuel);
     }
 }

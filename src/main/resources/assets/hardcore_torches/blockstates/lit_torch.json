@@ -1,5 +1,5 @@
 {
   "variants": {
-    "": { "model": "hardcore_torches:block/lit_torch" }
+    "": { "model": "minecraft:block/torch" }
   }
 }
