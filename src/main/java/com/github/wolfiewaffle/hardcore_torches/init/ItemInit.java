@@ -15,6 +15,7 @@ public class ItemInit {
     public static final DeferredHolder<Item, OilCanItem> OIL_CAN = ITEMS.register("oil_can", () -> new OilCanItem(new Item.Properties().stacksTo(1)));
     public static final DeferredHolder<Item, Item> ANIMAL_FAT = ITEMS.register("animal_fat", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, FireStarterItem> FIRE_STARTER = ITEMS.register("fire_starter", () -> new FireStarterItem(new Item.Properties()));
+    public static final DeferredHolder<Item, Item> BANDOLIER = ITEMS.register("bandolier", () -> new Item(new Item.Properties()));
 
     public static final DeferredHolder<Item, TorchItem> LIT_TORCH = ITEMS.register("lit_torch", () -> new TorchItem(BlockInit.LIT_TORCH.get(), BlockInit.LIT_WALL_TORCH.get(), new Item.Properties(), Direction.DOWN));
     public static final DeferredHolder<Item, TorchItem> UNLIT_TORCH = ITEMS.register("unlit_torch", () -> new TorchItem(BlockInit.UNLIT_TORCH.get(), BlockInit.UNLIT_WALL_TORCH.get(), new Item.Properties(), Direction.DOWN));

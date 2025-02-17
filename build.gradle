@@ -32,6 +32,11 @@ repositories {
         name = "Illusive Soulworks maven"
         url = "https://maven.theillusivec4.top/"
     }
+
+    maven {
+        name "Modding Legacy Maven"
+        url "https://maven.moddinglegacy.com/artifactory/modding-legacy/"
+    }
 }
 
 base {
@@ -147,7 +152,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    compileOnly("curse.maven:lucent-493280:4951434");
+    implementation("com.legacy:lucent:1.20.4-1.7.0");
     implementation("curse.maven:curios-309927:5388471");
     //compileOnly(fg.deobf("curse.maven:hct-576846:6018257"));
     compileOnly("curse.maven:moonlight-499980:6058583");
