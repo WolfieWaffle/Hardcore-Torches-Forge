@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "hardcore_torches:block/lit_soul_lantern"
+    },
+    "hanging=true": {
+      "model": "hardcore_torches:block/lit_soul_lantern_hanging"
+    }
+  }
+}

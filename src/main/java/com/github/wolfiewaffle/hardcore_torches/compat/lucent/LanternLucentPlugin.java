@@ -1,0 +1,54 @@
+package com.github.wolfiewaffle.hardcore_torches.compat.lucent;
+
+import com.github.wolfiewaffle.hardcore_torches.HardcoreTorches;
+import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
+import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
+import com.legacy.lucent.api.EntityBrightness;
+import com.legacy.lucent.api.plugin.ILucentPlugin;
+import com.legacy.lucent.api.plugin.LucentPlugin;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import top.theillusivec4.curios.api.CuriosApi;
+
+import java.util.Optional;
+
+@LucentPlugin
+public class LanternLucentPlugin implements ILucentPlugin {
+
+    @Override
+    public String ownerModID() {
+        return HardcoreTorches.MOD_ID;
+    }
+
+    @Override
+    public void getEntityLightLevel(EntityBrightness entityBrightness) {
+        Entity entity = entityBrightness.getEntity();
+
+        if (entity instanceof Player) {
+            if (ModList.get().isLoaded("curios")) {
+                Optional<IItemHandlerModifiable> curios;
+                curios = CuriosApi.getCuriosHelper().getEquippedCurios((Player) entity);
+
+                curios.ifPresent((handlerModifiable) -> {
+                    for (int i = 0; i < handlerModifiable.getSlots(); i++) {
+                        if (handlerModifiable.getStackInSlot(i).getItem() == ItemInit.LIT_LANTERN.get()) {
+                            entityBrightness.setLightLevel(AbstractLanternBlock.LANTERN_LIGHT_LEVEL);
+                        }
+                        if (handlerModifiable.getStackInSlot(i).getItem() == ItemInit.LIT_SOUL_LANTERN.get()) {
+                            entityBrightness.setLightLevel(10);
+                        }
+                        if (handlerModifiable.getStackInSlot(i).getItem() == Items.LANTERN) {
+                            entityBrightness.setLightLevel(15);
+                        }
+                        if (handlerModifiable.getStackInSlot(i).getItem() == Items.SOUL_LANTERN) {
+                            entityBrightness.setLightLevel(10);
+                        }
+                    }
+                });
+            }
+        }
+    }
+}

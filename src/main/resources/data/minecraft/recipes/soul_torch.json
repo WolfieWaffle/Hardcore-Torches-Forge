@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "#",
+        "|",
+        "S"
+    ],
+    "key":
+    {
+        "#":
+        {
+            "item": "minecraft:glowstone_dust"
+        },
+        "|":
+        {
+            "tag": "forge:rods/wooden"
+        },
+        "S":
+        {
+            "tag": "minecraft:soul_fire_base_blocks"
+        }
+    },
+    "result":
+    {
+        "item": "minecraft:soul_torch",
+        "count": 1
+    }
+}

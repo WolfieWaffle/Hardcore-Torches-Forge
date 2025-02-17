@@ -1,0 +1,10 @@
+{
+    "replace": false,
+    "values": [
+        "minecraft:torch",
+        "minecraft:soul_torch",
+        "minecraft:lava_bucket",
+        "hardcore_torches:lit_torch",
+        "hardcore_torches:lit_soul_torch"
+    ]
+}

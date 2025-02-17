@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/soul_lantern_hanging",
+  "textures": {
+    "lantern": "block/soul_lantern"
+  }
+}
