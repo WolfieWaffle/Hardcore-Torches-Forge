@@ -54,6 +54,8 @@ public class Config {
     public static ModConfigSpec.ConfigValue<Integer> campfireMaxFuel;
     public static ModConfigSpec.ConfigValue<Integer> bottleExpAmount;
     public static ModConfigSpec.ConfigValue<Integer> burntDrop;
+    public static ModConfigSpec.ConfigValue<Integer> bandolierMaxTorches;
+    public static ModConfigSpec.ConfigValue<Integer> bandolierInteractMode;
 
     public static void init() {
         //initServer();
@@ -130,6 +132,8 @@ public class Config {
 
         builder.comment("Compatibility Settings").push("compat");
         craftHardcoreStove = builder.comment("If true, and Farmer's Delight is installed, the Stove will be crafted as a hardcore version which needs fuel.").define("craftHardcoreStove", true);
+        bandolierMaxTorches = builder.comment("Max torches that the Curios bandolier can hold").defineInRange("bandolierMaxTorches", 64, 1, Integer.MAX_VALUE);
+        bandolierInteractMode = builder.comment("0: Placement disabled\n1: Place by right clicking with empty offhand").defineInRange("bandolierInteractMode", 1, 0, 1);
         builder.pop();
 
         COMMON_CONFIG = builder.build();

@@ -1,18 +1,28 @@
 package com.github.wolfiewaffle.hardcore_torches.event;
 
+import com.github.wolfiewaffle.hardcore_torches.compat.curio.BandolierCurio;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
+import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
 import com.github.wolfiewaffle.hardcore_torches.item.TorchItem;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.Random;
 
@@ -86,6 +96,17 @@ public class PlayerEventHandler {
                     if (Config.tickInInventory.get() && ((LanternItem) item).isLit)
                         inventory.setItem(i, LanternItem.addFuel(stack, world, -1));
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void playerInteract(PlayerInteractEvent.RightClickBlock event) {
+        if (Config.bandolierInteractMode.get() == 0) return;
+
+        if (event.getSide() == LogicalSide.SERVER && event.getHand() == InteractionHand.OFF_HAND && ModList.get().isLoaded("curios")) {
+            if (event.getCancellationResult() == InteractionResult.PASS && event.getEntity().getItemInHand(event.getHand()).isEmpty()) {
+                BandolierCurio.handleRightClick(event.getEntity(), event.getHand(), event.getHitVec());
             }
         }
     }

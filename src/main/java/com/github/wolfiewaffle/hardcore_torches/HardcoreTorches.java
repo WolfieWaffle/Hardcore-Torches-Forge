@@ -1,8 +1,11 @@
 package com.github.wolfiewaffle.hardcore_torches;
 
 import com.github.wolfiewaffle.hardcore_torches.compat.amendments.AmendmentsCommonCompat;
+import com.github.wolfiewaffle.hardcore_torches.compat.curio.CuriosCommonCompat;
+import com.github.wolfiewaffle.hardcore_torches.compat.curio.LanternCurio;
 import com.github.wolfiewaffle.hardcore_torches.compat.farmersdelight.FarmersCommonCompat;
 import com.github.wolfiewaffle.hardcore_torches.config.*;
+import com.github.wolfiewaffle.hardcore_torches.event.PlayerEventHandler;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
@@ -33,11 +36,8 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -49,8 +49,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import top.theillusivec4.curios.api.CuriosCapability;
-import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.type.capability.ICurio;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(HardcoreTorches.MOD_ID)
@@ -138,7 +136,9 @@ public class HardcoreTorches
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::buildContents);
-        //modEventBus.addListener(this::registerCapabilities);
+        modEventBus.addListener(this::registerCapabilities);
+
+        NeoForge.EVENT_BUS.register(new PlayerEventHandler());
 
         // Init
         ItemInit.ITEMS.register(modEventBus);
@@ -209,11 +209,11 @@ public class HardcoreTorches
         }
     }
 
-//    public void registerCapabilities(final RegisterCapabilitiesEvent event) {
-//        if (ModList.get().isLoaded("curios")) {
-//            event.registerItem(CuriosCapability.ITEM, (stack, context) -> new LanternCurio(stack), ItemInit.LIT_LANTERN.get(), ItemInit.LIT_SOUL_LANTERN.get());
-//        }
-//    }
+    public void registerCapabilities(final RegisterCapabilitiesEvent event) {
+        if (ModList.get().isLoaded("curios")) {
+            CuriosCommonCompat.attachCapabilities(event);
+        }
+    }
 
     public void buildContents(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
