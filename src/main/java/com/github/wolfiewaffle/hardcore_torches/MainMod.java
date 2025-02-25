@@ -60,8 +60,8 @@ public class MainMod
     public static final String MOD_ID = "hardcore_torches";
 
     // Groups
-    public static TorchGroup basicTorches = new TorchGroup("basic");
-    public static TorchGroup soulTorches = new TorchGroup("soul");
+    public static TorchGroup basicTorches = new TorchGroup("basic", true);
+    public static TorchGroup soulTorches = new TorchGroup("soul", false);
     public static LanternGroup basicLanterns = new LanternGroup("basic");
     public static LanternGroup soulLanterns = new LanternGroup("soul");
 

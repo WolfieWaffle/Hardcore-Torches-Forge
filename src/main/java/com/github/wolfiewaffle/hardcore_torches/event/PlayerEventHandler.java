@@ -44,7 +44,7 @@ public class PlayerEventHandler {
                     // Rain
                     if (rain) {
                         if (torchItem.burnState == ETorchState.LIT) {
-                            if (Config.torchesSmolder.get()) {
+                            if (Config.torchesSmolder.get() && torchItem.torchGroup.canSmolder()) {
                                 inventory.setItem(i, TorchItem.stateStack(stack, ETorchState.SMOLDERING));
                                 world.playSound(null, pos.above(), SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.5f, 1f);
                             } else {

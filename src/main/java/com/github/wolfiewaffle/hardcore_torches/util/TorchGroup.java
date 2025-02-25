@@ -11,9 +11,11 @@ public class TorchGroup {
     private HashMap<ETorchState, HardcoreFloorTorchBlock> standingTorches = new HashMap<ETorchState, HardcoreFloorTorchBlock>();
     private HashMap<ETorchState, HardcoreWallTorchBlock> wallTorches = new HashMap<ETorchState, HardcoreWallTorchBlock>();
     public final String name;
+    private boolean canSmolder;
 
-    public TorchGroup(String name) {
+    public TorchGroup(String name, boolean canSmolder) {
         this.name = name;
+        this.canSmolder = canSmolder;
     }
 
     public void add(Block block) {
@@ -40,5 +42,9 @@ public class TorchGroup {
 
     public HardcoreWallTorchBlock getWallTorch(ETorchState state) {
         return wallTorches.get(state);
+    }
+
+    public boolean canSmolder() {
+        return canSmolder;
     }
 }

@@ -27,7 +27,7 @@ import java.util.function.IntSupplier;
 
 public class TorchItem extends StandingAndWallBlockItem {
     public ETorchState burnState;
-    TorchGroup torchGroup;
+    public TorchGroup torchGroup;
     public IntSupplier maxFuel;
 
     public TorchItem(Block floorBlock, Block wallBlock, Properties properties, Direction direction) {
