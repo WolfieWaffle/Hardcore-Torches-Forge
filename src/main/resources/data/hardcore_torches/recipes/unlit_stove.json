@@ -1,4 +1,18 @@
 {
+  "neoforge:conditions":
+  [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "farmersdelight"
+    },
+    {
+      "type": "neoforge:not",
+      "value":
+      {
+        "type": "hardcore_torches:craft_hardcore_stove"
+      }
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
@@ -20,19 +34,5 @@
   "result": {
     "item": "farmersdelight:stove"
   },
-  "show_notification": true,
-  "conditions":
-  [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "farmersdelight"
-    },
-    {
-      "type": "neoforge:not",
-      "value":
-      {
-        "type": "hardcore_torches:craft_hardcore_stove"
-      }
-    }
-  ]
+  "show_notification": true
 }

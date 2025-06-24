@@ -86,32 +86,27 @@ public class OilCanRecipe extends ShapelessRecipe {
     public static class Serializer implements RecipeSerializer<OilCanRecipe> {
         private static final ResourceLocation NAME = new ResourceLocation("hardcore_torches", "oil_can");
 
-        private static final Codec<OilCanRecipe> CODEC = RecordCodecBuilder.create((builder) -> {
-            return builder.group(ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter((rec) -> {
-                return rec.getGroup();
-            }), ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter((rec) -> {
-                return rec.getResultItem(null);
-            }), Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap((ingredients) -> {
-                Ingredient[] aingredient = ingredients.stream().filter((ingredient) -> {
-                    return !ingredient.isEmpty();
-                }).toArray((index) -> {
-                    return new Ingredient[index];
-                });
-                if (aingredient.length == 0) {
-                    return DataResult.error(() -> {
-                        return "No ingredients for shapeless recipe";
-                    });
-                } else {
-                    return (aingredient.length > 9) ? DataResult.error(() -> {
-                        return "Too many ingredients for shapeless recipe";
-                    }) : DataResult.success(NonNullList.of(Ingredient.EMPTY, aingredient));
-                }
-            }, DataResult::success).forGetter((rec) -> {
-                return rec.getIngredients();
-            }), Codec.INT.fieldOf("fuel").forGetter((rec) -> {
-                return rec.fuelAmount;
-            })).apply(builder, OilCanRecipe::new);
-        });
+        private static final Codec<OilCanRecipe> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
+
+                ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter((rec) -> rec.getGroup()),
+
+                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter((rec) -> rec.getResultItem(null)),
+
+                Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap((rec) -> {
+                        Ingredient[] aingredient = rec.toArray((i) -> new Ingredient[i]);
+
+                        if (aingredient.length == 0) {
+                            return DataResult.error(() -> "No ingredients for shapeless recipe");
+                        } else {
+                            return aingredient.length > ShapedRecipePattern.getMaxHeight() * ShapedRecipePattern.getMaxWidth() ?
+                                    DataResult.error(() -> "Too many ingredients for shapeless recipe. The maximum is: %s".formatted(ShapedRecipePattern.getMaxHeight() * ShapedRecipePattern.getMaxWidth()))
+                                    : DataResult.success(NonNullList.of(Ingredient.EMPTY, aingredient));
+                        }
+                    }, DataResult::success).forGetter((rec) -> rec.getIngredients()),
+
+                Codec.INT.fieldOf("fuel").forGetter((rec) -> rec.fuelAmount)
+
+        ).apply(builder, OilCanRecipe::new));
 
         public Codec<OilCanRecipe> codec() {
             return CODEC;

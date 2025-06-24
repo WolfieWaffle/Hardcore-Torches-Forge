@@ -23,18 +23,52 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.awt.*;
+import java.util.Random;
 import java.util.function.IntSupplier;
 
 public class TorchItem extends StandingAndWallBlockItem {
     public ETorchState burnState;
     TorchGroup torchGroup;
     public IntSupplier maxFuel;
+    protected static Random random = new Random();
 
     public TorchItem(Block floorBlock, Block wallBlock, Properties properties, Direction direction) {
         super(floorBlock, wallBlock, properties, direction);
         this.burnState = ((AbstractHardcoreTorchBlock) floorBlock).burnState;
         this.torchGroup = ((AbstractHardcoreTorchBlock) floorBlock).group;
         this.maxFuel = ((AbstractHardcoreTorchBlock) floorBlock).maxFuel;
+    }
+
+    public boolean isLit() {
+        return burnState == ETorchState.LIT || burnState == ETorchState.SMOLDERING;
+    }
+
+    public static ItemStack getTickedStack(ItemStack stack) {
+        if (stack.getItem() instanceof TorchItem torch) {
+            int fuel = getFuel(stack);
+
+            // Tick down
+            if (torch.burnState == ETorchState.LIT) {
+                fuel--;
+            } else if (torch.burnState == ETorchState.SMOLDERING && random.nextInt(3) == 0) {
+                fuel--;
+            }
+
+            // Clamp
+            fuel = Math.max(0, fuel);
+
+            if (fuel <= 0) {
+                stack = stateStack(stack, ETorchState.BURNT);
+            }
+
+            stack = setFuel(stack, fuel);
+        }
+
+        return stack;
+    }
+
+    public int getTotalFuel(ItemStack stack) {
+        return getFuel(stack) * stack.getCount();
     }
 
     public int getMaxFuel() {
@@ -179,7 +213,7 @@ public class TorchItem extends StandingAndWallBlockItem {
         return stack;
     }
 
-    public boolean sameTorchGroup(TorchItem item1, TorchItem item2) {
+    public static boolean sameTorchGroup(TorchItem item1, TorchItem item2) {
         if (item1.torchGroup == item2.torchGroup) {
             return true;
         }

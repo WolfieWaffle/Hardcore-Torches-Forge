@@ -32,6 +32,8 @@ public class Config {
     public static ModConfigSpec.ConfigValue<Boolean> craftLight;
     public static ModConfigSpec.ConfigValue<Boolean> craftHardcoreCampfire;
     public static ModConfigSpec.ConfigValue<Boolean> craftHardcoreStove;
+    public static ModConfigSpec.ConfigValue<Boolean> craftBandolier;
+    public static ModConfigSpec.ConfigValue<Boolean> showBandolier;
 
     public static ModConfigSpec.ConfigValue<Double> oilRecipeMultiplier;
     public static ModConfigSpec.ConfigValue<Double> starterSuccessChance;
@@ -132,8 +134,10 @@ public class Config {
 
         builder.comment("Compatibility Settings").push("compat");
         craftHardcoreStove = builder.comment("If true, and Farmer's Delight is installed, the Stove will be crafted as a hardcore version which needs fuel.").define("craftHardcoreStove", true);
-        bandolierMaxTorches = builder.comment("Max torches that the Curios bandolier can hold").defineInRange("bandolierMaxTorches", 64, 1, Integer.MAX_VALUE);
+        bandolierMaxTorches = builder.comment("Max torches that the Curios bandolier can hold").defineInRange("bandolierMaxTorches", 192, 1, Integer.MAX_VALUE);
         bandolierInteractMode = builder.comment("0: Placement disabled\n1: Place by right clicking with empty offhand").defineInRange("bandolierInteractMode", 1, 0, 1);
+        craftBandolier = builder.comment("If true, the bandolier has a crafting recipe.").define("craftBandolier", true);
+        showBandolier = builder.comment("If true, the bandolier appears in the creative tab.").define("showBandolier", true);
         builder.pop();
 
         COMMON_CONFIG = builder.build();

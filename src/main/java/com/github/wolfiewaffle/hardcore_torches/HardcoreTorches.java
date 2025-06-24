@@ -219,6 +219,7 @@ public class HardcoreTorches
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(ItemInit.OIL_CAN.get());
             event.accept(OilCanItem.setFuel(new ItemStack(ItemInit.OIL_CAN.get()), Config.maxCanFuel.get()));
+            if (Config.showBandolier.get()) event.accept(ItemInit.BANDOLIER.get());
             event.accept(ItemInit.FIRE_STARTER.get());
             event.accept(ItemInit.ANIMAL_FAT.get());
         }
