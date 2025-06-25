@@ -112,17 +112,32 @@ public class PlayerEventHandler {
     public void playerInteract(UseItemOnBlockEvent event) {
         if (Config.bandolierInteractMode.get() == 0) return;
         if (event.getCancellationResult() == InteractionResult.CONSUME || event.getCancellationResult() == InteractionResult.SUCCESS || event.getCancellationResult() == InteractionResult.FAIL) return;
-        if (event.getHand() == InteractionHand.MAIN_HAND) return;
+
+        // Detection
+        int mode = Config.bandolierInteractMode.get();
+        switch (mode) {
+            case 1:
+                if (event.getHand() == InteractionHand.MAIN_HAND) return;
+                break;
+            case 2:
+                if (event.getHand() == InteractionHand.MAIN_HAND) return;
+                if (!event.getEntity().getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) return;
+                break;
+        }
+
         if (!ModList.get().isLoaded("curios")) return;
 
-        int mode = Config.bandolierInteractMode.get();
 
-        if (mode == 1) {
+
+        if (mode != 0) {
 
             ItemStack item = event.getItemStack();
-            if (event.getCancellationResult() == InteractionResult.PASS && item.isEmpty()) {
-                if (Minecraft.getInstance().hitResult instanceof BlockHitResult result) {
-                    BandolierCurio.handleRightClick(event, result);
+            if (mode == 1 || item.isEmpty()) {
+
+                if (event.getCancellationResult() == InteractionResult.PASS) {
+                    if (Minecraft.getInstance().hitResult instanceof BlockHitResult result) {
+                        BandolierCurio.handleRightClick(event, result);
+                    }
                 }
             }
         }

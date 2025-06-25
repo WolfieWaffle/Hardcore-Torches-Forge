@@ -95,7 +95,7 @@ public class BandolierCurio implements ICurio {
                                 bandolier.lastInteractionTime = Minecraft.getInstance().level.getGameTime();
                                 System.out.println("LAST " + bandolier.lastInteractionTime);
                                 BandolierItem.deleteOneTorch(bandolierStack, torchStack);
-                                player.swing(hand);
+                                player.swing(InteractionHand.MAIN_HAND);
                                 event.setCanceled(true);
                             }
                         }
