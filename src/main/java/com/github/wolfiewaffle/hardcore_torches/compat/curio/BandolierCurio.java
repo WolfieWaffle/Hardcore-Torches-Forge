@@ -2,10 +2,8 @@ package com.github.wolfiewaffle.hardcore_torches.compat.curio;
 
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.item.BandolierItem;
-import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
 import com.github.wolfiewaffle.hardcore_torches.item.TorchItem;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,7 +12,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosCapability;
@@ -27,7 +24,6 @@ import java.util.Optional;
 
 public class BandolierCurio implements ICurio {
     ItemStack stack;
-    long lastInteractionTime = 0;
 
     public BandolierCurio(ItemStack stack) {
         this.stack = stack;
@@ -92,8 +88,6 @@ public class BandolierCurio implements ICurio {
                             );
 
                             if (bandolier.tryPlace(player, context)) {
-                                bandolier.lastInteractionTime = Minecraft.getInstance().level.getGameTime();
-                                System.out.println("LAST " + bandolier.lastInteractionTime);
                                 BandolierItem.deleteOneTorch(bandolierStack, torchStack);
                                 player.swing(InteractionHand.MAIN_HAND);
                                 event.setCanceled(true);

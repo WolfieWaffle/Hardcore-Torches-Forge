@@ -135,7 +135,7 @@ public class Config {
         builder.comment("Compatibility Settings").push("compat");
         craftHardcoreStove = builder.comment("If true, and Farmer's Delight is installed, the Stove will be crafted as a hardcore version which needs fuel.").define("craftHardcoreStove", true);
         bandolierMaxTorches = builder.comment("Max torches that the Curios bandolier can hold").defineInRange("bandolierMaxTorches", 192, 1, Integer.MAX_VALUE);
-        bandolierInteractMode = builder.comment("0: Placement disabled\n1: Place by right clicking a block\n2: Place by right clicking a block with an empty hand").defineInRange("bandolierInteractMode", 1, 0, 1);
+        bandolierInteractMode = builder.comment("0: Placement disabled\n1: Place by right clicking a block\n2: Place by right clicking a block with an empty hand").defineInRange("bandolierInteractMode", 2, 0, 2);
         craftBandolier = builder.comment("If true, the bandolier has a crafting recipe.").define("craftBandolier", true);
         showBandolier = builder.comment("If true, the bandolier appears in the creative tab.").define("showBandolier", true);
         builder.pop();
