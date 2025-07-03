@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -20,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class LanternTools {
 
-    public static InteractionResult basicAttemptLight(Level world, BlockPos pos, Player player, ItemStack stack, InteractionHand hand) {
+    public static ItemInteractionResult basicAttemptLight(Level world, BlockPos pos, Player player, ItemStack stack, InteractionHand hand) {
 
         // Soul lanterns
         boolean isSoul = false;
@@ -44,10 +45,10 @@ public class LanternTools {
         }
 
         player.swing(hand);
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
-    public static InteractionResult interactLantern(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand) {
+    public static InteractionResult interactLanternEmpty(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand) {
 
         // Get variables
         ItemStack stack = player.getItemInHand(hand);
@@ -58,6 +59,40 @@ public class LanternTools {
         if (!(state.getBlock() instanceof IFuelBlock)) return InteractionResult.FAIL;
         IFuelBlock block = (IFuelBlock) state.getBlock();
 
+        // Pick up lantern
+        if (player.isCrouching() && Config.pickUpLanterns.get()) {
+            pickup(player, world, pos, block, hand);
+            return InteractionResult.SUCCESS;
+        }
+
+        // Hand extinguish
+        if (Config.handUnlightLantern.get() && block.isLit()) {
+            if (!TorchTools.canLight(stack.getItem(), state.getBlock().defaultBlockState())) {
+                block.extinguish(world, pos, state, true);
+                return InteractionResult.SUCCESS;
+            }
+        }
+
+        // Fuel message
+        boolean showFuel = (stack.isEmpty() || stack.getItem() == ItemInit.OIL_CAN.get()) && Config.fuelMessage.get();
+        if (hand == InteractionHand.MAIN_HAND && !world.isClientSide && showFuel) {
+            player.displayClientMessage(Component.literal("Fuel: " + fuelBlockEntity.getFuel()), true);
+        }
+
+        return InteractionResult.PASS;
+    }
+
+    public static ItemInteractionResult interactLantern(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand) {
+
+        // Get variables
+        ItemStack stack = player.getItemInHand(hand);
+
+        if (!(world.getBlockEntity(pos) instanceof IFuelBlockEntity)) return ItemInteractionResult.FAIL;
+        IFuelBlockEntity fuelBlockEntity = (IFuelBlockEntity) world.getBlockEntity(pos);
+
+        if (!(state.getBlock() instanceof IFuelBlock)) return ItemInteractionResult.FAIL;
+        IFuelBlock block = (IFuelBlock) state.getBlock();
+
         // Soul lanterns
         boolean isSoul = false;
         if (state.getBlock() instanceof IFuelBlock lantern) {
@@ -66,14 +101,8 @@ public class LanternTools {
 
         // Pick up lantern
         if (player.isCrouching() && Config.pickUpLanterns.get()) {
-            if (!world.isClientSide) {
-                player.addItem(block.getStack(world, pos));
-                world.playSound(null, pos, SoundEvents.LANTERN_PLACE, SoundSource.BLOCKS, 1f, 1f);
-            }
-
-            world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-            player.swing(hand);
-            return InteractionResult.SUCCESS;
+            pickup(player, world, pos, block, hand);
+            return ItemInteractionResult.SUCCESS;
         }
 
         // Igniting
@@ -85,7 +114,7 @@ public class LanternTools {
         if (Config.handUnlightLantern.get() && block.isLit()) {
             if (!TorchTools.canLight(stack.getItem(), state.getBlock().defaultBlockState())) {
                 block.extinguish(world, pos, state, true);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
 
@@ -117,7 +146,7 @@ public class LanternTools {
                 }
             }
             player.swing(hand);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
         // Adding fuel with can
@@ -128,9 +157,19 @@ public class LanternTools {
                 }
             }
             player.swing(hand);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    public static void pickup(Player player, Level world, BlockPos pos, IFuelBlock block, InteractionHand hand) {
+        if (!world.isClientSide) {
+            player.addItem(block.getStack(world, pos));
+            world.playSound(null, pos, SoundEvents.LANTERN_PLACE, SoundSource.BLOCKS, 1f, 1f);
+        }
+
+        world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+        player.swing(hand);
     }
 }

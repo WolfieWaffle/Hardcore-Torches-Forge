@@ -4,10 +4,14 @@ import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.player.StackedContents;
@@ -26,13 +30,13 @@ public class OilCanRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer grid, Level world) {
+    public boolean matches(CraftingInput input, Level level) {
         StackedContents recipeMatcher = new StackedContents();
         Item fuelItem = null;
         int i = 0;
 
-        for(int j = 0; j < grid.getContainerSize(); ++j) {
-            ItemStack itemStack = grid.getItem(j);
+        for(int j = 0; j < input.size(); ++j) {
+            ItemStack itemStack = input.getItem(j);
             if (!itemStack.isEmpty()) {
                 if (itemStack.getItem() instanceof OilCanItem) {
                     // Oil can
@@ -57,13 +61,13 @@ public class OilCanRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer grid, RegistryAccess registryAccess) {
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
         int startFuel = 0;
         int addFuel = 0;
         ItemStack resultStack = ItemStack.EMPTY;
 
-        for(int i = 0; i < grid.getContainerSize(); ++i) {
-            ItemStack itemstack = grid.getItem(i);
+        for(int i = 0; i < input.size(); ++i) {
+            ItemStack itemstack = input.getItem(i);
 
             if (!itemstack.isEmpty()) {
                 if (itemstack.getItem() instanceof OilCanItem) {
@@ -84,14 +88,11 @@ public class OilCanRecipe extends ShapelessRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<OilCanRecipe> {
-        private static final ResourceLocation NAME = new ResourceLocation("hardcore_torches", "oil_can");
+        private static final ResourceLocation NAME = ResourceLocation.parse("hardcore_torches:oil_can");
 
-        private static final Codec<OilCanRecipe> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
-
-                ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter((rec) -> rec.getGroup()),
-
-                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter((rec) -> rec.getResultItem(null)),
-
+        private static final MapCodec<OilCanRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
+                Codec.STRING.optionalFieldOf("group", "").forGetter((rec) -> rec.getGroup()),
+                ItemStack.STRICT_CODEC.fieldOf("result").forGetter((rec) -> rec.getResultItem(null).copyWithCount(Config.torchCraftAmount.get())),
                 Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap((rec) -> {
                         Ingredient[] aingredient = rec.toArray((i) -> new Ingredient[i]);
 
@@ -108,26 +109,40 @@ public class OilCanRecipe extends ShapelessRecipe {
 
         ).apply(builder, OilCanRecipe::new));
 
-        public Codec<OilCanRecipe> codec() {
+        public static final StreamCodec<RegistryFriendlyByteBuf, OilCanRecipe> STREAM_CODEC = StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
+
+        @Override
+        public MapCodec<OilCanRecipe> codec() {
             return CODEC;
+        }
+
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, OilCanRecipe> streamCodec() {
+            return STREAM_CODEC;
         }
 
         public Serializer() {
         }
 
-        @Override
-        public OilCanRecipe fromNetwork(FriendlyByteBuf friendlyByteBuf) {
-            ShapelessRecipe rec = ShapelessRecipe.Serializer.SHAPELESS_RECIPE.fromNetwork(friendlyByteBuf);
-            int fuel = friendlyByteBuf.readVarInt();
+        private static OilCanRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
+            String group = buffer.readUtf();
+            int i = buffer.readVarInt();
+            NonNullList<Ingredient> ingredients = NonNullList.withSize(i, Ingredient.EMPTY);
+            ingredients.replaceAll((ingredient) -> Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
+            ItemStack result = ItemStack.STREAM_CODEC.decode(buffer);
+            int fuel = buffer.readVarInt();
 
-            return new OilCanRecipe(rec.getGroup(), rec.getResultItem(null), rec.getIngredients(), fuel);
+            return new OilCanRecipe(group, result, ingredients, fuel);
         }
 
-        public void toNetwork(FriendlyByteBuf friendlyByteBuf, OilCanRecipe oilCanRecipe) {
-            ShapelessRecipe rec = new ShapelessRecipe(oilCanRecipe.getGroup(), CraftingBookCategory.EQUIPMENT, oilCanRecipe.getResultItem(null), oilCanRecipe.getIngredients());
-            ShapelessRecipe.Serializer.SHAPELESS_RECIPE.toNetwork(friendlyByteBuf, rec);
-
-            friendlyByteBuf.writeVarInt(oilCanRecipe.fuelAmount);
+        private static void toNetwork(RegistryFriendlyByteBuf buffer, OilCanRecipe recipe) {
+            buffer.writeUtf(recipe.getGroup());
+            buffer.writeVarInt(recipe.getIngredients().size());
+            for(Ingredient ingredient : recipe.getIngredients()) {
+                Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
+            }
+            ItemStack.STREAM_CODEC.encode(buffer, recipe.getResultItem(null));
+            buffer.writeInt(recipe.fuelAmount);
         }
     }
 }

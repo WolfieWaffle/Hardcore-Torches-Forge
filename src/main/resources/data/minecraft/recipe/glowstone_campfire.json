@@ -1,0 +1,30 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+        "C": {
+            "item": "minecraft:glowstone"
+        },
+        "L": {
+            "tag": "minecraft:logs"
+        },
+        "S": {
+            "tag": "c:rods/wooden"
+        }
+    },
+    "pattern": [
+        " S ",
+        "SCS",
+        "LLL"
+    ],
+    "result": {
+        "id": "minecraft:campfire"
+    },
+    "show_notification": true,
+    "neoforge:conditions":
+    [
+        {
+            "type": "hardcore_torches:config_hardcore_campfire"
+        }
+    ]
+}

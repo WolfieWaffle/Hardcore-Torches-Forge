@@ -4,6 +4,7 @@ import com.github.wolfiewaffle.hardcore_torches.block.HardcoreCampfire;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -120,17 +121,17 @@ public class HardcoreCampfireBlockEntity extends CampfireBlockEntity {
 
     // region necessary methods
     @Override
-    public void load(CompoundTag nbt) {
+    public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
         if (nbt != null) {
-            super.load(nbt);
+            super.loadAdditional(nbt, registries);
 
             fuel = nbt.getInt("Fuel");
         }
     }
 
     @Override
-    public void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    public void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
 
         nbt.putInt("Fuel", fuel);
     }
@@ -142,8 +143,8 @@ public class HardcoreCampfireBlockEntity extends CampfireBlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        this.load(pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
+        this.loadAdditional(pkt.getTag(), lookupProvider);
     }
     // endregion
 }

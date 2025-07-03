@@ -9,10 +9,7 @@ import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
 import com.github.wolfiewaffle.hardcore_torches.item.TorchItem;
-import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
-import com.github.wolfiewaffle.hardcore_torches.util.SoulAttunement;
-import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
-import com.github.wolfiewaffle.hardcore_torches.util.TorchTools;
+import com.github.wolfiewaffle.hardcore_torches.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -21,6 +18,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -73,19 +71,19 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        ItemStack stack = player.getItemInHand(hand);
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+
         if (this.burnState == ETorchState.LIT) {
             if (this.attemptUseItem(stack, player, hand, ETorchState.UNLIT)) {
                 this.extinguish(world, pos, state, true);
                 player.swing(hand);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
 
             if (this.attemptUseItem(stack, player, hand, ETorchState.SMOLDERING)) {
                 this.smother(world, pos, state);
                 player.swing(hand);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
 
@@ -102,19 +100,14 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
                 this.light(world, pos);
             }
             player.swing(hand);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
 
         } else { // Other cases, when torch was not lit
-
-            // Message
-            if (be.getType() == BlockEntityInit.TORCH_BLOCK_ENTITY.get() && !world.isClientSide && Config.fuelMessage.get() && stack.isEmpty()) {
-                player.displayClientMessage(Component.literal("Fuel: " + ((TorchBlockEntity)be).getFuel()), true);
-            }
 
             // Hand extinguish
             if (Config.handUnlightTorch.get() && (this.burnState == ETorchState.LIT || this.burnState == ETorchState.SMOLDERING) && !TorchTools.canLight(stack.getItem(), this.defaultBlockState())) {
                 this.extinguish(world, pos, state, true);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
 
             // Soul
@@ -125,8 +118,26 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
             // Fueling a torch with oil can
             if (Config.torchesUseCan.get() && this.burnState != ETorchState.BURNT && !world.isClientSide && OilCanItem.fuelBlock((IFuelBlockEntity) be, world, stack)) {
                 world.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
+        }
+
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hitResult) {
+        BlockEntity be = world.getBlockEntity(pos);
+
+        // Message
+        if (be.getType() == BlockEntityInit.TORCH_BLOCK_ENTITY.get() && !world.isClientSide && Config.fuelMessage.get()) {
+            player.displayClientMessage(Component.literal("Fuel: " + ((TorchBlockEntity)be).getFuel()), true);
+        }
+
+        // Hand extinguish
+        if (Config.handUnlightTorch.get() && (this.burnState == ETorchState.LIT || this.burnState == ETorchState.SMOLDERING)) {
+            this.extinguish(world, pos, state, true);
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;
@@ -261,9 +272,9 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
 
     // DONT USE THIS
     @Override
-    public InteractionResult attemptLight(Level world, BlockPos pos, BlockState state, Player player, ItemStack stack, InteractionHand hand) {
+    public ItemInteractionResult attemptLight(Level world, BlockPos pos, BlockState state, Player player, ItemStack stack, InteractionHand hand) {
         attemptUseItem(stack, player, hand, ETorchState.LIT);
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     // DONT USE THIS

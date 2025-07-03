@@ -1,0 +1,35 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "###",
+        "#|#",
+        "###"
+    ],
+    "key":
+    {
+        "#":
+        {
+            "item": "minecraft:iron_nugget"
+        },
+        "|":
+        {
+            "tag": "hardcore_torches:torches"
+        }
+    },
+    "result":
+    {
+        "id": "minecraft:lantern",
+        "count": 1
+    },
+    "neoforge:conditions":
+    [
+        {
+            "type": "neoforge:not",
+            "value":
+            {
+                "type": "hardcore_torches:lanterns_use_fuel"
+            }
+        }
+    ]
+}

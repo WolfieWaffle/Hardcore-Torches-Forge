@@ -17,10 +17,10 @@ public class SoulLanternItem extends LanternItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         //list.add(Component.literal("Place this on the ground, then").withStyle(ChatFormatting.GRAY));
         //list.add(Component.literal("hold a candle and right click it").withStyle(ChatFormatting.GRAY));
         //list.add(Component.literal("to transfer your XP as fuel").withStyle(ChatFormatting.GRAY));
-        super.appendHoverText(stack, world, list, flag);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 }

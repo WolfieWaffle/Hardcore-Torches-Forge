@@ -6,6 +6,7 @@ import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.util.LanternGroup;
 import net.mehvahdjukaar.amendments.common.tile.WallLanternBlockTile;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -69,16 +70,16 @@ public class WallLanternBlockEntity extends WallLanternBlockTile implements IFue
     }
 
     @Override
-    public void load(CompoundTag nbt) {
+    public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
         if (nbt != null) {
-            super.load(nbt);
+            super.loadAdditional(nbt, registries);
             this.fuel = nbt.getInt("Fuel");
         }
     }
 
     @Override
-    public void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    public void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
 
         nbt.putInt("Fuel", this.fuel);
     }
@@ -88,7 +89,7 @@ public class WallLanternBlockEntity extends WallLanternBlockTile implements IFue
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        this.load(pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
+        this.loadAdditional(pkt.getTag(), lookupProvider);
     }
 }

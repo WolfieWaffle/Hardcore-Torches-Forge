@@ -5,6 +5,7 @@ import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
@@ -45,11 +46,12 @@ public class FatModifier extends LootModifier {
     }
 
     @Override
-    public Codec<? extends IGlobalLootModifier> codec() {
-        return HardcoreTorches.FAT_MOD_CODEC.get();
+    public MapCodec<? extends IGlobalLootModifier> codec() {
+        //return HardcoreTorches.FAT_MOD_CODEC.get();
+        return CODEC;
     }
 
-    public static final Codec<FatModifier> codec = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<FatModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             IGlobalLootModifier.LOOT_CONDITIONS_CODEC.fieldOf("conditions").forGetter(glm -> glm.conditions),
             Codec.INT.listOf().fieldOf("choices").forGetter(FatModifier::getChoices)
     ).apply(instance, FatModifier::new));

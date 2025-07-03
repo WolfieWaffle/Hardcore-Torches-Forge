@@ -3,6 +3,7 @@ package com.github.wolfiewaffle.hardcore_torches.compat.amendments;
 import com.github.wolfiewaffle.hardcore_torches.HardcoreTorches;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlock;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlockEntity;
+import com.github.wolfiewaffle.hardcore_torches.component.DataTypes;
 import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
 import com.github.wolfiewaffle.hardcore_torches.util.BlockStateTools;
 import com.github.wolfiewaffle.hardcore_torches.util.LanternGroup;
@@ -18,6 +19,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -63,9 +65,14 @@ public class HardcoreWallLantern extends WallLanternBlock implements IFuelBlock 
         return group == HardcoreTorches.soulLanterns;
     }
 
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         return LanternTools.interactLantern(state, world, pos, player, hand);
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hitResult) {
+        return LanternTools.interactLanternEmpty(state, world, pos, player, InteractionHand.MAIN_HAND);
     }
 
     @Override
@@ -77,9 +84,7 @@ public class HardcoreWallLantern extends WallLanternBlock implements IFuelBlock 
             int remainingFuel = lantern.getFuel();
 
             if (!(this.isLit && remainingFuel >= lantern.getMaxFuel())) {
-                CompoundTag nbt = new CompoundTag();
-                nbt.putInt("Fuel", remainingFuel);
-                stack.setTag(nbt);
+                stack.set(DataTypes.FUEL, remainingFuel);
             }
         }
 
@@ -121,7 +126,7 @@ public class HardcoreWallLantern extends WallLanternBlock implements IFuelBlock 
     }
 
     @Override
-    public InteractionResult attemptLight(Level world, BlockPos pos, BlockState state, Player player, ItemStack stack, InteractionHand hand) {
+    public ItemInteractionResult attemptLight(Level world, BlockPos pos, BlockState state, Player player, ItemStack stack, InteractionHand hand) {
         return LanternTools.basicAttemptLight(world, pos, player, stack, hand);
     }
 
@@ -185,9 +190,7 @@ public class HardcoreWallLantern extends WallLanternBlock implements IFuelBlock 
             int remainingFuel = lantern.getFuel();
 
             if (!(this.isLit && remainingFuel >= lantern.getMaxFuel())) {
-                CompoundTag nbt = new CompoundTag();
-                nbt.putInt("Fuel", remainingFuel);
-                stack.setTag(nbt);
+                stack.set(DataTypes.FUEL, remainingFuel);
             }
         }
 

@@ -18,9 +18,9 @@ public class BasicLanternItem extends LanternItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-        if (Config.lanternsNeedCan.get()) list.add(Component.literal("Requires an Oil Can").withStyle(ChatFormatting.GRAY));
-        list.add(Component.literal("Light with Flint and Steel").withStyle(ChatFormatting.GRAY));
-        super.appendHoverText(stack, world, list, flag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        if (Config.lanternsNeedCan.get()) tooltipComponents.add(Component.literal("Requires an Oil Can").withStyle(ChatFormatting.GRAY));
+        tooltipComponents.add(Component.literal("Light with Flint and Steel").withStyle(ChatFormatting.GRAY));
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 }

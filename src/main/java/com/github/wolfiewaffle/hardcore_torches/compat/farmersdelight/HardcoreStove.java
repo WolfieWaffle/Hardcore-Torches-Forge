@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,34 +37,33 @@ public class HardcoreStove extends StoveBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        BlockEntity be = level.getBlockEntity(pos);
-        ItemStack heldStack = player.getItemInHand(hand);
-        Item heldItem = heldStack.getItem();
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        BlockEntity be = world.getBlockEntity(pos);
+        Item heldItem = stack.getItem();
 
         if (be instanceof HardcoreStoveBlockEntity stove) {
 
             // Add fuel
-            int burnTime = heldStack.getBurnTime(RecipeType.SMELTING);
+            int burnTime = stack.getBurnTime(RecipeType.SMELTING);
             if (burnTime > 0) {
                 if (stove.canAcceptFuel(burnTime)) {
-                    heldStack.shrink(1);
+                    stack.shrink(1);
                     stove.addFuel((int) (burnTime * Config.campfireFuelFactor.get()));
-                    level.playSound(null, pos, SoundEvents.BONE_MEAL_USE, SoundSource.BLOCKS, 1f, 1f);
+                    world.playSound(null, pos, SoundEvents.BONE_MEAL_USE, SoundSource.BLOCKS, 1f, 1f);
                 }
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
 
             // Fail to ignite
             if (stove.fuel <= 0) {
                 if (heldItem == Items.FLINT_AND_STEEL || heldItem == Items.FIRE_CHARGE) {
-                    if (!level.isClientSide) player.displayClientMessage(Component.literal("Right click with combustible items to add fuel!"), true);
-                    return InteractionResult.CONSUME;
+                    if (!world.isClientSide) player.displayClientMessage(Component.literal("Right click with combustible items to add fuel!"), true);
+                    return ItemInteractionResult.CONSUME;
                 }
             }
         }
 
-        return super.use(state, level, pos, player, hand, hit);
+        return super.useItemOn(stack, state, world, pos, player, hand, hitResult);
     }
 
     @Override

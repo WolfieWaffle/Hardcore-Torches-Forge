@@ -3,6 +3,8 @@ package com.github.wolfiewaffle.hardcore_torches.block;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchTools;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,10 +23,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.function.IntSupplier;
 
 public class HardcoreWallTorchBlock extends AbstractHardcoreTorchBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final Map<Direction, VoxelShape> AABBS = Maps.newEnumMap(ImmutableMap.of(Direction.NORTH, Block.box(5.5F, 3.0F, 11.0F, 10.5F, 13.0F, 16.0F), Direction.SOUTH, Block.box(5.5F, 3.0F, 0.0F, 10.5F, 13.0F, 5.0F), Direction.WEST, Block.box(11.0F, 3.0F, 5.5F, 16.0F, 13.0F, 10.5F), Direction.EAST, Block.box(0.0F, 3.0F, 5.5F, 5.0F, 13.0F, 10.5F)));
 
     public static final MapCodec<HardcoreFloorTorchBlock> CODEC = null;
 
@@ -45,18 +49,22 @@ public class HardcoreWallTorchBlock extends AbstractHardcoreTorchBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext ctx) {
-        return Blocks.WALL_TORCH.getShape(state, world, pos, ctx);
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return AABBS.get(state.getValue(FACING));
     }
 
     @Override
-    public BlockState updateShape(BlockState p_57503_, Direction p_57504_, BlockState p_57505_, LevelAccessor p_57506_, BlockPos p_57507_, BlockPos p_57508_) {
-        return Blocks.WALL_TORCH.updateShape(p_57503_, p_57504_, p_57505_, p_57506_, p_57507_, p_57508_);
+    protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+        return facing.getOpposite() == state.getValue(FACING) && !state.canSurvive(level, currentPos) ? Blocks.AIR.defaultBlockState() : state;
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
-        return Blocks.WALL_TORCH.canSurvive(state, world, pos);
+    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        Direction facing = state.getValue(FACING);
+
+        BlockPos blockpos = pos.relative(facing.getOpposite());
+        BlockState blockstate = level.getBlockState(blockpos);
+        return blockstate.isFaceSturdy(level, blockpos, facing);
     }
 
     @Nullable
@@ -75,12 +83,12 @@ public class HardcoreWallTorchBlock extends AbstractHardcoreTorchBlock {
 
     @Override
     public BlockState rotate(BlockState state, Rotation rotation) {
-        return Blocks.WALL_TORCH.rotate(state, rotation);
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
     public BlockState mirror(BlockState state, Mirror mirror) {
-        return Blocks.WALL_TORCH.mirror(state, mirror);
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override

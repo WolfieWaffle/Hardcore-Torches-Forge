@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "T": {
+      "tag": "hardcore_torches:torches"
+    },
+    "C": {
+      "item": "minecraft:leather"
+    },
+    "S": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "TTT",
+    "SSS",
+    "CCC"
+  ],
+  "result": {
+    "id": "hardcore_torches:bandolier"
+  },
+  "show_notification": true,
+  "neoforge:conditions":
+  [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "curios"
+    },
+    {
+      "type": "hardcore_torches:config_craft_bandolier"
+    }
+  ]
+}

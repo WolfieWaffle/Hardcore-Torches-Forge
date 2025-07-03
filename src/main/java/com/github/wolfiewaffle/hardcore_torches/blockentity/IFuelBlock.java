@@ -8,6 +8,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -25,7 +27,7 @@ public interface IFuelBlock {
 
     void light(Level world, BlockPos pos);
 
-    InteractionResult attemptLight(Level world, BlockPos pos, BlockState state, Player player, ItemStack stack, InteractionHand hand);
+    ItemInteractionResult attemptLight(Level world, BlockPos pos, BlockState state, Player player, ItemStack stack, InteractionHand hand);
 
     default boolean itemValid(ItemStack stack, ETorchState attemptedState) {
         switch (attemptedState) {
@@ -80,7 +82,7 @@ public interface IFuelBlock {
         // Durability items
         if (damage != null && stack.is(damage)) {
             if (stack.isDamageableItem() && player instanceof ServerPlayer) {
-                stack.hurt(1, RandomSource.create(), (ServerPlayer) player);
+                stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             }
             return true;
         }

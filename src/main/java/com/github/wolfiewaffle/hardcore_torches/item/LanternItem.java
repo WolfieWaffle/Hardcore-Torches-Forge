@@ -3,11 +3,11 @@ package com.github.wolfiewaffle.hardcore_torches.item;
 import com.github.wolfiewaffle.hardcore_torches.HardcoreTorches;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.compat.amendments.AmendmentsCommonCompat;
+import com.github.wolfiewaffle.hardcore_torches.component.DataTypes;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import net.mehvahdjukaar.amendments.common.block.WallLanternBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -90,25 +90,13 @@ public class LanternItem extends BlockItem {
     }
 
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        CompoundTag oldNbt = null;
-        CompoundTag newNbt = null;
-        if (oldStack.getTag() != null) {
-            oldNbt = oldStack.getTag().copy();
-            oldNbt.remove("Fuel");
-        }
+        ItemStack stack1 = oldStack.copy();
+        ItemStack stack2 = newStack.copy();
 
-        if (newStack.getTag() != null) {
-            newNbt = newStack.getTag().copy();
-            newNbt.remove("Fuel");
-        }
+        stack1.remove(DataTypes.FUEL);
+        stack2.remove(DataTypes.FUEL);
 
-        if (oldNbt == null && newNbt != null) {
-            return true;
-        } else if (oldNbt != null && newNbt == null) {
-            return true;
-        } else {
-            return oldNbt == null && newNbt == null ? false : oldNbt.equals((Object)null);
-        }
+        return super.shouldCauseReequipAnimation(stack1, stack2, slotChanged);
     }
 
     public static int getFuel(ItemStack stack) {
@@ -116,18 +104,15 @@ public class LanternItem extends BlockItem {
         if (!(item instanceof LanternItem)) {
             return 0;
         } else {
-            CompoundTag nbt = stack.getTag();
-            if (nbt != null && nbt.contains("Fuel")) {
-                return nbt.getInt("Fuel");
-            } else {
-                LanternItem lanternItem = (LanternItem)item;
-                int startingFuel = (Integer)Config.startingLanternFuel.get();
-                if (lanternItem.lanternBlock.group == HardcoreTorches.soulLanterns) {
-                    startingFuel = 0;
-                }
-
-                return lanternItem.isLit ? lanternItem.getMaxFuel() : startingFuel;
+            LanternItem lanternItem = (LanternItem)item;
+            int startingFuel = Config.startingLanternFuel.get();
+            if (lanternItem.lanternBlock.group == HardcoreTorches.soulLanterns) {
+                startingFuel = 0;
             }
+
+            int def = lanternItem.isLit ? lanternItem.getMaxFuel() : startingFuel;
+
+            return stack.getOrDefault(DataTypes.FUEL, def);
         }
     }
 
@@ -140,15 +125,15 @@ public class LanternItem extends BlockItem {
             maxFuel = 0;
         }
 
-        if (stack.getItem() instanceof LanternItem && !world.isClientSide) {
-            LanternItem lanternItem = (LanternItem)item;
-            CompoundTag nbt = stack.getTag();
-            int fuel = lanternItem.isLit ? maxFuel : 0;
-            if (nbt != null) {
-                fuel = nbt.getInt("Fuel");
-            } else {
-                nbt = new CompoundTag();
+        if (stack.getItem() instanceof LanternItem lanternItem && !world.isClientSide) {
+            int startingFuel = Config.startingLanternFuel.get();
+            if (lanternItem.lanternBlock.group == HardcoreTorches.soulLanterns) {
+                startingFuel = 0;
             }
+
+            int def = lanternItem.isLit ? lanternItem.getMaxFuel() : startingFuel;
+
+            int fuel = stack.getOrDefault(DataTypes.FUEL, def);
 
             fuel += amount;
             if (fuel <= 0) {
@@ -158,8 +143,7 @@ public class LanternItem extends BlockItem {
                     fuel = maxFuel;
                 }
 
-                nbt.putInt("Fuel", fuel);
-                stack.setTag(nbt);
+                stack.set(DataTypes.FUEL, fuel);
             }
         }
 
@@ -171,8 +155,8 @@ public class LanternItem extends BlockItem {
         if (inputStack.getItem() instanceof BlockItem && inputStack.getItem() instanceof LanternItem) {
             LanternItem newItem = (LanternItem)((LanternItem)inputStack.getItem()).lanternBlock.group.getLanternBlock(isLit).asItem();
             outputStack = new ItemStack(newItem, inputStack.getCount());
-            if (inputStack.getTag() != null) {
-                outputStack.setTag(inputStack.getTag().copy());
+            if (inputStack.getComponents() != null && !inputStack.getComponents().isEmpty()) {
+                outputStack.applyComponents(inputStack.copy().getComponents());
             }
         }
 

@@ -1,0 +1,34 @@
+{
+    "type": "hardcore_torches:torch",
+    "pattern":
+    [
+        "#",
+        "|"
+    ],
+    "key":
+    {
+        "#":
+        {
+            "tag": "minecraft:coals"
+        },
+        "|":
+        {
+            "tag": "c:rods/wooden"
+        }
+    },
+    "result":
+    {
+        "id": "hardcore_torches:lit_torch",
+        "count": 1
+    },
+	"neoforge:conditions":
+	[
+		{
+			"type": "neoforge:not",
+			"value": 
+			{
+				"type": "hardcore_torches:config_craft_unlit"
+			}
+		}
+	]
+}

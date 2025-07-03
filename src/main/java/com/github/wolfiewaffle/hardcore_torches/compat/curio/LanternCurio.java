@@ -30,7 +30,8 @@ public class LanternCurio implements ICurio {
         int index = slotContext.index();
         LivingEntity entity = slotContext.entity();
 
-        Optional<ICuriosItemHandler> stackHandler = CuriosApi.getCuriosHelper().getCuriosHandler(entity);
+        Optional<ICuriosItemHandler> stackHandler = CuriosApi.getCuriosInventory(entity);
+
         stackHandler.ifPresent((handler) -> {
             IDynamicStackHandler dynamicStackHandler = handler.getCurios().get(identifier).getStacks();
 

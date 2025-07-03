@@ -1,6 +1,7 @@
 package com.github.wolfiewaffle.hardcore_torches.blockentity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
@@ -62,17 +63,17 @@ public class FuelBlockEntity extends BlockEntity implements IFuelBlockEntity {
 
     // region necessary methods
     @Override
-    public void load(CompoundTag nbt) {
+    public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
         if (nbt != null) {
-            super.load(nbt);
+            super.loadAdditional(nbt, registries);
 
             fuel = nbt.getInt("Fuel");
         }
     }
 
     @Override
-    public void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    public void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
 
         nbt.putInt("Fuel", fuel);
     }
@@ -84,8 +85,12 @@ public class FuelBlockEntity extends BlockEntity implements IFuelBlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        this.load(pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
+        super.onDataPacket(net, pkt, lookupProvider);
     }
+//    @Override
+//    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+//        this.load(pkt.getTag());
+//    }
     // endregion
 }

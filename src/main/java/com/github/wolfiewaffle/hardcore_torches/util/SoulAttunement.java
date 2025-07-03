@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ExperienceBottleItem;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +18,7 @@ import net.minecraft.world.level.Level;
 
 public class SoulAttunement {
 
-    public static InteractionResult soulAttune(Level world, BlockPos pos, IFuelBlockEntity fuelBlockEntity, IFuelBlock fuelBlock, Player player, InteractionHand hand) {
+    public static ItemInteractionResult soulAttune(Level world, BlockPos pos, IFuelBlockEntity fuelBlockEntity, IFuelBlock fuelBlock, Player player, InteractionHand hand) {
 
         // Get variables
         ItemStack stack = player.getItemInHand(hand);
@@ -40,7 +41,7 @@ public class SoulAttunement {
                 }
             }
             player.swing(hand);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
         // Adding fuel with Attunement
@@ -64,10 +65,10 @@ public class SoulAttunement {
                 }
             }
             player.swing(hand);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     public static void displaySpirit(Player player, int amount) {

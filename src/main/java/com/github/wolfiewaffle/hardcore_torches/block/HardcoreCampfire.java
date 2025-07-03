@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FlintAndSteelItem;
 import net.minecraft.world.item.ItemStack;
@@ -46,12 +47,11 @@ public class HardcoreCampfire extends CampfireBlock implements IFuelBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        ItemStack stack = player.getItemInHand(hand);
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 
         // Override flint and steel. This may have to change if more blocks become able to light campfires.
         if (stack.getItem() instanceof FlintAndSteelItem) {
-            if (state.getValue(CampfireBlock.LIT)) return super.use(state, world, pos, player, hand, hit);
+            if (state.getValue(CampfireBlock.LIT)) return super.useItemOn(stack, state, world, pos, player, hand, hitResult);
 
             if (!world.isClientSide) {
                 //canLight should maybe be static so I don't have to do this.
@@ -63,16 +63,16 @@ public class HardcoreCampfire extends CampfireBlock implements IFuelBlock {
                     if (attemptUseItem(stack, player, hand, ETorchState.LIT)) {
                         light(world, pos, state);
                         player.swing(hand);
-                        return InteractionResult.SUCCESS;
+                        return ItemInteractionResult.SUCCESS;
                     }
                 }
             }
 
-            return InteractionResult.CONSUME;
+            return ItemInteractionResult.CONSUME;
         }
 
         if (isValidStack(stack, getFreeLightItems(), getDamageLightItems(), getConsumeLightItems())) {
-            if (state.getValue(CampfireBlock.LIT)) return super.use(state, world, pos, player, hand, hit);
+            if (state.getValue(CampfireBlock.LIT)) return super.useItemOn(stack, state, world, pos, player, hand, hitResult);
 
             if (!world.isClientSide) {
                 if (getFuel(world, pos) <= 0) {
@@ -81,15 +81,15 @@ public class HardcoreCampfire extends CampfireBlock implements IFuelBlock {
                     if (attemptUseItem(stack, player, hand, ETorchState.LIT)) {
                         light(world, pos, state);
                         player.swing(hand);
-                        return InteractionResult.SUCCESS;
+                        return ItemInteractionResult.SUCCESS;
                     }
                 }
             }
 
-            return InteractionResult.CONSUME;
+            return ItemInteractionResult.CONSUME;
         }
 
-        return super.use(state, world, pos, player, hand, hit);
+        return super.useItemOn(stack, state, world, pos, player, hand, hitResult);
     }
 
     // Added here because its private in CampfireBlock
@@ -138,9 +138,9 @@ public class HardcoreCampfire extends CampfireBlock implements IFuelBlock {
         return 0;
     }
 
-    public InteractionResult needsFuel(Player player) {
+    public ItemInteractionResult needsFuel(Player player) {
         player.displayClientMessage(Component.literal("Drop combustible items on top to add fuel!"), true);
-        return InteractionResult.CONSUME;
+        return ItemInteractionResult.CONSUME;
     }
 
     @Override
@@ -185,8 +185,8 @@ public class HardcoreCampfire extends CampfireBlock implements IFuelBlock {
 
     // NOT USED FOR NOW
     @Override
-    public InteractionResult attemptLight(Level world, BlockPos pos, BlockState state, Player player, ItemStack stack, InteractionHand hand) {
-        return InteractionResult.FAIL;
+    public ItemInteractionResult attemptLight(Level world, BlockPos pos, BlockState state, Player player, ItemStack stack, InteractionHand hand) {
+        return ItemInteractionResult.FAIL;
     }
 
     // NOT USED FOR NOW

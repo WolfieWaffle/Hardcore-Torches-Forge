@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "minecraft:coals"
+    },
+    "L": {
+      "tag": "minecraft:logs"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    " S ",
+    "SCS",
+    "LLL"
+  ],
+  "result": {
+    "id": "minecraft:campfire"
+  },
+  "show_notification": true,
+  "neoforge:conditions":
+  [
+    {
+      "type": "neoforge:not",
+      "value":
+      {
+        "type": "hardcore_torches:config_hardcore_campfire"
+      }
+    }
+  ]
+}

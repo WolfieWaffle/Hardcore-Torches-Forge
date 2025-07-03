@@ -12,6 +12,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
@@ -53,16 +54,16 @@ public class FireStarterItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-        list.add(Component.literal("Has a chance to fail").withStyle(ChatFormatting.GRAY));
-        super.appendHoverText(stack, world, list, flag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        tooltipComponents.add(Component.literal("Has a chance to fail").withStyle(ChatFormatting.GRAY));
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 
     @Override
     public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int number) {
         if (world.isClientSide) return;
 
-        BlockHitResult hit = world.clip(new ClipContext(entity.getEyePosition(), entity.getEyePosition().add(entity.getLookAngle().scale(entity.getAttributeValue(NeoForgeMod.BLOCK_REACH.value()))), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity));
+        BlockHitResult hit = world.clip(new ClipContext(entity.getEyePosition(), entity.getEyePosition().add(entity.getLookAngle().scale(entity.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE))), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity));
         BlockPos pos = hit.getBlockPos();
         Block block = world.getBlockState(pos).getBlock();
         boolean attempt = false;
@@ -108,7 +109,7 @@ public class FireStarterItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return USE_DURATION;
     }
 

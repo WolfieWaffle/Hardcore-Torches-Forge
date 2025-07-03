@@ -1,14 +1,11 @@
 package com.github.wolfiewaffle.hardcore_torches.item;
 
 import com.github.wolfiewaffle.hardcore_torches.blockentity.*;
+import com.github.wolfiewaffle.hardcore_torches.component.DataTypes;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 
 import java.awt.*;
 
@@ -43,24 +40,13 @@ public class OilCanItem extends Item {
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        CompoundTag oldNbt = null;
-        CompoundTag newNbt = null;
+        ItemStack stack1 = oldStack.copy();
+        ItemStack stack2 = newStack.copy();
 
-        if (oldStack.getTag() != null) {
-            oldNbt = oldStack.getTag().copy();
-            oldNbt.remove("Fuel");
-        }
+        stack1.remove(DataTypes.FUEL);
+        stack2.remove(DataTypes.FUEL);
 
-        if (newStack.getTag() != null) {
-            newNbt = newStack.getTag().copy();
-            newNbt.remove("Fuel");
-        }
-
-        if (oldNbt == null && newNbt != null) return true;
-        if (oldNbt != null && newNbt == null) return true;
-        if (oldNbt == null && newNbt == null) return false;
-
-        return oldNbt.equals(null);
+        return super.shouldCauseReequipAnimation(stack1, stack2, slotChanged);
     }
     // endregion
 
@@ -69,23 +55,12 @@ public class OilCanItem extends Item {
         Item item = stack.getItem();
         if (!(item instanceof OilCanItem)) return 0;
 
-        CompoundTag nbt = stack.getTag();
-
-        if (nbt != null && nbt.contains("Fuel")) {
-            return nbt.getInt("Fuel");
-        }
-
-        return 0;
+        return stack.getOrDefault(DataTypes.FUEL, 0);
     }
 
     public static ItemStack setFuel(ItemStack stack, int fuel) {
         if (stack.getItem() instanceof OilCanItem) {
-            CompoundTag nbt = stack.getTag();
-
-            if (nbt == null) nbt = new CompoundTag();
-
-            nbt.putInt("Fuel", Math.max(0, Math.min(Config.maxCanFuel.get(), fuel)));
-            stack.setTag(nbt);
+            stack.set(DataTypes.FUEL, Math.max(0, Math.min(Config.maxCanFuel.get(), fuel)));
         }
 
         return stack;
@@ -94,19 +69,11 @@ public class OilCanItem extends Item {
     public static ItemStack addFuel(ItemStack stack, int amount) {
 
         if (stack.getItem() instanceof OilCanItem) {
-            CompoundTag nbt = stack.getTag();
-            int fuel = 0;
-
-            if (nbt != null) {
-                fuel = nbt.getInt("Fuel");
-            } else {
-                nbt = new CompoundTag();
-            }
+            int fuel = stack.getOrDefault(DataTypes.FUEL, 0);
 
             fuel = Math.min(Config.maxCanFuel.get(), Math.max(0, fuel + amount));
 
-            nbt.putInt("Fuel", fuel);
-            stack.setTag(nbt);
+            stack.set(DataTypes.FUEL, fuel);
         }
 
         return stack;

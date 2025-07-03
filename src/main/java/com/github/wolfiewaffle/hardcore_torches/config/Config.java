@@ -1,8 +1,13 @@
 package com.github.wolfiewaffle.hardcore_torches.config;
 
+import com.github.wolfiewaffle.hardcore_torches.HardcoreTorches;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import org.spongepowered.asm.mixin.FabricUtil;
 
 public class Config {
 
@@ -59,13 +64,13 @@ public class Config {
     public static ModConfigSpec.ConfigValue<Integer> bandolierMaxTorches;
     public static ModConfigSpec.ConfigValue<Integer> bandolierInteractMode;
 
-    public static void init() {
+    public static void init(ModContainer container) {
         //initServer();
         initCommon();
         initClient();
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, COMMON_CONFIG);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, CLIENT_CONFIG);
+        container.registerConfig(ModConfig.Type.COMMON, COMMON_CONFIG);
+        container.registerConfig(ModConfig.Type.CLIENT, CLIENT_CONFIG);
     }
 
     private static void initServer() {

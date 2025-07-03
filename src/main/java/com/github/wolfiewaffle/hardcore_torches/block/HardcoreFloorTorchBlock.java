@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -23,6 +24,8 @@ import java.util.function.IntSupplier;
 public class HardcoreFloorTorchBlock extends AbstractHardcoreTorchBlock {
 
     public static final MapCodec<HardcoreFloorTorchBlock> CODEC = null;
+    protected static final int AABB_STANDING_OFFSET = 2;
+    protected static final VoxelShape AABB = Block.box(6.0F, 0.0F, 6.0F, 10.0F, 10.0F, 10.0F);
 
     public HardcoreFloorTorchBlock(Properties prop, SimpleParticleType fireParticle, SimpleParticleType smokeParticle, ETorchState burnState, TorchGroup group, IntSupplier maxFuel) {
         super(prop, fireParticle, smokeParticle, burnState, group, maxFuel);
@@ -41,18 +44,18 @@ public class HardcoreFloorTorchBlock extends AbstractHardcoreTorchBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext ctx) {
-        return Blocks.TORCH.getShape(state, world, pos, ctx);
+    protected VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext context) {
+        return AABB;
     }
 
     @Override
-    public BlockState updateShape(BlockState p_57503_, Direction p_57504_, BlockState p_57505_, LevelAccessor p_57506_, BlockPos p_57507_, BlockPos p_57508_) {
-        return Blocks.TORCH.updateShape(p_57503_, p_57504_, p_57505_, p_57506_, p_57507_, p_57508_);
+    protected BlockState updateShape(BlockState state1, Direction direction, BlockState state2, LevelAccessor world, BlockPos pos1, BlockPos pos2) {
+        return direction == Direction.DOWN && !this.canSurvive(state1, world, pos1) ? Blocks.AIR.defaultBlockState() : super.updateShape(state1, direction, state2, world, pos1, pos2);
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
-        return Blocks.TORCH.canSurvive(state, world, pos);
+    protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+        return canSupportCenter(world, pos.below(), Direction.UP);
     }
     // endregion
 

@@ -3,6 +3,7 @@ package com.github.wolfiewaffle.hardcore_torches.compat.farmersdelight;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.HardcoreCampfireBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -54,8 +55,8 @@ public class HardcoreStoveBlockEntity extends StoveBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.loadAdditional(compound, registries);
 
         if (compound.contains("Fuel")) {
             fuel = compound.getInt("Fuel");
@@ -65,8 +66,8 @@ public class HardcoreStoveBlockEntity extends StoveBlockEntity {
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
-        super.saveAdditional(compound);
+    public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.saveAdditional(compound, registries);
         compound.putInt("Fuel", fuel);
     }
 
@@ -77,14 +78,14 @@ public class HardcoreStoveBlockEntity extends StoveBlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        this.load(pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
+        this.loadAdditional(pkt.getTag(), lookupProvider);
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag nbt = super.getUpdateTag();
-        saveAdditional(nbt);
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag nbt = super.getUpdateTag(registries);
+        saveAdditional(nbt, registries);
         return nbt;
     }
 }

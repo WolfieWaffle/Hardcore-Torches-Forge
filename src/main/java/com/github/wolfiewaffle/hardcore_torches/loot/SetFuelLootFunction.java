@@ -5,10 +5,9 @@ import com.github.wolfiewaffle.hardcore_torches.block.AbstractHardcoreTorchBlock
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.FuelBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlock;
+import com.github.wolfiewaffle.hardcore_torches.component.DataTypes;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
@@ -29,7 +28,7 @@ public class SetFuelLootFunction extends LootItemConditionalFunction {
         super(lootConditions);
     }
 
-    public static final Codec<SetFuelLootFunction> CODEC = RecordCodecBuilder.create((builder) -> commonFields(builder).apply(builder, SetFuelLootFunction::new));
+    public static final MapCodec<SetFuelLootFunction> CODEC = RecordCodecBuilder.mapCodec((instance) -> commonFields(instance).apply(instance, SetFuelLootFunction::new));
 
     @Override
     public LootItemFunctionType getType() {
@@ -50,14 +49,12 @@ public class SetFuelLootFunction extends LootItemConditionalFunction {
                 int remainingFuel = ((FuelBlockEntity) blockEntity).getFuel();
 
                 if (remainingFuel != ((IFuelBlock) block).getMaxFuel()) {
-                    CompoundTag nbt = new CompoundTag();
-                    nbt.putInt("Fuel", (remainingFuel));
-                    stack.setTag(nbt);
+                    stack.set(DataTypes.FUEL, remainingFuel);
                 }
             }
 
             if (block instanceof AbstractHardcoreTorchBlock && ((AbstractHardcoreTorchBlock) ((BlockItem) stack.getItem()).getBlock()).burnState == ETorchState.BURNT) {
-                stack.removeTagKey("Fuel");
+                stack.remove(DataTypes.FUEL);
             }
         }
 

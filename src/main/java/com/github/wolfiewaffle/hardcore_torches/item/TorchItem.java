@@ -2,12 +2,12 @@ package com.github.wolfiewaffle.hardcore_torches.item;
 
 import com.github.wolfiewaffle.hardcore_torches.HardcoreTorches;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractHardcoreTorchBlock;
+import com.github.wolfiewaffle.hardcore_torches.component.DataTypes;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -145,7 +145,7 @@ public class TorchItem extends StandingAndWallBlockItem {
             TorchItem newItem = (TorchItem) newBlock.group.getStandingTorch(newState).asItem();
 
             outputStack = changedCopy(inputStack, newItem);
-            if (newState == ETorchState.BURNT) outputStack.setTag(null);
+            if (newState == ETorchState.BURNT) outputStack = new ItemStack(newItem, outputStack.getCount());
         }
 
         return outputStack;
@@ -157,57 +157,33 @@ public class TorchItem extends StandingAndWallBlockItem {
             return ItemStack.EMPTY;
         }
         ItemStack itemStack = new ItemStack(replacementItem, stack.getCount());
-        if (stack.getTag() != null) {
-            itemStack.setTag(stack.getTag().copy());
+        if (stack.getComponents() != null && !stack.getComponents().isEmpty()) {
+            itemStack.applyComponents(stack.copy().getComponents());
         }
         return itemStack;
     }
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        CompoundTag oldNbt = null;
-        CompoundTag newNbt = null;
+        ItemStack stack1 = oldStack.copy();
+        ItemStack stack2 = newStack.copy();
 
-        if (oldStack.getTag() != null) {
-            oldNbt = oldStack.getTag().copy();
-            oldNbt.remove("Fuel");
-        }
+        stack1.remove(DataTypes.FUEL);
+        stack2.remove(DataTypes.FUEL);
 
-        if (newStack.getTag() != null) {
-            newNbt = newStack.getTag().copy();
-            newNbt.remove("Fuel");
-        }
-
-        if (oldNbt == null && newNbt != null) return true;
-        if (oldNbt != null && newNbt == null) return true;
-        if (oldNbt == null && newNbt == null) return false;
-
-        return oldNbt.equals(null);
+        return super.shouldCauseReequipAnimation(stack1, stack2, slotChanged);
     }
 
     public static int getFuel(ItemStack stack) {
         Item item = stack.getItem();
         if (!(item instanceof TorchItem)) return 0;
 
-        CompoundTag nbt = stack.getTag();
-
-        if (nbt != null && nbt.contains("Fuel")) {
-            return nbt.getInt("Fuel");
-        } else {
-            return ((TorchItem) item).getMaxFuel();
-        }
+        return stack.getOrDefault(DataTypes.FUEL, ((TorchItem) item).getMaxFuel());
     }
 
     public static ItemStack setFuel(ItemStack stack, int amount) {
         if (stack.getItem() instanceof TorchItem) {
-            CompoundTag nbt = stack.getTag();
-
-            if (nbt == null) {
-                nbt = new CompoundTag();
-            }
-
-            nbt.putInt("Fuel", amount);
-            stack.setTag(nbt);
+            stack.set(DataTypes.FUEL, Math.max(0, Math.min(Config.defaultTorchFuel.get(), amount)));
         }
 
         return stack;
@@ -230,14 +206,7 @@ public class TorchItem extends StandingAndWallBlockItem {
         }
 
         if (stack.getItem() instanceof  TorchItem && !world.isClientSide) {
-            CompoundTag nbt = stack.getTag();
-            int fuel = maxFuel;
-
-            if (nbt != null) {
-                fuel = nbt.getInt("Fuel");
-            } else {
-                nbt = new CompoundTag();
-            }
+            int fuel = stack.getOrDefault(DataTypes.FUEL, maxFuel);
 
             fuel += amount;
 
@@ -255,8 +224,7 @@ public class TorchItem extends StandingAndWallBlockItem {
                     fuel = maxFuel;
                 }
 
-                nbt.putInt("Fuel", fuel);
-                stack.setTag(nbt);
+                stack.set(DataTypes.FUEL, fuel);
             }
         }
 
@@ -315,13 +283,9 @@ public class TorchItem extends StandingAndWallBlockItem {
         int stack2Fuel = getFuel(otherStack) * addedNew;
         int totalFuel = stack1Fuel + stack2Fuel;
 
-        // NBT
-        CompoundTag nbt = new CompoundTag();
-        nbt.putInt("Fuel", totalFuel / (slotStack.getCount() + addedNew));
-
         if (addedNew > 0) {
             slotStack.grow(addedNew);
-            slotStack.setTag(nbt);
+            slotStack.set(DataTypes.FUEL, totalFuel / (slotStack.getCount()));
             otherStack.setCount(otherStack.getCount() - addedNew);
             return true;
         }

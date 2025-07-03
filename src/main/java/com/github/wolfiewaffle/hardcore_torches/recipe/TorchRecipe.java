@@ -2,14 +2,21 @@ package com.github.wolfiewaffle.hardcore_torches.recipe;
 
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.neoforged.neoforge.common.util.FriendlyByteBufUtil;
 
 import java.util.Optional;
 
@@ -22,37 +29,49 @@ public class TorchRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer grid, RegistryAccess registryAccess) {
-        ItemStack resultStack = this.getResultItem(registryAccess).copy();
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+        ItemStack resultStack = this.getResultItem(registries).copy();
         resultStack.setCount(Config.torchCraftAmount.get());
 
         return resultStack;
     }
 
     public static class Serializer implements RecipeSerializer<TorchRecipe> {
-        private static final ResourceLocation NAME = new ResourceLocation("hardcore_torches", "torch");
+        private static final ResourceLocation NAME = ResourceLocation.parse("hardcore_torches:torch");
 
-        public static final Codec<TorchRecipe> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
-                ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter((rec) -> rec.getGroup()),
+        public static final MapCodec<TorchRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
+                Codec.STRING.optionalFieldOf("group", "").forGetter((rec) -> rec.getGroup()),
                 ShapedRecipePattern.MAP_CODEC.forGetter((rec) -> rec.pattern),
-                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter((rec) -> rec.getResultItem(null).copyWithCount(Config.torchCraftAmount.get()))
+                ItemStack.STRICT_CODEC.fieldOf("result").forGetter((rec) -> rec.getResultItem(null).copyWithCount(Config.torchCraftAmount.get()))
         ).apply(builder, TorchRecipe::new));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, TorchRecipe> STREAM_CODEC = StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 
         public Serializer() {
         }
 
-        public Codec<TorchRecipe> codec() {
+        @Override
+        public MapCodec<TorchRecipe> codec() {
             return CODEC;
         }
 
-        public TorchRecipe fromNetwork(FriendlyByteBuf friendlyByteBuf) {
-            ShapedRecipe recipe = ShapedRecipe.Serializer.SHAPED_RECIPE.fromNetwork(friendlyByteBuf);
-            return (new TorchRecipe(recipe.getGroup(), new ShapedRecipePattern(recipe.getRecipeWidth(), recipe.getRecipeHeight(), recipe.getIngredients(), Optional.empty()), recipe.getResultItem(null)));
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, TorchRecipe> streamCodec() {
+            return STREAM_CODEC;
         }
 
-        public void toNetwork(FriendlyByteBuf friendlyByteBuf, TorchRecipe torchRecipe) {
-            ShapedRecipe rec = new ShapedRecipe(torchRecipe.getGroup(), CraftingBookCategory.EQUIPMENT, torchRecipe.pattern, torchRecipe.getResultItem(null));
-            ShapedRecipe.Serializer.SHAPED_RECIPE.toNetwork(friendlyByteBuf, rec);
+        private static TorchRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
+            String group = buffer.readUtf();
+            ShapedRecipePattern shapedRecipePattern = ShapedRecipePattern.STREAM_CODEC.decode(buffer);
+            ItemStack resultStack = ItemStack.STREAM_CODEC.decode(buffer);
+
+            return new TorchRecipe(group, shapedRecipePattern, resultStack);
+        }
+
+        private static void toNetwork(RegistryFriendlyByteBuf buffer, TorchRecipe torchRecipe) {
+            buffer.writeUtf(torchRecipe.getGroup());
+            ShapedRecipePattern.STREAM_CODEC.encode(buffer, torchRecipe.pattern);
+            ItemStack.STREAM_CODEC.encode(buffer, torchRecipe.getResultItem(null));
         }
     }
 }

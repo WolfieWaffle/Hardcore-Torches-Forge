@@ -37,7 +37,8 @@ public class BandolierCurio implements ICurio {
         int index = slotContext.index();
         LivingEntity entity = slotContext.entity();
 
-        Optional<ICuriosItemHandler> stackHandler = CuriosApi.getCuriosHelper().getCuriosHandler(entity);
+        Optional<ICuriosItemHandler> stackHandler = CuriosApi.getCuriosInventory(entity);
+
         stackHandler.ifPresent((handler) -> {
             IDynamicStackHandler dynamicStackHandler = handler.getCurios().get(identifier).getStacks();
 
@@ -62,7 +63,7 @@ public class BandolierCurio implements ICurio {
     }
 
     public static void handleRightClick(UseItemOnBlockEvent event, BlockHitResult hitResult) {
-        Player player = event.getEntity();
+        Player player = event.getPlayer();
         InteractionHand hand = event.getHand();
 
         CuriosApi.getCuriosInventory(player).ifPresent(curiosInventory -> {

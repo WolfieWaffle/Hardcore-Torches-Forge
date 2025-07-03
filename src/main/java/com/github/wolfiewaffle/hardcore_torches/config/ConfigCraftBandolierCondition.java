@@ -7,7 +7,7 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 
 public class ConfigCraftBandolierCondition implements ICondition
 {
-    public static final ResourceLocation NAME = new ResourceLocation("hardcore_torches", "config_craft_bandolier");
+    public static final ResourceLocation NAME = ResourceLocation.parse("hardcore_torches:config_craft_bandolier");
 
     @Override
     public boolean test(IContext context)
@@ -21,10 +21,10 @@ public class ConfigCraftBandolierCondition implements ICondition
         return NAME.toString();
     }
 
-    public static final Codec<ConfigCraftBandolierCondition> CODEC = MapCodec.unit(ConfigCraftBandolierCondition::new).codec();
+    public static final MapCodec<ConfigCraftBandolierCondition> CODEC = MapCodec.unit(ConfigCraftBandolierCondition::new);
 
     @Override
-    public Codec<? extends ICondition> codec() {
+    public MapCodec<? extends ICondition> codec() {
         return CODEC;
     }
 }

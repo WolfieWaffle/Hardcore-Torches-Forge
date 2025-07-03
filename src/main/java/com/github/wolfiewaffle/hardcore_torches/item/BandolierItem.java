@@ -1,8 +1,10 @@
 package com.github.wolfiewaffle.hardcore_torches.item;
 
+import com.github.wolfiewaffle.hardcore_torches.component.DataTypes;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,9 +23,6 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 
 public class BandolierItem extends Item {
-    private static final String TAG_TORCH = "Torch";
-    private static final String TAG_COUNT = "Count";
-    private static final String TAG_FUEL = "Fuel";
 
     public BandolierItem(Properties properties) {
         super(properties);
@@ -67,21 +66,20 @@ public class BandolierItem extends Item {
     }
 
     public static ItemStack getNextTorchOrEmpty(ItemStack bandolierStack, boolean justOne) {
-        CompoundTag compoundtag = bandolierStack.getOrCreateTag();
-        ItemStack stack = ItemStack.EMPTY;
+        ItemStack resultStack = ItemStack.EMPTY;
 
-        if (compoundtag.contains(TAG_TORCH) && compoundtag.contains(TAG_COUNT)) {
+        if (bandolierStack.has(DataTypes.TORCH_TYPE) && bandolierStack.has(DataTypes.TORCH_COUNT)) {
 
-            int count = justOne ? 1 : Math.min(compoundtag.getInt(TAG_COUNT), getTorchItemOrAir(bandolierStack).getMaxStackSize());
-            stack = new ItemStack(getTorchItemOrAir(bandolierStack), count);
+            int count = justOne ? 1 : Math.min(bandolierStack.get(DataTypes.TORCH_COUNT), getTorchItemOrAir(bandolierStack).getDefaultMaxStackSize());
+            resultStack = new ItemStack(getTorchItemOrAir(bandolierStack), count);
 
-            if (stack.getItem() instanceof TorchItem) {
+            if (resultStack.getItem() instanceof TorchItem) {
                 // Set fuel
-                stack = TorchItem.setFuel(stack, (compoundtag.getInt(TAG_FUEL)) / compoundtag.getInt(TAG_COUNT));
+                resultStack = TorchItem.setFuel(resultStack, (bandolierStack.getOrDefault(DataTypes.FUEL, 0)) / bandolierStack.get(DataTypes.TORCH_COUNT));
             }
         }
 
-        return stack;
+        return resultStack;
     }
 
     public static int getFuel(ItemStack stack) {
@@ -89,12 +87,7 @@ public class BandolierItem extends Item {
         if (!(item instanceof BandolierItem)) {
             return 0;
         } else {
-            CompoundTag nbt = stack.getTag();
-            if (nbt != null && nbt.contains(TAG_FUEL)) {
-                return nbt.getInt(TAG_FUEL);
-            } else {
-                return 0;
-            }
+            return stack.getOrDefault(DataTypes.FUEL, 0);
         }
     }
 
@@ -105,10 +98,7 @@ public class BandolierItem extends Item {
         if (item instanceof BandolierItem) {
             if (BandolierItem.getTorchCount(stack) == 0) return output;
 
-            CompoundTag nbt = stack.getTag();
-            if (nbt != null && nbt.contains(TAG_TORCH)) {
-                return BuiltInRegistries.ITEM.get(new ResourceLocation(nbt.getString(TAG_TORCH)));
-            }
+            if (stack.has(DataTypes.TORCH_TYPE)) return stack.get(DataTypes.TORCH_TYPE).value();
         }
 
         return output;
@@ -123,11 +113,7 @@ public class BandolierItem extends Item {
     }
 
     private static int getTorchCount(ItemStack stack) {
-        CompoundTag compoundtag = stack.getTag();
-        if (compoundtag != null) {
-            return compoundtag.getInt(TAG_COUNT);
-        }
-        return 0;
+        return stack.getOrDefault(DataTypes.TORCH_COUNT, 0);
     }
 
     public boolean overrideOtherStackedOnMe(ItemStack selfStack, ItemStack otherStack, Slot slot, ClickAction action, Player player, SlotAccess access) {
@@ -143,8 +129,7 @@ public class BandolierItem extends Item {
                 boolean compatible = false;
 
                 // See if torch is defined
-                CompoundTag nbt = selfStack.getTag();
-                if (nbt != null && nbt.contains(TAG_TORCH) && BandolierItem.getTorchItemOrAir(selfStack) instanceof TorchItem bandoTorch) {
+                if (BandolierItem.getTorchItemOrAir(selfStack) instanceof TorchItem bandoTorch) {
 
                     // If burnt, only allow burnt
                     if (bandoTorch.burnState == ETorchState.BURNT) {
@@ -178,24 +163,19 @@ public class BandolierItem extends Item {
     public static void replaceStack(ItemStack bandolierStack, ItemStack insertedStack) {
         if (insertedStack.getItem() instanceof TorchItem torch && bandolierStack.getItem() instanceof BandolierItem bandolier) {
             if (!insertedStack.isEmpty()) {
-                CompoundTag compoundtag = bandolierStack.getOrCreateTag();
-
-                // Set this bandolier's stack
-                compoundtag.putString(TAG_TORCH, torch.toString());
-                compoundtag.putInt(TAG_COUNT, insertedStack.getCount());
-                compoundtag.putInt(TAG_FUEL, TorchItem.getFuel(insertedStack) * insertedStack.getCount());
-                //compoundtag.putInt(TAG_FUEL, 5904);
+                bandolierStack.set(DataTypes.TORCH_TYPE, torch.builtInRegistryHolder());
+                bandolierStack.set(DataTypes.TORCH_COUNT, insertedStack.getCount());
+                bandolierStack.set(DataTypes.FUEL, TorchItem.getFuel(insertedStack) * insertedStack.getCount());
             }
         }
     }
 
     public static ItemStack getTickedBandolier(ItemStack stack) {
-        CompoundTag compoundtag = stack.getOrCreateTag();
         int count;
 
         // Set count. If no count, no torches, so return self.
-        if (compoundtag.contains(TAG_COUNT)) {
-            count = compoundtag.getInt(TAG_COUNT);
+        if (stack.has(DataTypes.TORCH_COUNT)) {
+            count = stack.getOrDefault(DataTypes.TORCH_COUNT, 0);
         } else {
             return stack;
         }
@@ -218,11 +198,10 @@ public class BandolierItem extends Item {
         if (insertedStack.getItem() instanceof TorchItem torchItem) {
 
             if (!insertedStack.isEmpty() && torchItem.canFitInsideContainerItems()) {
-                CompoundTag compoundtag = bandolierStack.getOrCreateTag();
 
                 // Set this bandolier's torch type
-                if (!compoundtag.contains(TAG_TORCH)) {
-                    compoundtag.putString(TAG_TORCH, torchItem.toString());
+                if (!bandolierStack.has(DataTypes.TORCH_TYPE)) {
+                    bandolierStack.set(DataTypes.TORCH_TYPE, torchItem.builtInRegistryHolder());
                 }
 
                 // Ensure space for items
@@ -236,8 +215,8 @@ public class BandolierItem extends Item {
                     int fuel = TorchItem.getFuel(insertedStack);
 
                     // If space, add items
-                    compoundtag.putInt(TAG_COUNT, insertCount + existingCount);
-                    compoundtag.putInt(TAG_FUEL, getFuel(bandolierStack) + (insertCount * fuel));
+                    bandolierStack.set(DataTypes.TORCH_COUNT, insertCount + existingCount);
+                    bandolierStack.set(DataTypes.FUEL, getFuel(bandolierStack) + (insertCount * fuel));
                     return insertCount;
                 }
             }
@@ -247,26 +226,20 @@ public class BandolierItem extends Item {
     }
 
     public static void empty(ItemStack bandolierStack) {
-        CompoundTag compoundtag = bandolierStack.getOrCreateTag();
-
-        compoundtag.remove(TAG_TORCH);
-        compoundtag.remove(TAG_FUEL);
-        compoundtag.remove(TAG_COUNT);
-        bandolierStack.setTag(compoundtag);
+        bandolierStack.remove(DataTypes.FUEL);
+        bandolierStack.remove(DataTypes.TORCH_TYPE);
+        bandolierStack.remove(DataTypes.TORCH_COUNT);
     }
 
     public static void deleteOneTorch(ItemStack bandolierStack, ItemStack torchStack) {
         if (torchStack.getItem() instanceof TorchItem) {
             int fuel = TorchItem.getFuel(torchStack);
 
-            CompoundTag compoundtag = bandolierStack.getOrCreateTag();
-
             int count = getTorchCount(bandolierStack) - 1;
 
             if (count > 0) {
-                compoundtag.putInt(TAG_COUNT, count);
-                compoundtag.putInt(TAG_FUEL, getFuel(bandolierStack) - fuel);
-                bandolierStack.setTag(compoundtag);
+                bandolierStack.set(DataTypes.TORCH_COUNT, count);
+                bandolierStack.set(DataTypes.FUEL, getFuel(bandolierStack) - fuel);
             } else {
                 empty(bandolierStack);
             }
@@ -281,17 +254,13 @@ public class BandolierItem extends Item {
         } else if (removeStack.getItem() instanceof TorchItem) {
             int fuel = TorchItem.getFuel(removeStack) * removeCount;
 
-            CompoundTag compoundtag = bandolierStack.getOrCreateTag();
-
             int newCount = getTorchCount(bandolierStack) - removeCount;
 
             if (newCount <= 0) {
                 empty(bandolierStack);
-                return;
             } else {
-                compoundtag.putInt(TAG_COUNT, newCount);
-                compoundtag.putInt(TAG_FUEL, getFuel(bandolierStack) - fuel);
-                bandolierStack.setTag(compoundtag);
+                bandolierStack.set(DataTypes.FUEL, getFuel(bandolierStack) - fuel);
+                bandolierStack.set(DataTypes.TORCH_COUNT, newCount);
             }
         }
     }
@@ -302,23 +271,12 @@ public class BandolierItem extends Item {
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        CompoundTag oldNbt = null;
-        CompoundTag newNbt = null;
+        ItemStack stack1 = oldStack.copy();
+        ItemStack stack2 = newStack.copy();
 
-        if (oldStack.getTag() != null) {
-            oldNbt = oldStack.getTag().copy();
-            oldNbt.remove("Fuel");
-        }
+        stack1.remove(DataTypes.FUEL);
+        stack2.remove(DataTypes.FUEL);
 
-        if (newStack.getTag() != null) {
-            newNbt = newStack.getTag().copy();
-            newNbt.remove("Fuel");
-        }
-
-        if (oldNbt == null && newNbt != null) return true;
-        if (oldNbt != null && newNbt == null) return true;
-        if (oldNbt == null && newNbt == null) return false;
-
-        return oldNbt.equals(null);
+        return super.shouldCauseReequipAnimation(stack1, stack2, slotChanged);
     }
 }

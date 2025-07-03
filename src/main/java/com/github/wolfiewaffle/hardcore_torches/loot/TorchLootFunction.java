@@ -4,7 +4,7 @@ import com.github.wolfiewaffle.hardcore_torches.HardcoreTorches;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractHardcoreTorchBlock;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -24,7 +24,7 @@ public class TorchLootFunction extends LootItemConditionalFunction {
         super(lootConditions);
     }
 
-    public static final Codec<TorchLootFunction> CODEC = RecordCodecBuilder.create((builder) -> commonFields(builder).apply(builder, TorchLootFunction::new));
+    public static final MapCodec<TorchLootFunction> CODEC = RecordCodecBuilder.mapCodec((instance) -> commonFields(instance).apply(instance, TorchLootFunction::new));
 
     @Override
     public LootItemFunctionType getType() {

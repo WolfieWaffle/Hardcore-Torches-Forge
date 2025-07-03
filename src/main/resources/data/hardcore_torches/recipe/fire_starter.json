@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:string"
+        },
+        {
+            "tag": "c:rods/wooden"
+        },
+        {
+            "tag": "c:rods/wooden"
+        },
+        {
+            "tag": "c:rods/wooden"
+        }
+    ],
+    "result":
+    {
+        "id": "hardcore_torches:fire_starter"
+    }
+}

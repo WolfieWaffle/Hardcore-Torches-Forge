@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.78'
+    id 'net.neoforged.moddev' version '2.0.95'
     id 'idea'
 }
 
@@ -43,8 +43,8 @@ base {
     archivesName = mod_id
 }
 
-// Mojang ships Java 17 to end users from 1.18 to 1.20.4, so your mod should target Java 17.
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+// Mojang ships Java 21 to end users starting in 1.20.5, so mods should target Java 21.
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 neoForge {
     // Specify the version of NeoForge to use.
@@ -152,13 +152,13 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    implementation("com.legacy:lucent:1.20.4-1.7.0");
-    implementation("curse.maven:curios-309927:5388471");
     //compileOnly(fg.deobf("curse.maven:hct-576846:6018257"));
-    compileOnly("curse.maven:moonlight-499980:6058583");
-    compileOnly("curse.maven:amendments-896746:6030672");
-    compileOnly("curse.maven:farmersdelight-398521:5878214");
-    implementation("curse.maven:jei-238222:5846848");
+    compileOnly("com.legacy:lucent:1.20.4-1.7.0");
+    implementation("curse.maven:curios-309927:6073321");
+    implementation("curse.maven:moonlight-499980:6699385");
+    implementation("curse.maven:amendments-896746:6332372");
+    compileOnly("curse.maven:farmersdelight-398521:6597295");
+    implementation("curse.maven:jei-238222:6614392");
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
