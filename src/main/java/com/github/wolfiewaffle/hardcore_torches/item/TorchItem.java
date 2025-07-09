@@ -165,13 +165,14 @@ public class TorchItem extends StandingAndWallBlockItem {
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+
         ItemStack stack1 = oldStack.copy();
         ItemStack stack2 = newStack.copy();
 
         stack1.remove(DataTypes.FUEL);
         stack2.remove(DataTypes.FUEL);
 
-        return super.shouldCauseReequipAnimation(stack1, stack2, slotChanged);
+        return !(stack1.getComponents().equals(stack2.getComponents()));
     }
 
     public static int getFuel(ItemStack stack) {

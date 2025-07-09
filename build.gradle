@@ -159,6 +159,7 @@ dependencies {
     implementation("curse.maven:amendments-896746:6332372");
     compileOnly("curse.maven:farmersdelight-398521:6597295");
     implementation("curse.maven:jei-238222:6614392");
+    implementation("curse.maven:lamb-1130792:5980174");
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

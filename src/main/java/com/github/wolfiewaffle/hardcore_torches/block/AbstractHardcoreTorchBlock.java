@@ -239,9 +239,14 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        TorchBlockEntity be = new TorchBlockEntity(pos, state);
-        be.setFuel(getMaxFuel());
-        return be;
+        if (state.getBlock() instanceof AbstractHardcoreTorchBlock torch) {
+            if (torch.burnState != ETorchState.BURNT) {
+                TorchBlockEntity be = new TorchBlockEntity(pos, state);
+                be.setFuel(getMaxFuel());
+                return be;
+            }
+        }
+        return null;
     }
     // endregion
 

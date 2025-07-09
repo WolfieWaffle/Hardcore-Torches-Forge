@@ -16,8 +16,12 @@ public class BlockEntityInit {
         return new Block[] {
                 BlockInit.LIT_TORCH.get(),
                 BlockInit.LIT_WALL_TORCH.get(),
+                BlockInit.UNLIT_TORCH.get(),
+                BlockInit.UNLIT_WALL_TORCH.get(),
                 BlockInit.LIT_SOUL_TORCH.get(),
                 BlockInit.LIT_WALL_SOUL_TORCH.get(),
+                BlockInit.UNLIT_SOUL_TORCH.get(),
+                BlockInit.UNLIT_WALL_SOUL_TORCH.get(),
                 BlockInit.SMOLDERING_TORCH.get(),
                 BlockInit.SMOLDERING_WALL_TORCH.get(),
         };
