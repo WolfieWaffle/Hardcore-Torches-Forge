@@ -12,7 +12,7 @@
       "item": "hardcore_torches:oil_can"
     },
     "fuel": 72000,
-	"conditions": 
+	"forge:conditions":
 	[
 		{
 			"type": "hardcore_torches:config_can_coal"
