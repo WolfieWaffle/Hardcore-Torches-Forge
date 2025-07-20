@@ -1,13 +1,8 @@
 package com.github.wolfiewaffle.hardcore_torches.config;
 
-import com.github.wolfiewaffle.hardcore_torches.HardcoreTorches;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import org.spongepowered.asm.mixin.FabricUtil;
 
 public class Config {
 

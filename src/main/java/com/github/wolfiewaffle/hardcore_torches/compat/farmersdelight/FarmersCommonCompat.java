@@ -15,6 +15,7 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
+import vectorwing.farmersdelight.common.registry.ModCreativeTabs;
 
 import java.util.function.ToIntFunction;
 
@@ -46,9 +47,8 @@ public class FarmersCommonCompat {
     }
 
     public static void creativeTab(BuildCreativeModeTabContentsEvent event) {
-        // DISABLED UNTIL FARMERS DELIGHT UPDATES
-//        if (event.getTabKey() == ModCreativeTabs.TAB_FARMERS_DELIGHT.) {
-//            event.accept(HARDCORE_STOVE_ITEM);
-//        }
+        if (event.getTab() == ModCreativeTabs.TAB_FARMERS_DELIGHT.get()) {
+            event.accept(HARDCORE_STOVE_ITEM);
+        }
     }
 }

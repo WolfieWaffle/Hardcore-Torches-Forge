@@ -20,7 +20,6 @@ import com.github.wolfiewaffle.hardcore_torches.util.LanternGroup;
 import com.github.wolfiewaffle.hardcore_torches.util.TorchGroup;
 import com.github.wolfiewaffle.hardcore_torches.world.ReplaceAllBiomeModifier;
 import com.github.wolfiewaffle.hardcore_torches.world.ReplaceAllFeature;
-import com.ibm.icu.impl.ValidIdentifiers;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
