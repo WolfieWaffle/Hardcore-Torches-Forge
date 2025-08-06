@@ -129,8 +129,10 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
     protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hitResult) {
         BlockEntity be = world.getBlockEntity(pos);
 
+        if (be == null) return InteractionResult.PASS;
+
         // Message
-        if (be.getType() == BlockEntityInit.TORCH_BLOCK_ENTITY.get() && !world.isClientSide && Config.fuelMessage.get()) {
+        if (be.getType() != null && be.getType() == BlockEntityInit.TORCH_BLOCK_ENTITY.get() && !world.isClientSide && Config.fuelMessage.get()) {
             player.displayClientMessage(Component.literal("Fuel: " + ((TorchBlockEntity)be).getFuel()), true);
         }
 

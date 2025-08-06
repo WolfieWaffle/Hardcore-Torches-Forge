@@ -8,7 +8,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -33,7 +32,6 @@ public class TorchLootFunction extends LootItemConditionalFunction {
 
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
-        BlockEntity blockEntity = context.getParam(LootContextParams.BLOCK_ENTITY);
         BlockState state = context.getParam(LootContextParams.BLOCK_STATE);
         ItemStack itemStack = new ItemStack(state.getBlock().asItem());
         ETorchState torchState;
