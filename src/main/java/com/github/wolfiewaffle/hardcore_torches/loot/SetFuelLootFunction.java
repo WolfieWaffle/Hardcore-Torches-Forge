@@ -3,12 +3,8 @@ package com.github.wolfiewaffle.hardcore_torches.loot;
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractHardcoreTorchBlock;
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
-import com.github.wolfiewaffle.hardcore_torches.blockentity.FuelBlockEntity;
-import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlock;
-import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -38,21 +34,7 @@ public class SetFuelLootFunction extends LootItemConditionalFunction {
         Block block = ((BlockItem) stack.getItem()).getBlock();
 
         if (block instanceof AbstractHardcoreTorchBlock || block instanceof AbstractLanternBlock) {
-
-            // Set fuel
-            if (blockEntity != null && blockEntity instanceof FuelBlockEntity) {
-                int remainingFuel = ((FuelBlockEntity) blockEntity).getFuel();
-
-                if (remainingFuel != ((IFuelBlock) block).getMaxFuel()) {
-                    CompoundTag nbt = new CompoundTag();
-                    nbt.putInt("Fuel", (remainingFuel));
-                    stack.setTag(nbt);
-                }
-            }
-
-            if (block instanceof AbstractHardcoreTorchBlock && ((AbstractHardcoreTorchBlock) ((BlockItem) stack.getItem()).getBlock()).burnState == ETorchState.BURNT) {
-                stack.removeTagKey("Fuel");
-            }
+            stack = AbstractHardcoreTorchBlock.getSingleFueledTorch(stack, block, blockEntity);
         }
 
         return stack;

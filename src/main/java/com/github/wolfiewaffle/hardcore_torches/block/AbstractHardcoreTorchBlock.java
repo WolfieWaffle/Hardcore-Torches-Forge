@@ -16,6 +16,7 @@ import com.github.wolfiewaffle.hardcore_torches.util.TorchTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -25,9 +26,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -75,6 +74,16 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
+
+        // Picking up
+        if (stack.isEmpty()) {
+            if (Config.takeTorchMode.get() == 0) {
+                takeTorch(world, pos, player, hand);
+            } else if (Config.takeTorchMode.get() == 1 && player.isCrouching()) {
+                takeTorch(world, pos, player, hand);
+            }
+        }
+
         if (this.burnState == ETorchState.LIT) {
             if (this.attemptUseItem(stack, player, hand, ETorchState.UNLIT)) {
                 this.extinguish(world, pos, state, true);
@@ -90,6 +99,7 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
         }
 
         BlockEntity be = world.getBlockEntity(pos);
+        if (be == null) return InteractionResult.PASS;
 
         // Try to light this torch
         if ((this.burnState == ETorchState.SMOLDERING || this.burnState == ETorchState.UNLIT) && this.attemptUseItem(stack, player, hand, ETorchState.LIT)) {
@@ -130,6 +140,32 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
         }
 
         return InteractionResult.PASS;
+    }
+
+    public void takeTorch(Level world, BlockPos pos, Player player, InteractionHand hand) {
+        ItemStack givenStack = getSingleFueledTorch(new ItemStack(this), this, world.getBlockEntity(pos));
+        player.setItemInHand(hand, givenStack);
+        world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+    }
+
+    public static ItemStack getSingleFueledTorch(ItemStack stack, Block block, BlockEntity blockEntity) {
+
+        // Set fuel
+        if (blockEntity != null && blockEntity instanceof FuelBlockEntity) {
+            int remainingFuel = ((FuelBlockEntity) blockEntity).getFuel();
+
+            if (remainingFuel != ((IFuelBlock) block).getMaxFuel()) {
+                CompoundTag nbt = new CompoundTag();
+                nbt.putInt("Fuel", (remainingFuel));
+                stack.setTag(nbt);
+            }
+        }
+
+        if (stack.getItem() instanceof TorchItem torchItem && torchItem.burnState == ETorchState.BURNT) {
+            stack.removeTagKey("Fuel");
+        }
+
+        return stack;
     }
 
     @Override
