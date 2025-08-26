@@ -1,5 +1,7 @@
 package com.github.wolfiewaffle.hardcore_torches.world;
 
+import com.github.wolfiewaffle.hardcore_torches.blockentity.LanternBlockEntity;
+import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
@@ -71,6 +73,11 @@ public class ReplaceAllFeature extends Feature<NoneFeatureConfiguration> {
                         if (newBlock instanceof BaseEntityBlock) {
                             BlockEntity newEntity = ((BaseEntityBlock) chunk.getBlockState(pos).getBlock()).newBlockEntity(pos, newState);
                             chunk.setBlockEntity(newEntity);
+
+                            if (newEntity instanceof LanternBlockEntity) {
+                                ((LanternBlockEntity) newEntity).setFuel(Config.defaultLanternFuel.get());
+                            }
+
                             newEntity.setChanged();
                         }
                     }
