@@ -2,5 +2,17 @@
     "pack": {
         "description": "hardcore_torches resources",
         "pack_format": 8
+    },
+    "filter": {
+        "block": [
+            {
+                "namespace": "minecraft",
+                "path": "recipe/torch"
+            },
+            {
+                "namespace": "minecraft",
+                "path": "recipe/soul_torch"
+            }
+        ]
     }
 }
