@@ -3,6 +3,7 @@ package com.github.wolfiewaffle.hardcore_torches.block;
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.FuelBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlock;
+import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.LanternBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
@@ -75,7 +76,7 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
 
     @Override
     public boolean canLight(Level world, BlockPos pos) {
-        return ((LanternBlockEntity) world.getBlockEntity(pos)).getFuel() > 0 && !isLit;
+        return (((LanternBlockEntity) world.getBlockEntity(pos)).getFuel() > 0 || Config.relightLanterns.get()) && !isLit;
     }
 
     @Override
@@ -100,6 +101,10 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
         if (!world.isClientSide) {
             world.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1f, 1f);
             setState(world, pos, true);
+
+            if (Config.relightLanterns.get() && world.getBlockEntity(pos) != null && world.getBlockEntity(pos) instanceof IFuelBlockEntity fuel) {
+                fuel.setFuel(Config.defaultLanternFuel.get());
+            }
         }
     }
 

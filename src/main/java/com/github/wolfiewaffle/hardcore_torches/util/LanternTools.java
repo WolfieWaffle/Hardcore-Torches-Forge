@@ -34,7 +34,7 @@ public class LanternTools {
             if (world.getBlockEntity(pos) instanceof IFuelBlockEntity fuelBlockEntity) {
                 // If not enough fuel to light
                 if (!world.isClientSide) {
-                    if (fuelBlockEntity.getFuel() < Config.minLanternIgnitionFuel.get()) {
+                    if (fuelBlockEntity.getFuel() < Config.minLanternIgnitionFuel.get() && !Config.relightLanterns.get()) {
                         world.playSound(null, pos, SoundEvents.LANTERN_HIT, SoundSource.BLOCKS, 1f, 1f);
                         if (!isSoul) player.displayClientMessage(Component.literal("Needs fuel from an Oil Can"), true);
                         else player.displayClientMessage(Component.literal("Needs XP from an Amethyst Shard"), true);

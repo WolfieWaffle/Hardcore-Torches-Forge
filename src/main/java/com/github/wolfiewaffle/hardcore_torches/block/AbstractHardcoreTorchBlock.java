@@ -213,7 +213,8 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
             TorchTools.displayParticle(ParticleTypes.LARGE_SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.SMOKE, state, world, pos);
-            changeTorch(world, pos, state, ETorchState.BURNT);
+            if (!Config.relightTorches.get()) changeTorch(world, pos, state, ETorchState.BURNT);
+            else changeTorch(world, pos, state, ETorchState.UNLIT);
         }
     }
 
@@ -226,6 +227,10 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
             TorchTools.displayParticle(ParticleTypes.LAVA, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.FLAME, state, world, pos);
             changeTorch(world, pos, state, ETorchState.LIT);
+
+            if (Config.relightTorches.get() && world.getBlockEntity(pos) != null && world.getBlockEntity(pos) instanceof IFuelBlockEntity fuel) {
+                fuel.setFuel(Config.defaultTorchFuel.get());
+            }
         }
     }
 

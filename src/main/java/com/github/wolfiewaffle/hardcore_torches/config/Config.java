@@ -34,6 +34,8 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue craftLight;
     public static ForgeConfigSpec.BooleanValue craftHardcoreCampfire;
     public static ForgeConfigSpec.BooleanValue craftHardcoreStove;
+    public static ForgeConfigSpec.BooleanValue relightTorches;
+    public static ForgeConfigSpec.BooleanValue relightLanterns;
 
     public static ForgeConfigSpec.DoubleValue oilRecipeMultiplier;
     public static ForgeConfigSpec.DoubleValue starterSuccessChance;
@@ -104,6 +106,7 @@ public class Config {
         invExtinguishInRain = builder.comment("0: When in rain, torches in your inventory will be unaffected\n1: When in rain, torches in mainhand or offhand will be extinguished or smolder\n2: When in rain, torches in inventory will be extinguished or smolder").defineInRange("invExtinguishInRain", 2, 0, 2);
         torchCraftAmount = builder.comment("How many torches are crafted.").defineInRange("torchCraftAmount", 1, 1, Integer.MAX_VALUE);
         takeTorchMode = builder.comment("0: Right-click torches to pick them up\n1: Right-click torches while sneaking to pick them up\n2: Torches cannot be picked up by right-clicking").defineInRange("takeTorchMode", 2, 0, 2);
+        relightTorches = builder.comment("When a torch burns out it will become unlit, and when you light a torch, it will be fully refueled.").define("relightTorches", false);
         builder.pop();
 
         builder.comment("Lantern Settings").push("lantern");
@@ -115,6 +118,7 @@ public class Config {
         handUnlightLantern = builder.comment("Right click a lantern without holding fuel or a lighter to unlight it.").define("handUnlightLantern", false);
         startingLanternFuel = builder.comment("How much fuel a newly crafted lantern starts with.").defineInRange("startingLanternFuel", 0, 0, Integer.MAX_VALUE);
         pickUpLanterns = builder.comment("Allow the player to pick up lanterns with sneak-clicking.").define("pickUpLanterns", true);
+        relightLanterns = builder.comment("When a lantern is lit, it will be fully refueled. Recommended that you disable oil can recipes and set startingLanternFuel if you use this.").define("relightLanterns", false);
         builder.pop();
 
         builder.comment("Fire Starter Settings").push("fire_starter");
