@@ -1,7 +1,5 @@
 package com.github.wolfiewaffle.hardcore_torches.util;
 
-import com.github.wolfiewaffle.hardcore_torches.MainMod;
-import com.github.wolfiewaffle.hardcore_torches.block.AbstractLanternBlock;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlock;
 import com.github.wolfiewaffle.hardcore_torches.blockentity.IFuelBlockEntity;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
@@ -80,6 +78,11 @@ public class LanternTools {
 
         // Igniting
         if (!block.isLit() && block.itemValid(stack, ETorchState.LIT)) {
+            return block.attemptLight(world, pos, state, player, stack, hand);
+        }
+
+        // Relight
+        if (Config.relightLanterns.get() && block.isLit()) {
             return block.attemptLight(world, pos, state, player, stack, hand);
         }
 

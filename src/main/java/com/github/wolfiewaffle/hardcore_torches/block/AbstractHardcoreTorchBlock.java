@@ -96,6 +96,12 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
                 player.swing(hand);
                 return InteractionResult.SUCCESS;
             }
+
+            // Relight
+            if (Config.relightTorches.get() && (this.burnState == ETorchState.LIT || this.burnState == ETorchState.SMOLDERING)) {
+                this.light(world, pos);
+                return InteractionResult.SUCCESS;
+            }
         }
 
         BlockEntity be = world.getBlockEntity(pos);
@@ -154,7 +160,7 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
         if (blockEntity != null && blockEntity instanceof FuelBlockEntity) {
             int remainingFuel = ((FuelBlockEntity) blockEntity).getFuel();
 
-            if (remainingFuel != ((IFuelBlock) block).getMaxFuel()) {
+            if (remainingFuel != ((IFuelBlock) block).getMaxFuel() && remainingFuel != 0) {
                 CompoundTag nbt = new CompoundTag();
                 nbt.putInt("Fuel", (remainingFuel));
                 stack.setTag(nbt);
@@ -214,7 +220,12 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
             TorchTools.displayParticle(ParticleTypes.SMOKE, state, world, pos);
             TorchTools.displayParticle(ParticleTypes.SMOKE, state, world, pos);
             if (!Config.relightTorches.get()) changeTorch(world, pos, state, ETorchState.BURNT);
-            else changeTorch(world, pos, state, ETorchState.UNLIT);
+            else {
+                changeTorch(world, pos, state, ETorchState.UNLIT);
+                if (world.getBlockEntity(pos) instanceof IFuelBlockEntity fuel) {
+                    fuel.setFuel(Config.defaultTorchFuel.get());
+                }
+            }
         }
     }
 
