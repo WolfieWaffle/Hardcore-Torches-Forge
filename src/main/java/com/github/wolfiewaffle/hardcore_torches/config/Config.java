@@ -36,6 +36,7 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue craftHardcoreStove;
     public static ForgeConfigSpec.BooleanValue relightTorches;
     public static ForgeConfigSpec.BooleanValue relightLanterns;
+    public static ForgeConfigSpec.BooleanValue replaceInLootTables;
 
     public static ForgeConfigSpec.DoubleValue oilRecipeMultiplier;
     public static ForgeConfigSpec.DoubleValue starterSuccessChance;
@@ -82,6 +83,7 @@ public class Config {
         expIncrement = builder.comment("How many experience points are used in a single right click. Default 1.").defineInRange("expIncrement", 1, 1, Integer.MAX_VALUE);
         bottleExpAmount = builder.comment("How much exp points should a bottle of enchanting count as. This is multiplied by soulExpRatio. The wiki says 7 is the average.").defineInRange("bottleExpAmount", 7, 1, Integer.MAX_VALUE);
         craftLight = builder.comment("If true, you can light torches and lanterns within the crafting inventory.").define("craftLight", true);
+        replaceInLootTables = builder.comment("If true, replace torches, lanterns, etc. in loot tables with unlit versions.").define("replaceInLootTables", true);
         builder.pop();
 
         builder.comment("Oil Can Settings").push("oil_can");
@@ -130,7 +132,7 @@ public class Config {
         builder.pop();
 
         builder.comment("Campfire Settings").push("campfire");
-        craftHardcoreCampfire = builder.comment("Whether campfires should be crafted as unlit/hardcore. Set this to false and use the placeHardcoreCampfire option instead if you need campfires for crafting recipes.").define("craftHardcoreCampfire", true);
+        craftHardcoreCampfire = builder.comment("Whether campfires should be crafted as unlit/hardcore.").define("craftHardcoreCampfire", true);
         campfireMaxFuel = builder.comment("Max fuel that can be added to a campfire").defineInRange("campfireMaxFuel", 24000, 0, Integer.MAX_VALUE);
         campfireFuelFactor = builder.comment("Burn time for campfire fuel items is calculated by this value times its furnace duration").defineInRange("campfireFuelFactor", 8, 1, Double.MAX_VALUE);
         builder.pop();

@@ -10,6 +10,7 @@ import com.github.wolfiewaffle.hardcore_torches.init.BlockInit;
 import com.github.wolfiewaffle.hardcore_torches.init.ItemInit;
 import com.github.wolfiewaffle.hardcore_torches.item.OilCanItem;
 import com.github.wolfiewaffle.hardcore_torches.loot.FatModifier;
+import com.github.wolfiewaffle.hardcore_torches.loot.ReplaceTorchModifier;
 import com.github.wolfiewaffle.hardcore_torches.loot.SetFuelLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.loot.TorchLootFunction;
 import com.github.wolfiewaffle.hardcore_torches.recipe.DamageLightRecipe;
@@ -107,6 +108,7 @@ public class MainMod
     // Register Loot Tables
     private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MOD_CODEC_REGISTER = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MOD_ID);
     public static final RegistryObject<Codec<FatModifier>> FAT_MOD_CODEC = LOOT_MOD_CODEC_REGISTER.register("fat_modifier", () -> FatModifier.codec);
+    public static final RegistryObject<Codec<ReplaceTorchModifier>> REPLACE_TORCH_MOD_CODEC = LOOT_MOD_CODEC_REGISTER.register("replace_torches_in_containers", () -> ReplaceTorchModifier.codec);
 
     // Register Loot Functions
     private static final DeferredRegister<LootItemFunctionType> LOOT_FUNC_REGISTER = DeferredRegister.create(Registries.LOOT_FUNCTION_TYPE, MOD_ID);

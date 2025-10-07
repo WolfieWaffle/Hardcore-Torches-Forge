@@ -1,0 +1,5 @@
+{
+  "type": "hardcore_torches:replace_torches_in_containers",
+  "conditions": [
+  ]
+}
