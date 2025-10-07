@@ -8,6 +8,7 @@
 	"hardcore_torches:entities/horse",
 	"hardcore_torches:entities/mooshroom",
 	"hardcore_torches:entities/pig",
-	"hardcore_torches:entities/sheep"
+	"hardcore_torches:entities/sheep",
+	"hardcore_torches:containers/replace_torches_in_containers"
   ]
 }
