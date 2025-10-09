@@ -38,6 +38,7 @@ public class SetFuelLootFunction extends LootItemConditionalFunction {
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
         if (!(stack.getItem() instanceof BlockItem)) return stack; // No regular items
+        if (!context.hasParam(LootContextParams.BLOCK_ENTITY)) return stack; // If no block entity, can't set fuel
 
         BlockEntity blockEntity = context.getParam(LootContextParams.BLOCK_ENTITY);
         Block block = ((BlockItem) stack.getItem()).getBlock();
