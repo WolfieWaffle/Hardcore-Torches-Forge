@@ -1,0 +1,21 @@
+{
+  "block.hardcore_torches.lit_torch": "횃불",
+  "block.hardcore_torches.unlit_torch": "꺼진 횃불",
+  "block.hardcore_torches.smoldering_torch": "연기 나는 횃불",
+  "block.hardcore_torches.burnt_torch": "그을린 횃불",
+  "block.hardcore_torches.lit_soul_torch": "영혼 횃불",
+  "block.hardcore_torches.unlit_soul_torch": "꺼진 영혼 횃불",
+  "block.hardcore_torches.lit_lantern": "랜턴",
+  "block.hardcore_torches.unlit_lantern": "꺼진 랜턴",
+  "block.hardcore_torches.lit_soul_lantern": "영혼 랜턴",
+  "block.hardcore_torches.unlit_soul_lantern": "꺼진 영혼 랜턴",
+  "block.hardcore_torches.hardcore_campfire": "꺼진 모닥불",
+  "block.hardcore_torches.stove": "Primitive Stove",
+  "item.hardcore_torches.hardcore_campfire": "꺼진 모닥불",
+  "item.hardcore_torches.oil_can": "랜턴 기름 캔",
+  "item.hardcore_torches.animal_fat": "동물 지방",
+  "item.hardcore_torches.fire_starter": "불쏘시개",
+  "item.hardcore_torches.unlit_campfire": "꺼진 모닥불",
+  "item.hardcore_torches.stove": "Primitive Stove",
+  "item.hardcore_torches.bandolier": "Torch Bandolier"
+}
