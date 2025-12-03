@@ -55,9 +55,10 @@ public class FuelBlockEntity extends BlockEntity implements IFuelBlockEntity {
                 IFuelBlock block = (IFuelBlock) world.getBlockState(pos).getBlock();
                 block.outOfFuel(world, pos, world.getBlockState(pos));
             }
-        } else if (fuel > getMaxFuel()) {
-            setFuel(getMaxFuel());
         }
+//        else if (fuel > getMaxFuel()) {
+//            setFuel(getMaxFuel());
+//        }
     }
 
     // region necessary methods
