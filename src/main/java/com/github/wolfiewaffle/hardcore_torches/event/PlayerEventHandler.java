@@ -15,7 +15,9 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -104,52 +106,39 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public void playerInteract(UseItemOnBlockEvent event) {
-        if (Config.bandolierInteractMode.get() == 0) return;
+        // IDK why we need this but we do
+        if (event.getUsePhase() != UseItemOnBlockEvent.UsePhase.ITEM_BEFORE_BLOCK) return;
+
+        // Mode zero in the config is no placement
+        int mode = Config.bandolierInteractMode.get();
+        if (mode == 0) return;
+
+        // We don't run on mainhand
+        if (event.getHand() == InteractionHand.MAIN_HAND) return;
+
+        System.out.println("INTERACT");
+
+        Player player = event.getPlayer();
+        if (player == null) return;
+
         if (event.getCancellationResult() == ItemInteractionResult.CONSUME || event.getCancellationResult() == ItemInteractionResult.SUCCESS || event.getCancellationResult() == ItemInteractionResult.FAIL) return;
 
-        // Detection
-        int mode = Config.bandolierInteractMode.get();
-        switch (mode) {
-            case 1:
-                if (event.getHand() == InteractionHand.MAIN_HAND) return;
-                break;
-            case 2:
-                if (event.getHand() == InteractionHand.MAIN_HAND) return;
-                if (!event.getPlayer().getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) return;
-                break;
-        }
+        // Return if we are in empty mainhand mode and its not empty
+        if (mode == 2 && !player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) return;
+
 
         if (!ModList.get().isLoaded("curios")) return;
 
+        ItemStack item = event.getItemStack();
+        if (mode == 1 || item.isEmpty()) {
+            if (event.getCancellationResult() == ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION) {
+                if (event.getLevel().isClientSide) return;
+                BlockHitResult blockhitresult = item.getItem().getPlayerPOVHitResult(event.getLevel(), player, ClipContext.Fluid.NONE);
 
-
-        if (mode != 0) {
-
-            ItemStack item = event.getItemStack();
-            if (mode == 1 || item.isEmpty()) {
-
-                if (event.getCancellationResult() == ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION) {
-                    if (Minecraft.getInstance().hitResult instanceof BlockHitResult result) {
-                        BandolierCurio.handleRightClick(event, result);
-                    }
+                if (blockhitresult != null && blockhitresult instanceof BlockHitResult result) {
+                    BandolierCurio.handleRightClick(event, result);
                 }
             }
         }
     }
-
-//    @SubscribeEvent
-//    public void playerInteract(PlayerInteractEvent.RightClickBlock event) {
-//        if (!Config.placeHardcoreCampfire.get()) {
-//            return;
-//        } else {
-//            System.out.println("SIDE " + event.getSide());
-//            if (event.getItemStack().getItem() == Items.CAMPFIRE) {
-//                event.setCanceled(true);
-//                InteractionResult result = ItemInit.UNLIT_CAMPFIRE.get().useOn(new UseOnContext(event.getEntity(), event.getHand(), event.getHitVec()));
-//                if (result == InteractionResult.SUCCESS) {
-//                    event.getEntity().swing(event.getHand());
-//                }
-//            }
-//        }
-//    }
 }
