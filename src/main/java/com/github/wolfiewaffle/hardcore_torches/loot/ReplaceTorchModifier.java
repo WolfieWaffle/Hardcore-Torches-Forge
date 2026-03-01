@@ -9,7 +9,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.common.loot.LootModifier;
@@ -27,7 +26,7 @@ public class ReplaceTorchModifier extends LootModifier {
     public ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         if (!Config.replaceInLootTables.get()) return generatedLoot;
         
-        if (!context.getQueriedLootTableId().getPath().substring(0, 7).contains("blocks/")) {
+        if (!context.getQueriedLootTableId().getPath().contains("blocks/")) {
             for (int i = 0; i < generatedLoot.size(); i++) {
                 if (generatedLoot.get(i).getItem() == Items.TORCH) {
                     generatedLoot.set(i, new ItemStack(ItemInit.UNLIT_TORCH.get(), generatedLoot.get(i).getCount()));

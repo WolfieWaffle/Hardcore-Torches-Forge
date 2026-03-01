@@ -173,6 +173,8 @@ dependencies {
     implementation(fg.deobf("curse.maven:jei-238222:5846810"));
     implementation(fg.deobf("curse.maven:lanterns-621377:5763159"));
     implementation(fg.deobf("curse.maven:radiant-602199:5322609"));
+    implementation(fg.deobf("curse.maven:embeddium-908741:5681725"));
+    implementation(fg.deobf("curse.maven:lights-551736:6044481"));
     //implementation(fg.deobf("curse.maven:coroutil-237749:5096038"));
     //implementation(fg.deobf("curse.maven:weather2-237746:5244118"));
 }
