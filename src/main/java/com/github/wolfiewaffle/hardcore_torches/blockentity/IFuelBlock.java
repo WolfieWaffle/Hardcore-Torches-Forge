@@ -82,6 +82,8 @@ public interface IFuelBlock {
         if (damage != null && stack.is(damage)) {
             if (stack.isDamageableItem() && player instanceof ServerPlayer) {
                 stack.hurt(1, RandomSource.create(), (ServerPlayer) player);
+            if (stack.isDamageableItem() && player instanceof ServerPlayer serverPlayer) {
+                stack.hurtAndBreak(1, serverPlayer, (p) -> {});
             }
             return true;
         }
