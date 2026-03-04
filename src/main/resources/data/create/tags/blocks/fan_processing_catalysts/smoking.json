@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "hardcore_torches:hardcore_campfire",
+      "required": false
+    }
+  ]
+}
