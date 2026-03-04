@@ -1,18 +1,20 @@
 package com.github.wolfiewaffle.hardcore_torches.blockentity;
 
 import com.github.wolfiewaffle.hardcore_torches.MainMod;
+import com.github.wolfiewaffle.hardcore_torches.compat.tconstruct.TinkersConstructCompat;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fml.ModList;
 
 public interface IFuelBlock {
 
@@ -80,8 +82,11 @@ public interface IFuelBlock {
 
         // Durability items
         if (damage != null && stack.is(damage)) {
-            if (stack.isDamageableItem() && player instanceof ServerPlayer) {
-                stack.hurt(1, RandomSource.create(), (ServerPlayer) player);
+            if (ModList.get().isLoaded("tconstruct")) {
+                if (TinkersConstructCompat.isBroken(stack)) {
+                    return false;
+                }
+            }
             if (stack.isDamageableItem() && player instanceof ServerPlayer serverPlayer) {
                 stack.hurtAndBreak(1, serverPlayer, (p) -> {});
             }
