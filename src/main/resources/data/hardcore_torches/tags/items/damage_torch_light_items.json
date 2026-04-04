@@ -1,6 +1,13 @@
 {
     "replace": false,
     "values": [
-        "minecraft:flint_and_steel"
+        {
+            "id": "minecraft:flint_and_steel",
+            "required": true
+        },
+        {
+            "id": "tconstruct:flint_and_brick",
+            "required": false
+        }
     ]
 }
