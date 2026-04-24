@@ -112,11 +112,9 @@ public class HardcoreCampfireBlockEntity extends CampfireBlockEntity {
     }
 
     public static List<ItemEntity> getItemsAtAndAbove(Level world, BlockPos pos) {
-        VoxelShape INSIDE = Block.box(2.0D, 11.0D, 2.0D, 14.0D, 16.0D, 14.0D);
-        VoxelShape ABOVE = Block.box(0.0D, 16.0D, 0.0D, 16.0D, 32.0D, 16.0D);
-        VoxelShape BOTH = Shapes.or(INSIDE, ABOVE);
+        VoxelShape ABOVE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 
-        return BOTH.toAabbs().stream().flatMap((aabb) -> world.getEntitiesOfClass(ItemEntity.class, aabb.move(pos.getX() - 0.5D, pos.getY() - 0.5D, pos.getZ() - 0.5D), EntitySelector.ENTITY_STILL_ALIVE).stream()).collect(Collectors.toList());
+        return ABOVE.toAabbs().stream().flatMap((aabb) -> world.getEntitiesOfClass(ItemEntity.class, aabb.move(pos.getX() , pos.getY(), pos.getZ()), EntitySelector.ENTITY_STILL_ALIVE).stream()).collect(Collectors.toList());
     }
 
     // region necessary methods
