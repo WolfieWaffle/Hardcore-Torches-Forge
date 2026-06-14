@@ -40,18 +40,17 @@ public class HardcoreStoveBlockEntity extends StoveBlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, HardcoreStoveBlockEntity stove) {
-        StoveBlockEntity.cookingTick(level, pos, state, stove);
         stove.fuel -= 1;
         if (stove.fuel <= 0) {
             Block block = state.getBlock();
             if (block instanceof StoveBlock stoveBlock) {
-                stoveBlock.extinguish(state, level, pos);
+                stoveBlock.extinguish(null, level, pos, state);
             }
         }
     }
 
     public static void animationTick(Level level, BlockPos pos, BlockState state, HardcoreStoveBlockEntity stove) {
-        StoveBlockEntity.animationTick(level, pos, state, stove);
+        StoveBlockEntity.particleTick(level, pos, state, stove);
     }
 
     @Override
