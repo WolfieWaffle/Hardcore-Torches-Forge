@@ -6,8 +6,9 @@ import com.github.wolfiewaffle.hardcore_torches.item.BandolierItem;
 import com.github.wolfiewaffle.hardcore_torches.item.LanternItem;
 import com.github.wolfiewaffle.hardcore_torches.item.TorchItem;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
-import net.minecraft.client.Minecraft;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -17,13 +18,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class PlayerEventHandler {
@@ -101,6 +103,21 @@ public class PlayerEventHandler {
                     inventory.setItem(i, BandolierItem.getTickedBandolier(stack));
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void joinWorld(EntityJoinLevelEvent event) {
+        boolean foundOp = false;
+        String modName = "";
+
+        if (event.getLevel().isClientSide && event.getEntity() instanceof Player player) {
+            if (ModList.get().isLoaded("lithium")) {
+                foundOp = true;
+                modName = "Lithium";
+            }
+
+            if (foundOp) player.sendSystemMessage(Component.literal("WARNING: Hardcore Torches has detected " + modName + ". Some configuration options for this mod must be changed, or the campfire will not work. See the mod page for more information. This message can be disabled in the config.").withStyle(ChatFormatting.DARK_RED));
         }
     }
 

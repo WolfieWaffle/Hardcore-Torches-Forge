@@ -35,6 +35,7 @@ public class Config {
     public static ModConfigSpec.ConfigValue<Boolean> craftBandolier;
     public static ModConfigSpec.ConfigValue<Boolean> showBandolier;
     public static ModConfigSpec.ConfigValue<Boolean> replaceInLootTables;
+    public static ModConfigSpec.ConfigValue<Boolean> optimizerWarning;
 
     public static ModConfigSpec.ConfigValue<Double> oilRecipeMultiplier;
     public static ModConfigSpec.ConfigValue<Double> starterSuccessChance;
@@ -84,6 +85,7 @@ public class Config {
         bottleExpAmount = builder.comment("How much exp points should a bottle of enchanting count as. This is multiplied by soulExpRatio. The wiki says 7 is the average.").defineInRange("bottleExpAmount", 7, 1, Integer.MAX_VALUE);
         craftLight = builder.comment("If true, you can light torches and lanterns within the crafting inventory.").define("craftLight", true);
         replaceInLootTables = builder.comment("If true, replace torches, lanterns, etc. in loot tables with unlit versions.").define("replaceInLootTables", true);
+        optimizerWarning = builder.comment("Set to false to disable warning messages about optimizers breaking the campfire.").define("optimizerWarning", true);
         builder.pop();
 
         builder.comment("Oil Can Settings").push("oil_can");
