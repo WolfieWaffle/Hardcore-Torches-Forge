@@ -111,7 +111,7 @@ public class PlayerEventHandler {
         boolean foundOp = false;
         String modName = "";
 
-        if (event.getLevel().isClientSide && event.getEntity() instanceof Player player) {
+        if (event.getLevel().isClientSide && event.getEntity() instanceof Player player && Config.optimizerWarning.get()) {
             if (ModList.get().isLoaded("lithium")) {
                 foundOp = true;
                 modName = "Lithium";
