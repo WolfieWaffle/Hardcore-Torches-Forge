@@ -25,7 +25,6 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class PlayerEventHandler {

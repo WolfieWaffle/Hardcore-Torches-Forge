@@ -140,6 +140,7 @@ public class HardcoreCampfire extends CampfireBlock implements IFuelBlock {
 
     public ItemInteractionResult needsFuel(Player player) {
         player.displayClientMessage(Component.literal("Drop combustible items on top to add fuel!"), true);
+
         return ItemInteractionResult.CONSUME;
     }
 
@@ -156,6 +157,20 @@ public class HardcoreCampfire extends CampfireBlock implements IFuelBlock {
         } else {
             return state.getValue(LIT) ? createTickerHelper(type, BlockEntityInit.CAMPFIRE_BLOCK_ENTITY.get(), HardcoreCampfireBlockEntity::cookTick) : createTickerHelper(type, BlockEntityInit.CAMPFIRE_BLOCK_ENTITY.get(), HardcoreCampfireBlockEntity::cooldownTick);
         }
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hitResult) {
+        BlockEntity be = world.getBlockEntity(pos);
+
+        if (be == null) return InteractionResult.PASS;
+
+        // Message
+        if (be.getType() != null && be.getType() == BlockEntityInit.CAMPFIRE_BLOCK_ENTITY.get() && !world.isClientSide && Config.fuelMessage.get()) {
+            player.displayClientMessage(Component.literal("Fuel: " + ((HardcoreCampfireBlockEntity) be).getFuel()), true);
+        }
+
+        return InteractionResult.PASS;
     }
 
     // These methods are needed for IFuelBlock

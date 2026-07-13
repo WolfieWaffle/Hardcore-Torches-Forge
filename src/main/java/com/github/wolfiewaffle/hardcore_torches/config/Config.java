@@ -151,7 +151,7 @@ public class Config {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
         builder.comment("General Settings").push("general");
-        fuelMessage = builder.comment("Send an actionbar message when right clicking a torch or lantern to show its fuel amount.").define("fuelMessage", false);
+        fuelMessage = builder.comment("Send an actionbar message when right clicking a Hardcore Torches block to show its fuel amount.").define("fuelMessage", false);
         builder.pop();
 
         CLIENT_CONFIG = builder.build();
