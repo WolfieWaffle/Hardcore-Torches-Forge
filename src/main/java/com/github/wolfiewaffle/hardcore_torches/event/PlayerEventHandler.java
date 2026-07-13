@@ -133,8 +133,6 @@ public class PlayerEventHandler {
         // We don't run on mainhand
         if (event.getHand() == InteractionHand.MAIN_HAND) return;
 
-        System.out.println("INTERACT");
-
         Player player = event.getPlayer();
         if (player == null) return;
 
