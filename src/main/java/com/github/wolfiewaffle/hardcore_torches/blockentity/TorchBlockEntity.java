@@ -1,21 +1,22 @@
 package com.github.wolfiewaffle.hardcore_torches.blockentity;
 
 import com.github.wolfiewaffle.hardcore_torches.block.AbstractHardcoreTorchBlock;
+import com.github.wolfiewaffle.hardcore_torches.burnout.FuelMath;
 import com.github.wolfiewaffle.hardcore_torches.config.Config;
 import com.github.wolfiewaffle.hardcore_torches.init.BlockEntityInit;
 import com.github.wolfiewaffle.hardcore_torches.util.ETorchState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TorchBlockEntity extends FuelBlockEntity {
+    private long nextRainCheck = -1;
 
     public TorchBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntityInit.TORCH_BLOCK_ENTITY.get(), pos, state);
-        Block block =  state.getBlock();
-
-        if (block instanceof AbstractHardcoreTorchBlock) fuel = ((AbstractHardcoreTorchBlock) state.getBlock()).maxFuel.getAsInt();
+        if (state.getBlock() instanceof AbstractHardcoreTorchBlock torch) {
+            fuelTimer.set(torch.maxFuel.getAsInt());
+        }
     }
 
     @Override
@@ -23,57 +24,55 @@ public class TorchBlockEntity extends FuelBlockEntity {
         return Config.defaultTorchFuel.get();
     }
 
+    @Override
+    public boolean burnsContinuously(BlockState state) {
+        return state.getBlock() instanceof AbstractHardcoreTorchBlock torch
+                && torch.burnState == ETorchState.LIT;
+    }
+
+    @Override
+    public long nextBurnoutCheck(long fuelDeadline, long now) {
+        if (!Config.torchesRain.get()) return fuelDeadline;
+        if (nextRainCheck < 0) nextRainCheck = nextRainOpportunity(now);
+        return Math.min(fuelDeadline, nextRainCheck);
+    }
+
+    private long nextRainOpportunity(long now) {
+        return FuelMath.deadlineAfter(now, FuelMath.geometricDelay(random.nextDouble(), 1.0 / 200.0));
+    }
+
+    @Override
+    public void onBurnoutCheck() {
+        Level world = getLevel();
+        if (world == null || world.isClientSide || isRemoved() || !burnsContinuously(getBlockState())) return;
+        if (getFuel() == 0) {
+            super.onBurnoutCheck();
+            return;
+        }
+        long now = world.getGameTime();
+        if (Config.torchesRain.get() && nextRainCheck >= 0 && now >= nextRainCheck) {
+            nextRainCheck = nextRainOpportunity(now);
+            if (world.isRainingAt(getBlockPos())) {
+                BlockState state = getBlockState();
+                AbstractHardcoreTorchBlock torch = (AbstractHardcoreTorchBlock) state.getBlock();
+                if (Config.torchesSmolder.get()) torch.smother(world, getBlockPos(), state);
+                else torch.extinguish(world, getBlockPos(), state, true);
+                return;
+            }
+        }
+        fuelTimer.refresh();
+    }
+
+    /** Only smoldering torches keep their original 1/3-per-tick stochastic burn. */
     public void tick() {
         Level world = getLevel();
-
-        if (!world.isClientSide) {
-            BlockPos pos = getBlockPos();
-            BlockState state = getBlockState();
-
-            if (!(state.getBlock() instanceof AbstractHardcoreTorchBlock)) return;
-
-            if (((AbstractHardcoreTorchBlock) state.getBlock()).burnState == ETorchState.LIT) {
-                tickLit(world, pos, state);
-            } else if (((AbstractHardcoreTorchBlock) state.getBlock()).burnState == ETorchState.SMOLDERING) {
-                tickSmoldering(world, pos, state);
-            }
+        if (world == null || world.isClientSide || isRemoved()) return;
+        BlockState state = getBlockState();
+        if (state.getBlock() instanceof AbstractHardcoreTorchBlock torch
+                && torch.burnState == ETorchState.SMOLDERING
+                && getFuel() > 0 && random.nextInt(3) == 0) {
+            setFuel(getFuel() - 1);
+            if (getFuel() == 0) torch.burnOut(world, getBlockPos(), state, false);
         }
-    }
-
-    private void tickLit(Level world, BlockPos pos, BlockState state) {
-
-        // Extinguish
-        if (Config.torchesRain.get() && world.isRainingAt(pos)) {
-            if (random.nextInt(200) == 0) {
-                if (Config.torchesSmolder.get()) {
-                    ((AbstractHardcoreTorchBlock) world.getBlockState(pos).getBlock()).smother(world, pos, state);
-                } else {
-                    ((AbstractHardcoreTorchBlock) world.getBlockState(pos).getBlock()).extinguish(world, pos, state, true);
-                }
-            }
-        }
-
-        // Burn out
-        if (fuel >= 0) {
-            changeFuel(-1);
-        }
-
-        setChanged();
-    }
-
-    private void tickSmoldering(Level world, BlockPos pos, BlockState state) {
-
-        // Burn out
-        if (random.nextInt(3) == 0) {
-            if (fuel > 0) {
-                fuel--;
-
-                if (fuel <= 0) {
-                    ((AbstractHardcoreTorchBlock) world.getBlockState(pos).getBlock()).burnOut(world, pos, state, false);
-                }
-            }
-        }
-
-        setChanged();
     }
 }

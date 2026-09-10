@@ -226,11 +226,12 @@ public abstract class AbstractHardcoreTorchBlock extends BaseEntityBlock impleme
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        if (burnState == ETorchState.LIT || burnState == ETorchState.SMOLDERING) {
-             return type == BlockEntityInit.TORCH_BLOCK_ENTITY.get() ? (level, pos, blockState, be) -> ((TorchBlockEntity) be).tick() : super.getTicker(world, state, type);
-        } else {
-            return null;
+        // Lit torches use fuel/rain events; unlit and burnt torches do no periodic work.
+        if (!world.isClientSide && burnState == ETorchState.SMOLDERING) {
+            return createTickerHelper(type, BlockEntityInit.TORCH_BLOCK_ENTITY.get(),
+                    (level, pos, blockState, be) -> be.tick());
         }
+        return null;
     }
 
     @Override

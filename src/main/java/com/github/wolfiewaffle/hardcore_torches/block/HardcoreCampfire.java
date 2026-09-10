@@ -12,6 +12,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FlintAndSteelItem;
 import net.minecraft.world.item.ItemStack;
@@ -90,6 +92,16 @@ public class HardcoreCampfire extends CampfireBlock implements IFuelBlock {
         }
 
         return super.useItemOn(stack, state, world, pos, player, hand, hitResult);
+    }
+
+    @Override
+    protected void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+        if (!world.isClientSide && entity instanceof ItemEntity item
+                && world.getBlockEntity(pos) instanceof HardcoreCampfireBlockEntity campfire
+                && campfire.tryAddFuel(item)) {
+            return;
+        }
+        super.entityInside(state, world, pos, entity);
     }
 
     // Added here because its private in CampfireBlock
