@@ -102,7 +102,10 @@ public class Config {
         torchesExtinguishWhenBroken = builder.comment("Torches will become unlit when broken.").define("torchesExtinguishWhenBroken", true);
         torchesBurnWhenDropped = builder.comment("Overrides torchesExtinguishWhenBroken. Torches will be fully expended when broken (burnt torch or stick).").define("torchesBurnWhenDropped", true);
         burntDrop = builder.comment("0: Burnt torches drop as burnt torches\n1: Burnt torches drop as sticks\n2: Burnt torches drop nothing").defineInRange("burntDrop", 0, 0, 2);
-        torchesRain = builder.comment("Torches will be affected when in the rain. Will smolder or become unlit depending on torchesSmolder.").define("torchesRain", true);
+        torchesRain = builder.comment("Torches will be affected when in the rain. Will smolder or become unlit depending on torchesSmolder.",
+                "Requires a world restart to rebuild scheduled rain checks.")
+                .worldRestart()
+                .define("torchesRain", true);
         torchesSmolder = builder.comment("If a torch is in the rain and torchesRain = true, then it will smolder and burn fuel at 1/3rd the normal rate instead of becoming unlit.").define("torchesSmolder", true);
         craftUnlit = builder.comment("If true, torches must be lit after crafting.").define("craftUnlit", false);
         handUnlightTorch = builder.comment("Right click a torch without holding fuel or a lighter to unlight it.").define("handUnlightTorch", false);
