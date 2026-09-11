@@ -238,7 +238,8 @@ public abstract class AbstractLanternBlock extends BaseEntityBlock implements En
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        return type == BlockEntityInit.LANTERN_BLOCK_ENTITY.get() ? (level, pos, blockState, be) -> ((LanternBlockEntity) be).tick() : super.getTicker(world, state, type);
+        // The server-level deadline queue handles expiry; no client or server BE ticker.
+        return null;
     }
 
     @Override
